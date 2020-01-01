@@ -6,6 +6,7 @@
   <thead>
     <tr>
       <th>Company</th>
+      <th>Activity type</th>
       <th>Number of shares</th>
       <th>Total price</th>
       <th colspan="3"></th>
@@ -16,6 +17,7 @@
     <% @activities.each do |activity| %>
       <tr>
         <td><%= activity.company %></td>
+        <td><%= activity.activity_type %></td>
         <td><%= activity.number_of_shares %></td>
         <td><%= activity.total_price %></td>
         <td><%= link_to 'Show', activity %></td>

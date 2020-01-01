@@ -14,6 +14,7 @@ class ActivitiesTest < ApplicationSystemTestCase
     visit activities_url
     click_on "New Activity"
 
+    fill_in "Activity type", with: @activity.activity_type
     fill_in "Company", with: @activity.company_id
     fill_in "Number of shares", with: @activity.number_of_shares
     fill_in "Total price", with: @activity.total_price
@@ -27,6 +28,7 @@ class ActivitiesTest < ApplicationSystemTestCase
     visit activities_url
     click_on "Edit", match: :first
 
+    fill_in "Activity type", with: @activity.activity_type
     fill_in "Company", with: @activity.company_id
     fill_in "Number of shares", with: @activity.number_of_shares
     fill_in "Total price", with: @activity.total_price

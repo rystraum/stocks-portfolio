@@ -2,10 +2,12 @@
 
 one:
   company: one
+  activity_type: MyString
   number_of_shares: 1
   total_price: 1.5
 
 two:
   company: two
+  activity_type: MyString
   number_of_shares: 1
   total_price: 1.5

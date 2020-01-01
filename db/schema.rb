@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_01_185913) do
+ActiveRecord::Schema.define(version: 2020_01_01_185706) do
 
   create_table "activities", force: :cascade do |t|
     t.integer "company_id"
@@ -21,23 +21,6 @@ ActiveRecord::Schema.define(version: 2020_01_01_185913) do
     t.datetime "updated_at", null: false
     t.index ["activity_type"], name: "index_activities_on_activity_type"
     t.index ["company_id"], name: "index_activities_on_company_id"
-  end
-
-  create_table "companies", force: :cascade do |t|
-    t.string "ticker"
-    t.string "industry"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "stock_dividends", force: :cascade do |t|
-    t.integer "company_id"
-    t.string "amount"
-    t.date "pay_date"
-    t.date "ex_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["company_id"], name: "index_stock_dividends_on_company_id"
   end
 
 end
