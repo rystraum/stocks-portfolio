@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  company: one
+  amount: MyString
+  pay_date: 2020-01-02
+  ex_date: 2020-01-02
+
+two:
+  company: two
+  amount: MyString
+  pay_date: 2020-01-02
+  ex_date: 2020-01-02

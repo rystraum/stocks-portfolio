@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @stock_dividend.company %>
+</p>
+
+<p>
+  <strong>Amount:</strong>
+  <%= @stock_dividend.amount %>
+</p>
+
+<p>
+  <strong>Pay date:</strong>
+  <%= @stock_dividend.pay_date %>
+</p>
+
+<p>
+  <strong>Ex date:</strong>
+  <%= @stock_dividend.ex_date %>
+</p>
+
+<%= link_to 'Edit', edit_stock_dividend_path(@stock_dividend) %> |
+<%= link_to 'Back', stock_dividends_path %>

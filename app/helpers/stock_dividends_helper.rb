@@ -1,0 +1,2 @@
+module StockDividendsHelper
+end

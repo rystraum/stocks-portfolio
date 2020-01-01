@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @activity.company %>
+</p>
+
+<p>
+  <strong>Number of shares:</strong>
+  <%= @activity.number_of_shares %>
+</p>
+
+<p>
+  <strong>Total price:</strong>
+  <%= @activity.total_price %>
+</p>
+
+<%= link_to 'Edit', edit_activity_path(@activity) %> |
+<%= link_to 'Back', activities_path %>
