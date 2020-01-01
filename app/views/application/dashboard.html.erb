@@ -2,4 +2,36 @@
     <li><%= link_to "Activities", activities_path %></li>
     <li><%= link_to "Companies", companies_path %></li>
     <li><%= link_to "Stock Dividends", stock_dividends_path %></li>
+    <li><%= link_to "Cash Dividends", cash_dividends_path %></li>
 </ul>
+<table>
+    <thead>
+        <tr>
+            <td>Company</td>
+            <td>Shares</td>
+            <td class="r-align">Total Cost</td>
+            <td class="r-align">CPS</td>
+            <td class="r-align">% cost</td>
+        </tr>
+    </thead>
+    <tbody>
+        <% total_costs = Company.all.collect(&:total_costs).sum %>
+        <% Company.all.each do |company| %>
+            <% company_costs = company.total_costs %>
+            <tr>
+                <td><%= link_to company, company %></td>
+                <td><%= company.total_shares %></td>
+                <td class="r-align"><%= number_to_currency company_costs, unit: "" %></td>
+                <td class="r-align"><%= number_to_currency (company_costs / company.total_shares), unit: "" %></td>
+                <td class="r-align"><%= number_to_percentage (company_costs * 100 / total_costs) %></td>
+            </tr>
+        <% end %>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td>Totals</td>
+            <td>-</td>
+            <td class="r-align"><%= total_costs %></td>
+        </tr>
+    </tfoot>
+</table>

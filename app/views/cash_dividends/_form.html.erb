@@ -1,0 +1,37 @@
+<%= form_with(model: cash_dividend, local: true) do |form| %>
+  <% if cash_dividend.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(cash_dividend.errors.count, "error") %> prohibited this cash_dividend from being saved:</h2>
+
+      <ul>
+      <% cash_dividend.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :company_id %>
+    <%= form.text_field :company_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :amount %>
+    <%= form.text_field :amount %>
+  </div>
+
+  <div class="field">
+    <%= form.label :pay_date %>
+    <%= form.date_select :pay_date %>
+  </div>
+
+  <div class="field">
+    <%= form.label :ex_date %>
+    <%= form.date_select :ex_date %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

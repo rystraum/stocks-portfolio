@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  resources :cash_dividends
   resources :stock_dividends
   resources :activities
   resources :companies

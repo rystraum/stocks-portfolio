@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_01_185706) do
+ActiveRecord::Schema.define(version: 2020_01_01_193003) do
 
   create_table "activities", force: :cascade do |t|
+    t.date "date"
     t.integer "company_id"
     t.string "activity_type"
     t.integer "number_of_shares"
@@ -21,6 +22,35 @@ ActiveRecord::Schema.define(version: 2020_01_01_185706) do
     t.datetime "updated_at", null: false
     t.index ["activity_type"], name: "index_activities_on_activity_type"
     t.index ["company_id"], name: "index_activities_on_company_id"
+  end
+
+  create_table "cash_dividends", force: :cascade do |t|
+    t.integer "company_id"
+    t.decimal "amount", precision: 15, scale: 2
+    t.date "pay_date"
+    t.date "ex_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_cash_dividends_on_company_id"
+  end
+
+  create_table "companies", force: :cascade do |t|
+    t.string "ticker"
+    t.string "industry"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["industry"], name: "index_companies_on_industry"
+    t.index ["ticker"], name: "index_companies_on_ticker", unique: true
+  end
+
+  create_table "stock_dividends", force: :cascade do |t|
+    t.integer "company_id"
+    t.integer "amount"
+    t.date "pay_date"
+    t.date "ex_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_stock_dividends_on_company_id"
   end
 
 end

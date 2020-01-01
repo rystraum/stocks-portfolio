@@ -1,0 +1,2 @@
+module CashDividendsHelper
+end

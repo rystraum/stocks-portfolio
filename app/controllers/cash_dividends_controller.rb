@@ -1,0 +1,74 @@
+class CashDividendsController < ApplicationController
+  before_action :set_cash_dividend, only: [:show, :edit, :update, :destroy]
+
+  # GET /cash_dividends
+  # GET /cash_dividends.json
+  def index
+    @cash_dividends = CashDividend.all
+  end
+
+  # GET /cash_dividends/1
+  # GET /cash_dividends/1.json
+  def show
+  end
+
+  # GET /cash_dividends/new
+  def new
+    @cash_dividend = CashDividend.new
+  end
+
+  # GET /cash_dividends/1/edit
+  def edit
+  end
+
+  # POST /cash_dividends
+  # POST /cash_dividends.json
+  def create
+    @cash_dividend = CashDividend.new(cash_dividend_params)
+
+    respond_to do |format|
+      if @cash_dividend.save
+        format.html { redirect_to @cash_dividend, notice: 'Cash dividend was successfully created.' }
+        format.json { render :show, status: :created, location: @cash_dividend }
+      else
+        format.html { render :new }
+        format.json { render json: @cash_dividend.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /cash_dividends/1
+  # PATCH/PUT /cash_dividends/1.json
+  def update
+    respond_to do |format|
+      if @cash_dividend.update(cash_dividend_params)
+        format.html { redirect_to @cash_dividend, notice: 'Cash dividend was successfully updated.' }
+        format.json { render :show, status: :ok, location: @cash_dividend }
+      else
+        format.html { render :edit }
+        format.json { render json: @cash_dividend.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /cash_dividends/1
+  # DELETE /cash_dividends/1.json
+  def destroy
+    @cash_dividend.destroy
+    respond_to do |format|
+      format.html { redirect_to cash_dividends_url, notice: 'Cash dividend was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_cash_dividend
+      @cash_dividend = CashDividend.find(params[:id])
+    end
+
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def cash_dividend_params
+      params.require(:cash_dividend).permit(:company_id, :amount, :pay_date, :ex_date)
+    end
+end

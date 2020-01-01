@@ -1,33 +1,28 @@
 <p id="notice"><%= notice %></p>
-
 <h1>Activities</h1>
-
 <table>
-  <thead>
-    <tr>
-      <th>Company</th>
-      <th>Activity type</th>
-      <th>Number of shares</th>
-      <th>Total price</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @activities.each do |activity| %>
-      <tr>
-        <td><%= activity.company %></td>
-        <td><%= activity.activity_type %></td>
-        <td><%= activity.number_of_shares %></td>
-        <td><%= activity.total_price %></td>
-        <td><%= link_to 'Show', activity %></td>
-        <td><%= link_to 'Edit', edit_activity_path(activity) %></td>
-        <td><%= link_to 'Destroy', activity, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
+    <thead>
+        <tr>
+            <th>Company</th>
+            <th>Activity type</th>
+            <th>Number of shares</th>
+            <th>Total price</th>
+            <th colspan="3"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @activities.each do |activity| %>
+            <tr>
+                <td><%= activity.company %></td>
+                <td><%= activity.activity_type %></td>
+                <td><%= activity.number_of_shares %></td>
+                <td class="r-align"><%= number_to_currency activity.total_price, unit: "" %></td>
+                <td><%= link_to 'Show', activity %></td>
+                <td><%= link_to 'Edit', edit_activity_path(activity) %></td>
+                <td><%= link_to 'Destroy', activity, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            </tr>
+        <% end %>
+    </tbody>
 </table>
-
 <br>
-
 <%= link_to 'New Activity', new_activity_path %>
