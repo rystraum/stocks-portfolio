@@ -1,14 +1,81 @@
 <p id="notice"><%= notice %></p>
-
 <p>
-  <strong>Ticker:</strong>
-  <%= @company.ticker %>
+    <strong>Ticker:</strong>
+    <%= @company.ticker %>
 </p>
-
 <p>
-  <strong>Industry:</strong>
-  <%= @company.industry %>
+    <strong>Industry:</strong>
+    <%= @company.industry %>
 </p>
-
+<h1>Timeline</h1>
+<% number_of_shares = total_cost = last_dividend_rate = 0 %>
+<% @company.history.each do |thing| %>
+    <div class="card">
+        <% if thing.is_a?(Activity) %>
+            <div>
+                [<%= thing.date %>] <%= thing.activity_type %>: <%= thing.number_of_shares %> - <%= format_currency thing.total_price %>
+            </div>
+            <% number_of_shares = thing.adjust(number_of_shares) %>
+        <% else %>
+            <div>
+                [<%= thing.pay_date %>] <%= thing.class.to_s %>: <%= format_currency thing.amount %>
+                <% last_dividend_rate = thing.amount / number_of_shares %>
+                <p>Dividend Per Share: <%= format_currency last_dividend_rate %></p>
+            </div>
+        <% end %>
+        <div class="card-footer">
+            <dl>
+                <dt>Number of Shares</dt>
+                <dd><%= number_of_shares %></dd>
+            </dl>
+        </div>
+    </div>
+<% end %>
+<div class="">
+    Expected Next Dividend based from Last Dividend Rate: <%= format_currency number_of_shares * last_dividend_rate %>
+</div>
+<h1>Activities</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Shares</th>
+            <th class="r-align">Amount</th>
+        </tr>
+    </thead>
+    <% @company.activities.each do |activity| %>
+        <tr>
+            <td><%= activity.date.to_formatted_s(:long) %></td>
+            <td><%= activity.activity_type %></td>
+            <td><%= activity.number_of_shares %></td>
+            <td class="r-align"><%= format_currency activity.total_price %></td>
+        </tr>
+    <% end %>
+</table>
+<h1>Dividends</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Cash</th>
+            <th>Stock</th>
+            <th>Pay Date</th>
+            <th>Ex Date</th>
+        </tr>
+    </thead>
+    <% @company.dividends.each do |dividend| %>
+        <tr>
+            <td><%= dividend.is_a?(CashDividend) ? format_currency(dividend.amount) : "" %></td>
+            <td><%= dividend.is_a?(StockDividend) ? dividend.amount : "" %></td>
+            <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
+            <td><%= dividend.ex_date.blank? ? "" : dividend.ex_date.to_formatted_s(:long) %></td>
+        </tr>
+    <% end %>
+</table>
+<p>
+    I should probably break out dividends by number of shares those dividends were
+    for so I get an accurate idea of how much in terms of % is the dividends that
+    I actually make.
+</p>
 <%= link_to 'Edit', edit_company_path(@company) %> |
 <%= link_to 'Back', companies_path %>

@@ -8,4 +8,14 @@ class Activity < ApplicationRecord
 
   scope :buy, -> { where(activity_type: 'BUY') }
   scope :sell, -> { where(activity_type: 'SELL') }
+
+  def adjust(sum)
+    is_buy? ? sum + number_of_shares : sum - number_of_shares
+  end
+
+  protected
+
+  def is_buy?
+    activity_type == 'BUY'
+  end
 end

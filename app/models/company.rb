@@ -13,6 +13,10 @@ class Company < ApplicationRecord
     "#{ticker} [#{id}]"
   end
 
+  def dividends
+    (stock_dividends + cash_dividends).sort_by(&:pay_date)
+  end
+
   def total_shares
     @total_shares ||= bought_shares - sold_shares + stock_dividend_shares
   end
@@ -35,6 +39,12 @@ class Company < ApplicationRecord
 
   def cash_dividends_total
     cash_dividends.pluck(:amount).sum
+  end
+
+  def history
+    @history ||= (activities + stock_dividends + cash_dividends).sort_by do |thing|
+      thing.is_a?(Activity) ? thing.date : thing.pay_date
+    end
   end
 
   protected
