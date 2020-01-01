@@ -13,3 +13,32 @@
  *= require_tree .
  *= require_self
  */
+
+.r-align {
+  text-align: right;
+}
+
+.text-green {
+  color: green;
+}
+
+.text-red {
+  color: red;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+tr:nth-child(2n) {
+  background-color: #ddd;
+}
+
+th {
+  font-weight: bold;
+}
+
+th,
+td {
+  padding: 0.5rem 1rem;
+}

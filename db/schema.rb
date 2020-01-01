@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_01_193003) do
+ActiveRecord::Schema.define(version: 2020_01_01_200220) do
 
   create_table "activities", force: :cascade do |t|
     t.date "date"
@@ -41,6 +41,15 @@ ActiveRecord::Schema.define(version: 2020_01_01_193003) do
     t.datetime "updated_at", null: false
     t.index ["industry"], name: "index_companies_on_industry"
     t.index ["ticker"], name: "index_companies_on_ticker", unique: true
+  end
+
+  create_table "price_updates", force: :cascade do |t|
+    t.integer "company_id"
+    t.datetime "datetime"
+    t.decimal "price", precision: 15, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_price_updates_on_company_id"
   end
 
   create_table "stock_dividends", force: :cascade do |t|

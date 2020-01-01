@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @price_update.company %>
+</p>
+
+<p>
+  <strong>Datetime:</strong>
+  <%= @price_update.datetime %>
+</p>
+
+<p>
+  <strong>Price:</strong>
+  <%= @price_update.price %>
+</p>
+
+<%= link_to 'Edit', edit_price_update_path(@price_update) %> |
+<%= link_to 'Back', price_updates_path %>

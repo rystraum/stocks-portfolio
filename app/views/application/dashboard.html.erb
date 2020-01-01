@@ -3,27 +3,50 @@
     <li><%= link_to "Companies", companies_path %></li>
     <li><%= link_to "Stock Dividends", stock_dividends_path %></li>
     <li><%= link_to "Cash Dividends", cash_dividends_path %></li>
+    <li><%= link_to "Price Update", price_updates_path %></li>
 </ul>
+<h1>Portfolio (All Time)</h1>
 <table>
     <thead>
         <tr>
-            <td>Company</td>
-            <td>Shares</td>
-            <td class="r-align">Total Cost</td>
-            <td class="r-align">CPS</td>
-            <td class="r-align">% cost</td>
+            <th>Company</th>
+            <th>Shares</th>
+            <th class="r-align">Total Cost</th>
+            <th class="r-align">CPS</th>
+            <th class="r-align">% cost</th>
+            <th class="r-align">Last Price</th>
+            <th class="r-align">Last Value</th>
+            <th class="r-align">% Value</th>
+            <th colspan="2">P/L</th>
+            <th colspan="2">Divs</th>
+            <th colspan="2">P/L + Divs</th>
         </tr>
     </thead>
     <tbody>
         <% total_costs = Company.all.collect(&:total_costs).sum %>
+        <% total_value = Company.all.collect(&:last_value).sum %>
+        <% total_pl = total_value - total_costs %>
+        <% total_divs = 0 %>
         <% Company.all.each do |company| %>
             <% company_costs = company.total_costs %>
+            <% company_value = company.last_value %>
+            <% company_dividends = company.cash_dividends_total %>
+            <% total_divs += company_dividends %>
             <tr>
                 <td><%= link_to company, company %></td>
                 <td><%= company.total_shares %></td>
-                <td class="r-align"><%= number_to_currency company_costs, unit: "" %></td>
-                <td class="r-align"><%= number_to_currency (company_costs / company.total_shares), unit: "" %></td>
-                <td class="r-align"><%= number_to_percentage (company_costs * 100 / total_costs) %></td>
+                <td class="r-align"><%= format_currency company_costs %></td>
+                <td class="r-align"><%= format_currency company_costs / company.total_shares %></td>
+                <td class="r-align"><%= format_percentage company_costs, total_costs %></td>
+                <td class="r-align"><%= format_currency company.last_price %></td>
+                <td class="r-align"><%= format_currency company_value %></td>
+                <td class="r-align"><%= format_percentage company_value, total_value %></td>
+                <td class="r-align"><%= green_red company.profit_loss %></td>
+                <td class="r-align"><%= green_red_percent company.profit_loss, total_value %></td>
+                <td class="r-align"><%= format_currency company_dividends %></td>
+                <td class="r-align"><%= format_percentage company_dividends, company_costs %></td>
+                <td class="r-align"><%= green_red company_dividends + company.profit_loss %></td>
+                <td class="r-align"><%= green_red_percent company_dividends + company.profit_loss, total_value %></td>
             </tr>
         <% end %>
     </tbody>
@@ -31,7 +54,18 @@
         <tr>
             <td>Totals</td>
             <td>-</td>
-            <td class="r-align"><%= total_costs %></td>
+            <td class="r-align"><%= format_currency total_costs %></td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td class="r-align"><%= format_currency total_value %></td>
+            <td>-</td>
+            <td class="r-align"><%= green_red total_pl %></td>
+            <td class="r-align"><%= green_red_percent total_pl, total_value %></td>
+            <td class="r-align"><%= format_currency total_divs %></td>
+            <td class="r-align"><%= format_percentage total_divs, total_costs %></td>
+            <td class="r-align"><%= green_red total_pl + total_divs %></td>
+            <td class="r-align"><%= green_red_percent total_pl + total_divs, total_value %></td>
         </tr>
     </tfoot>
 </table>

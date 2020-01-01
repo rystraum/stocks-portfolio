@@ -5,6 +5,7 @@ class Company < ApplicationRecord
   has_many :activities
   has_many :stock_dividends
   has_many :cash_dividends
+  has_many :price_updates
 
   scope :alphabetical, -> { order(:ticker) }
 
@@ -13,11 +14,27 @@ class Company < ApplicationRecord
   end
 
   def total_shares
-    bought_shares - sold_shares + stock_dividend_shares
+    @total_shares ||= bought_shares - sold_shares + stock_dividend_shares
   end
 
   def total_costs
-    buy_costs - sell_gains
+    @total_costs ||= buy_costs - sell_gains
+  end
+
+  def last_price
+    @last_price ||= price_updates.order('datetime desc').first.price
+  end
+
+  def last_value
+    @last_value ||= total_shares * last_price
+  end
+
+  def profit_loss
+    @profit_loss ||= last_value - total_costs
+  end
+
+  def cash_dividends_total
+    cash_dividends.pluck(:amount).sum
   end
 
   protected
