@@ -42,3 +42,42 @@ th,
 td {
   padding: 0.5rem 1rem;
 }
+
+.card {
+  width: 20rem;
+  margin-bottom: 1rem;
+  display: block;
+  padding: 0.5rem;
+}
+
+.card-body h3 {
+  padding: 0;
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 100%;
+}
+
+.card-footer {
+  font-size: 80%;
+  color: #aaa;
+  margin-top: 0.4rem;
+}
+
+.card-footer h4 {
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
+}
+
+dl {
+  margin: 0;
+}
+
+dl div {
+  display: flex;
+}
+
+dd {
+  margin-left: auto;
+  text-align: right;
+}

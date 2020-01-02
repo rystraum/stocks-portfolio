@@ -1,24 +1,23 @@
 <p id="notice"><%= notice %></p>
-
 <p>
-  <strong>Company:</strong>
-  <%= @cash_dividend.company %>
+    <strong>Company:</strong>
+    <%= @cash_dividend.company %>
 </p>
-
 <p>
-  <strong>Amount:</strong>
-  <%= @cash_dividend.amount %>
+    <strong>Amount:</strong>
+    <%= @cash_dividend.amount %>
 </p>
-
 <p>
-  <strong>Pay date:</strong>
-  <%= @cash_dividend.pay_date %>
+    <strong>Pay date:</strong>
+    <%= @cash_dividend.pay_date %>
 </p>
-
 <p>
-  <strong>Ex date:</strong>
-  <%= @cash_dividend.ex_date %>
+    <strong>Ex date:</strong>
+    <%= @cash_dividend.ex_date %>
 </p>
-
+<p>
+    <strong>Meta:</strong>
+    <%= @cash_dividend.meta %>
+</p>
 <%= link_to 'Edit', edit_cash_dividend_path(@cash_dividend) %> |
 <%= link_to 'Back', cash_dividends_path %>

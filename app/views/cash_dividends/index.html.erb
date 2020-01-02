@@ -1,33 +1,28 @@
 <p id="notice"><%= notice %></p>
-
 <h1>Cash Dividends</h1>
-
 <table>
-  <thead>
-    <tr>
-      <th>Company</th>
-      <th>Amount</th>
-      <th>Pay date</th>
-      <th>Ex date</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @cash_dividends.each do |cash_dividend| %>
-      <tr>
-        <td><%= cash_dividend.company %></td>
-        <td><%= cash_dividend.amount %></td>
-        <td><%= cash_dividend.pay_date %></td>
-        <td><%= cash_dividend.ex_date %></td>
-        <td><%= link_to 'Show', cash_dividend %></td>
-        <td><%= link_to 'Edit', edit_cash_dividend_path(cash_dividend) %></td>
-        <td><%= link_to 'Destroy', cash_dividend, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
+    <thead>
+        <tr>
+            <th>Company</th>
+            <th>Amount</th>
+            <th>Pay date</th>
+            <th>Ex date</th>
+            <th colspan="3"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @cash_dividends.each do |cash_dividend| %>
+            <tr>
+                <td><%= link_to cash_dividend.company, cash_dividend.company %></td>
+                <td><%= cash_dividend.amount %></td>
+                <td><%= cash_dividend.pay_date %></td>
+                <td><%= cash_dividend.ex_date %></td>
+                <td><%= link_to 'Show', cash_dividend %></td>
+                <td><%= link_to 'Edit', edit_cash_dividend_path(cash_dividend) %></td>
+                <td><%= link_to 'Destroy', cash_dividend, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            </tr>
+        <% end %>
+    </tbody>
 </table>
-
 <br>
-
 <%= link_to 'New Cash Dividend', new_cash_dividend_path %>
