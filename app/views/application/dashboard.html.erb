@@ -39,7 +39,10 @@
                 <td class="r-align"><%= format_currency company_costs %></td>
                 <td class="r-align"><%= format_currency company.cps %></td>
                 <td class="r-align"><%= format_percentage company_costs, total_costs %></td>
-                <td class="r-align"><%= format_currency company.last_price %></td>
+                <td class="r-align">
+                    <%= format_currency company.last_price %><br>
+                    <small><%= company.last_price_timestamp.to_formatted_s(:short) %></small>
+                </td>
                 <td class="r-align"><%= format_currency company_value %></td>
                 <td class="r-align"><%= format_percentage company_value, total_value %></td>
                 <td class="r-align"><%= green_red company.profit_loss %></td>
