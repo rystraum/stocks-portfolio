@@ -3,6 +3,7 @@
 <table>
     <thead>
         <tr>
+            <th>Date</th>
             <th>Company</th>
             <th>Activity type</th>
             <th>Number of shares</th>
@@ -13,6 +14,7 @@
     <tbody>
         <% @activities.each do |activity| %>
             <tr>
+                <td style="font-family: monospace"><%= activity.date.to_formatted_s(:rfc822).upcase %></td>
                 <td><%= activity.company %></td>
                 <td><%= activity.activity_type %></td>
                 <td><%= activity.number_of_shares %></td>
