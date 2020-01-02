@@ -28,6 +28,8 @@ class Company < ApplicationRecord
 
   def cps
     total_costs / total_shares
+  rescue ZeroDivisionError
+    0
   end
 
   def last_price

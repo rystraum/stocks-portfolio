@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 2020_01_02_043409) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_price_updates_on_company_id"
+    t.index ["datetime"], name: "index_price_updates_on_datetime"
   end
 
   create_table "stock_dividends", force: :cascade do |t|

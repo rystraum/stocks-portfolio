@@ -6,6 +6,8 @@ module ApplicationHelper
   end
 
   def format_percentage(numerator, denominator)
+    return '-' if denominator.zero?
+
     number_to_percentage numerator * 100 / denominator, precision: 2, format: '%n %'
   end
 
