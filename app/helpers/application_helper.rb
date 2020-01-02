@@ -18,4 +18,10 @@ module ApplicationHelper
   def green_red_percent(amount, denominator)
     tag.span format_percentage(amount, denominator), class: (amount.negative? ? 'text-red' : 'text-green').to_s
   end
+
+  def format_date(date)
+    return '-' if date.blank?
+
+    tag.span date.to_formatted_s(:rfc822).upcase, style: 'font-family: monospace'
+  end
 end

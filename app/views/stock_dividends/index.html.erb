@@ -1,33 +1,28 @@
 <p id="notice"><%= notice %></p>
-
 <h1>Stock Dividends</h1>
-
 <table>
-  <thead>
-    <tr>
-      <th>Company</th>
-      <th>Amount</th>
-      <th>Pay date</th>
-      <th>Ex date</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @stock_dividends.each do |stock_dividend| %>
-      <tr>
-        <td><%= stock_dividend.company %></td>
-        <td><%= stock_dividend.amount %></td>
-        <td><%= stock_dividend.pay_date %></td>
-        <td><%= stock_dividend.ex_date %></td>
-        <td><%= link_to 'Show', stock_dividend %></td>
-        <td><%= link_to 'Edit', edit_stock_dividend_path(stock_dividend) %></td>
-        <td><%= link_to 'Destroy', stock_dividend, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
+    <thead>
+        <tr>
+            <th>Company</th>
+            <th>Amount</th>
+            <th>Pay date</th>
+            <th>Ex date</th>
+            <th colspan="3"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @stock_dividends.each do |stock_dividend| %>
+            <tr>
+                <td><%= stock_dividend.company %></td>
+                <td><%= stock_dividend.amount %></td>
+                <td><%= format_date stock_dividend.pay_date %></td>
+                <td><%= format_date stock_dividend.ex_date %></td>
+                <td><%= link_to 'Show', stock_dividend %></td>
+                <td><%= link_to 'Edit', edit_stock_dividend_path(stock_dividend) %></td>
+                <td><%= link_to 'Destroy', stock_dividend, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            </tr>
+        <% end %>
+    </tbody>
 </table>
-
 <br>
-
 <%= link_to 'New Stock Dividend', new_stock_dividend_path %>
