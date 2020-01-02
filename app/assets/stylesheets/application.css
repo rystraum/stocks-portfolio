@@ -81,3 +81,12 @@ dd {
   margin-left: auto;
   text-align: right;
 }
+
+dl.price-update dt {
+  width: 5rem;
+  margin-right: 1rem;
+}
+
+dl.price-update dd {
+  margin-left: 1rem;
+}

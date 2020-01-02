@@ -1,27 +1,22 @@
-<%= form_with(model: price_update, local: true) do |form| %>
-    <% if price_update.errors.any? %>
-        <div id="error_explanation">
-            <h2><%= pluralize(price_update.errors.count, "error") %> prohibited this price_update from being saved:</h2>
-            <ul>
-                <% price_update.errors.full_messages.each do |message| %>
-                    <li><%= message %></li>
-                <% end %>
-            </ul>
-        </div>
+<dl class="price-update">
+    <% companies = Company.active.sort_by(&:last_price_timestamp) %>
+    <% companies.each.with_index do |company, index| %>
+        <%= form_with(model: PriceUpdate.new(company_id: company.id), local: true) do |form| %>
+            <% price_update = form.object %>
+            <div>
+                <dt><%= company.ticker %><%= form.hidden_field :company_id %></dt>
+                <dd><%= form.datetime_select :datetime %></dd>
+                <dd><%= form.text_field :price, placeholder: "#{format_currency(company.last_price)} - #{company.last_price_timestamp.to_formatted_s(:short)}", tabindex: index + 1 %></dd>
+                <dd><%= form.submit %></dd>
+            </div>
+            <% if price_update.errors.any? %>
+                <div id="error_explanation">
+                    <dt><%= pluralize(price_update.errors.count, "error") %> prohibited this price_update from being saved:</dt>
+                    <% price_update.errors.full_messages.each do |message| %>
+                        <dd><%= message %></dd>
+                    <% end %>
+                </div>
+            <% end %>
+        <% end %>
     <% end %>
-    <div class="field">
-        <%= form.label :company_id %>
-        <%= form.select :company_id, Company.pluck(:ticker, :id) %>
-    </div>
-    <div class="field">
-        <%= form.label :datetime %>
-        <%= form.datetime_select :datetime %>
-    </div>
-    <div class="field">
-        <%= form.label :price %>
-        <%= form.text_field :price %>
-    </div>
-    <div class="actions">
-        <%= form.submit %>
-    </div>
-<% end %>
+</dl>

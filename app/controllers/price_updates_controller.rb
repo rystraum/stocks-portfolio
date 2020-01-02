@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class PriceUpdatesController < ApplicationController
-  before_action :set_price_update, only: [:show, :edit, :update, :destroy]
+  before_action :set_price_update, only: %i[show edit update destroy]
 
   # GET /price_updates
   # GET /price_updates.json
@@ -9,8 +11,7 @@ class PriceUpdatesController < ApplicationController
 
   # GET /price_updates/1
   # GET /price_updates/1.json
-  def show
-  end
+  def show; end
 
   # GET /price_updates/new
   def new
@@ -18,8 +19,7 @@ class PriceUpdatesController < ApplicationController
   end
 
   # GET /price_updates/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /price_updates
   # POST /price_updates.json
@@ -28,7 +28,7 @@ class PriceUpdatesController < ApplicationController
 
     respond_to do |format|
       if @price_update.save
-        format.html { redirect_to @price_update, notice: 'Price update was successfully created.' }
+        format.html { redirect_to new_price_update_path, notice: "#{@price_update.company} @ #{@price_update.price} was successfully created." }
         format.json { render :show, status: :created, location: @price_update }
       else
         format.html { render :new }
@@ -62,13 +62,14 @@ class PriceUpdatesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_price_update
-      @price_update = PriceUpdate.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def price_update_params
-      params.require(:price_update).permit(:company_id, :datetime, :price)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_price_update
+    @price_update = PriceUpdate.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def price_update_params
+    params.require(:price_update).permit(:company_id, :datetime, :price)
+  end
 end

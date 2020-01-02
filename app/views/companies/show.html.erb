@@ -7,6 +7,10 @@
     <strong>Industry:</strong>
     <%= @company.industry %>
 </p>
+<p>
+    <strong>Inactive:</strong>
+    <%= @company.inactive %>
+</p>
 <h1>Timeline</h1>
 <% number_of_shares = total_cost = last_dividend_rate = 0 %>
 <% @company.history.each do |thing| %>

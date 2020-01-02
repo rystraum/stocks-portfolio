@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_02_024249) do
+ActiveRecord::Schema.define(version: 2020_01_02_043409) do
 
   create_table "activities", force: :cascade do |t|
     t.date "date"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 2020_01_02_024249) do
     t.string "industry"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "inactive", default: false
     t.index ["industry"], name: "index_companies_on_industry"
     t.index ["ticker"], name: "index_companies_on_ticker", unique: true
   end

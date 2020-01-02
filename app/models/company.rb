@@ -8,6 +8,7 @@ class Company < ApplicationRecord
   has_many :price_updates
 
   scope :alphabetical, -> { order(:ticker) }
+  scope :active, -> { where(inactive: false) }
 
   def to_s
     "#{ticker} [#{id}]"
@@ -25,8 +26,16 @@ class Company < ApplicationRecord
     @total_costs ||= buy_costs - sell_gains
   end
 
+  def cps
+    total_costs / total_shares
+  end
+
   def last_price
     @last_price ||= price_updates.order('datetime desc').first.price
+  end
+
+  def last_price_timestamp
+    @last_price_timestamp ||= price_updates.order('datetime desc').first.datetime
   end
 
   def last_value
@@ -41,6 +50,10 @@ class Company < ApplicationRecord
     cash_dividends.pluck(:amount).sum
   end
 
+  def cash_dividends_annual_dps
+    cash_dividends_average_dps * cash_dividends_count_in_a_year
+  end
+
   def history
     @history ||= (activities + stock_dividends + cash_dividends).sort_by do |thing|
       thing.is_a?(Activity) ? thing.date : thing.pay_date
@@ -48,6 +61,20 @@ class Company < ApplicationRecord
   end
 
   protected
+
+  def cash_dividends_average_dps
+    return 0 if cash_dividends.length.zero?
+
+    dividends = cash_dividends.collect(&:dividend_per_share).collect(&:to_f).reject(&:zero?)
+    @cash_dividends_average_dps ||= (dividends.sum / dividends.length)
+  end
+
+  def cash_dividends_count_in_a_year
+    return 0 if cash_dividends.length.zero?
+
+    count = cash_dividends.collect(&:pay_date).group_by(&:year).collect { |_year, arr| arr.count }
+    @cash_dividends_count_in_a_year ||= (count.sum.to_f / count.length).round(0)
+  end
 
   def bought_shares
     activities.buy.pluck(:number_of_shares).sum

@@ -19,6 +19,7 @@
             <th class="r-align">% Value</th>
             <th colspan="2">P/L</th>
             <th colspan="2">Divs</th>
+            <th colspan="2">Annual DPS</th>
             <th colspan="2">P/L + Divs</th>
         </tr>
     </thead>
@@ -36,7 +37,7 @@
                 <td><%= link_to company, company %></td>
                 <td><%= company.total_shares %></td>
                 <td class="r-align"><%= format_currency company_costs %></td>
-                <td class="r-align"><%= format_currency company_costs / company.total_shares %></td>
+                <td class="r-align"><%= format_currency company.cps %></td>
                 <td class="r-align"><%= format_percentage company_costs, total_costs %></td>
                 <td class="r-align"><%= format_currency company.last_price %></td>
                 <td class="r-align"><%= format_currency company_value %></td>
@@ -45,6 +46,19 @@
                 <td class="r-align"><%= green_red_percent company.profit_loss, total_value %></td>
                 <td class="r-align"><%= format_currency company_dividends %></td>
                 <td class="r-align"><%= format_percentage company_dividends, company_costs %></td>
+                <td class="r-align">
+                    <% begin %>
+                        <%= format_currency company.cash_dividends_annual_dps %>
+                        <% rescue ZeroDivisionError %>
+                        <%= link_to "Recompute", company %>
+                    <% end %>
+                </td>
+                <td class="r-align">
+                    <% begin %>
+                        <%= format_percentage company.cash_dividends_annual_dps, company.cps %>
+                        <% rescue ZeroDivisionError %>
+                        <%= link_to "Recompute", company %>
+                    <% end %></td>
                 <td class="r-align"><%= green_red company_dividends + company.profit_loss %></td>
                 <td class="r-align"><%= green_red_percent company_dividends + company.profit_loss, total_value %></td>
             </tr>
@@ -64,6 +78,8 @@
             <td class="r-align"><%= green_red_percent total_pl, total_value %></td>
             <td class="r-align"><%= format_currency total_divs %></td>
             <td class="r-align"><%= format_percentage total_divs, total_costs %></td>
+            <td>-</td>
+            <td>-</td>
             <td class="r-align"><%= green_red total_pl + total_divs %></td>
             <td class="r-align"><%= green_red_percent total_pl + total_divs, total_value %></td>
         </tr>
