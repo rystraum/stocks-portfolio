@@ -65,7 +65,7 @@
                         <%= link_to "Recompute", company %>
                     <% end %></td>
                 <td class="r-align"><%= green_red company_dividends + company.profit_loss %></td>
-                <td class="r-align"><%= green_red_percent company_dividends + company.profit_loss, total_value %></td>
+                <td class="r-align"><%= green_red_percent company_dividends + company.profit_loss, company_costs %></td>
             </tr>
         <% end %>
     </tbody>
