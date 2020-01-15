@@ -48,7 +48,7 @@
                 <td class="r-align"><%= format_currency company_value %></td>
                 <td class="r-align"><%= format_percentage company_value, total_value %></td>
                 <td class="r-align"><%= green_red company.profit_loss %></td>
-                <td class="r-align"><%= green_red_percent company.profit_loss, total_value %></td>
+                <td class="r-align"><%= green_red_percent company.profit_loss, company_costs %></td>
                 <td class="r-align"><%= format_currency company_dividends %></td>
                 <td class="r-align"><%= format_percentage company_dividends, company_costs %></td>
                 <td class="r-align">
