@@ -30,13 +30,13 @@
         <% total_value = Company.all.collect(&:last_value).sum %>
         <% total_pl = total_value - total_costs %>
         <% total_divs = 0 %>
-        <% Company.all.each do |company| %>
+        <% Company.all.sort_by {|c| [c.inactive ? 1 : 0, c.ticker] }.each do |company| %>
             <% company_costs = company.total_costs %>
             <% company_value = company.last_value %>
             <% company_dividends = company.cash_dividends_total %>
             <% total_divs += company_dividends %>
-            <tr>
-                <td><%= link_to company, company %></td>
+            <tr class="<%= company.inactive? ? "inactive" : "active" %>"">
+                <td><%= link_to company, company %><%= "*" if company.inactive? %></td>
                 <td><%= company.total_shares %></td>
                 <td class="r-align"><%= format_currency company_costs %></td>
                 <td class="r-align"><%= format_currency company.cps %></td>
@@ -87,6 +87,9 @@
             <td>-</td>
             <td class="r-align"><%= green_red total_pl + total_divs %></td>
             <td class="r-align"><%= green_red_percent total_pl + total_divs, total_value %></td>
+        </tr>
+        <tr style="background: none;">
+            <td>* inactive</td>
         </tr>
     </tfoot>
 </table>

@@ -1,7 +1,7 @@
 <dl class="price-update">
-    <% companies = Company.active.sort_by(&:last_price_timestamp) %>
+    <% companies = Company.active.sort_by { |c| [c.last_price_timestamp, c.ticker] } %>
     <% companies.each.with_index do |company, index| %>
-        <%= form_with(model: PriceUpdate.new(company_id: company.id), local: true) do |form| %>
+        <%= form_with(model: PriceUpdate.new(company_id: company.id, datetime: DateTime.now), local: true) do |form| %>
             <% price_update = form.object %>
             <div>
                 <dt><%= company.ticker %><%= form.hidden_field :company_id %></dt>

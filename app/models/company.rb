@@ -37,7 +37,7 @@ class Company < ApplicationRecord
   end
 
   def last_price_timestamp
-    @last_price_timestamp ||= price_updates.order('datetime desc').first.datetime
+    @last_price_timestamp ||= price_updates.order('datetime desc').first.datetime.to_datetime
   end
 
   def last_value
