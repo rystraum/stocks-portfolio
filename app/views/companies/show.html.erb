@@ -11,108 +11,124 @@
     <strong>Inactive:</strong>
     <%= @company.inactive %>
 </p>
-<h1>Timeline</h1>
-<% number_of_shares = total_cost = last_dividend_rate = 0 %>
-<% @company.history.each do |thing| %>
-    <div class="card">
-        <% if thing.is_a?(Activity) %>
-            <div class="card-body">
-                <h3>
-                    <%= link_to thing, target: :_blank do %>
-                        <%= thing.date.to_formatted_s(:long) %> - <%= thing.activity_type %>
-                    <% end %>
-                </h3>
+<div class="timeline-container">
+    <h1>Timeline</h1>
+    <% number_of_shares = total_cost = last_dividend_rate = 0 %>
+    <% @company.history.each do |thing| %>
+        <div class="card <%= thing.class.to_s.titleize.parameterize %>">
+            <% if thing.is_a?(Activity) %>
+                <div class="card-body">
+                    <h3>
+                        <%= link_to thing, target: :_blank do %>
+                            <%= thing.activity_type %>
+                        <% end %>
+                        <br>
+                        <%= thing.date.to_formatted_s(:long) %>
+                    </h3>
+                    <dl>
+                        <div>
+                            <dt>Number of Shares</dt>
+                            <dd><%= thing.number_of_shares %></dd>
+                        </div>
+                        <div>
+                            <dt>Total Price</dt>
+                            <dd><%= format_currency thing.total_price %></dd>
+                        </div>
+                    </dl>
+                </div>
+                <% number_of_shares = thing.adjust(number_of_shares) %>
+            <% else %>
+                <div class="card-body">
+                    <h3>
+                        <%= link_to thing, target: :_blank do %>
+                            <%= thing.class.to_s.titleize %>
+                        <% end %>
+                        <br>
+                        <%= thing.display_date.html_safe %>
+                    </h3>
+                    <dl>
+                        <div>
+                            <dt>Amount</dt>
+                            <dd><%= format_currency thing.amount %></dd>
+                        </div>
+                        <% if thing.is_a?(StockDividend) %>
+                            <% number_of_shares += thing.amount %>
+                        <% end %>
+                        <% if thing.is_a?(CashDividend) %>
+                            <div>
+                                <dt>Dividend Per Share Saved:</dt>
+                                <dd><%= format_currency thing.dividend_per_share %></dd>
+                            </div>
+                            <div>
+                                <dt>Dividend Per Share Computed:</dt>
+                                <% last_dividend_rate = thing.amount / number_of_shares %>
+                                <dd><%= format_currency last_dividend_rate %></dd>
+                            </div>
+                            <div>
+                                <code>
+                                    CashDividend.find(<%= thing.id %>).update_dps(<%= last_dividend_rate %>, true) if not the same
+                                </code>
+                            </div>
+                            <% thing.update_stocks(number_of_shares, false) %>
+                            <% thing.update_dps(last_dividend_rate, false) %>
+                        <% end %>
+                    </dl>
+                </div>
+            <% end %>
+            <div class="card-footer">
+                <h4>Ending</h4>
                 <dl>
                     <div>
                         <dt>Number of Shares</dt>
-                        <dd><%= thing.number_of_shares %></dd>
-                    </div>
-                    <div>
-                        <dt>Total Price</dt>
-                        <dd><%= format_currency thing.total_price %></dd>
+                        <dd><%= number_of_shares %></dd>
                     </div>
                 </dl>
             </div>
-            <% number_of_shares = thing.adjust(number_of_shares) %>
-        <% else %>
-            <div class="card-body">
-                <h3>
-                    <%= link_to thing, target: :_blank do %>
-                        <%= thing.pay_date.to_formatted_s(:long) %> - <%= thing.class.to_s.titleize %>
-                    <% end %>
-                </h3>
-                <dl>
-                    <div>
-                        <dt>Amount</dt>
-                        <dd><%= format_currency thing.amount %></dd>
-                    </div>
-                    <% if thing.is_a?(CashDividend) %>
-                        <div>
-                            <dt>Dividend Per Share</dt>
-                            <% last_dividend_rate = thing.amount / number_of_shares %>
-                            <% thing.update(dividend_per_share: last_dividend_rate) %>
-                            <dd><%= format_currency last_dividend_rate %></dd>
-                        </div>
-                    <% end %>
-                </dl>
-            </div>
-        <% end %>
-        <div class="card-footer">
-            <h4>Ending</h4>
-            <dl>
-                <div>
-                    <dt>Number of Shares</dt>
-                    <dd><%= number_of_shares %></dd>
-                </div>
-            </dl>
         </div>
+    <% end %>
+    <div class="">
+        Expected Next Dividend based from Last Dividend Rate: <%= format_currency number_of_shares * last_dividend_rate %>
     </div>
-<% end %>
-<div class="">
-    Expected Next Dividend based from Last Dividend Rate: <%= format_currency number_of_shares * last_dividend_rate %>
+    <h1>Activities</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Shares</th>
+                <th class="r-align">Amount</th>
+            </tr>
+        </thead>
+        <% @company.activities.each do |activity| %>
+            <tr>
+                <td><%= activity.date.to_formatted_s(:long) %></td>
+                <td><%= activity.activity_type %></td>
+                <td><%= activity.number_of_shares %></td>
+                <td class="r-align"><%= format_currency activity.total_price %></td>
+            </tr>
+        <% end %>
+    </table>
+    <h1>Dividends</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Cash</th>
+                <th>Stock</th>
+                <th>Pay Date</th>
+                <th>Ex Date</th>
+                <th>Stocks Held on Ex Date</th>
+            </tr>
+        </thead>
+        <% @company.dividends.each do |dividend| %>
+            <tr>
+                <td><%= dividend.is_a?(CashDividend) ? format_currency(dividend.amount) : "" %></td>
+                <td><%= dividend.is_a?(StockDividend) ? dividend.amount : "" %></td>
+                <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
+                <td><%= dividend.ex_date.blank? ? "-" : dividend.ex_date.to_formatted_s(:long) %></td>
+                <td><%= dividend.is_a?(CashDividend) ? dividend.stocks_at_ex_date : "" %></td>
+            </tr>
+        <% end %>
+    </table>
 </div>
-<h1>Activities</h1>
-<table>
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Shares</th>
-            <th class="r-align">Amount</th>
-        </tr>
-    </thead>
-    <% @company.activities.each do |activity| %>
-        <tr>
-            <td><%= activity.date.to_formatted_s(:long) %></td>
-            <td><%= activity.activity_type %></td>
-            <td><%= activity.number_of_shares %></td>
-            <td class="r-align"><%= format_currency activity.total_price %></td>
-        </tr>
-    <% end %>
-</table>
-<h1>Dividends</h1>
-<table>
-    <thead>
-        <tr>
-            <th>Cash</th>
-            <th>Stock</th>
-            <th>Pay Date</th>
-            <th>Ex Date</th>
-        </tr>
-    </thead>
-    <% @company.dividends.each do |dividend| %>
-        <tr>
-            <td><%= dividend.is_a?(CashDividend) ? format_currency(dividend.amount) : "" %></td>
-            <td><%= dividend.is_a?(StockDividend) ? dividend.amount : "" %></td>
-            <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
-            <td><%= dividend.ex_date.blank? ? "" : dividend.ex_date.to_formatted_s(:long) %></td>
-        </tr>
-    <% end %>
-</table>
-<p>
-    I should probably break out dividends by number of shares those dividends were
-    for so I get an accurate idea of how much in terms of % is the dividends that
-    I actually make.
-</p>
 <%= link_to 'Edit', edit_company_path(@company) %> |
 <%= link_to 'Back', companies_path %>

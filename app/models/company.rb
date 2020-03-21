@@ -23,7 +23,13 @@ class Company < ApplicationRecord
   end
 
   def total_costs
-    @total_costs ||= buy_costs - sell_gains
+    return 0 if total_shares == 0
+
+    actual_total_costs
+  end
+
+  def actual_total_costs
+    @actual_total_costs ||= buy_costs - sell_gains
   end
 
   def cps
@@ -45,7 +51,7 @@ class Company < ApplicationRecord
   end
 
   def profit_loss
-    @profit_loss ||= last_value - total_costs
+    @profit_loss ||= last_value - actual_total_costs
   end
 
   def cash_dividends_total
@@ -58,8 +64,12 @@ class Company < ApplicationRecord
 
   def history
     @history ||= (activities + stock_dividends + cash_dividends).sort_by do |thing|
-      thing.is_a?(Activity) ? thing.date : thing.pay_date
+      thing.is_a?(Activity) ? thing.date : (thing.ex_date.blank? ? thing.pay_date : thing.ex_date)
     end
+  end
+
+  def final_profit_loss
+    cash_dividends_total + profit_loss
   end
 
   protected
