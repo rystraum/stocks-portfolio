@@ -19,5 +19,9 @@
     <strong>Total price:</strong>
     <%= @activity.total_price %>
 </p>
+<p>
+    <strong>Charges</strong>
+    <%= @activity.charges %>
+</p>
 <%= link_to 'Edit', edit_activity_path(@activity) %> |
 <%= link_to 'Back', activities_path %>
