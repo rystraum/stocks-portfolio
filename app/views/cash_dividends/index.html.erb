@@ -2,6 +2,7 @@
 <h1>Cash Dividends</h1>
 <%= link_to 'New Cash Dividend', new_cash_dividend_path %>
 <br>
+<% years = {} %>
 <table>
     <thead>
         <tr>
@@ -14,6 +15,9 @@
     </thead>
     <tbody>
         <% @cash_dividends.each do |cash_dividend| %>
+            <% years[cash_dividend.pay_date.year] ||= {} %>
+            <% years[cash_dividend.pay_date.year][cash_dividend.pay_date.month] ||= 0 %>
+            <% years[cash_dividend.pay_date.year][cash_dividend.pay_date.month] += 1 %>
             <tr>
                 <td><%= link_to cash_dividend.company, cash_dividend.company %></td>
                 <td class="r-align"><%= format_currency cash_dividend.amount %></td>
@@ -23,6 +27,27 @@
                 <td><%= link_to 'Edit', edit_cash_dividend_path(cash_dividend) %></td>
                 <td><%= link_to 'Destroy', cash_dividend, method: :delete, data: { confirm: 'Are you sure?' } %></td>
             </tr>
+        <% end %>
+    </tbody>
+</table>
+<h1>Cash Dividends By Month Over Years</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Year</th>
+            <th>Month</th>
+            <th>Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% (2017..DateTime.now.year).each do |year| %>
+            <% (1..12).each do |month| %>
+                <tr>
+                    <td><%= year %></td>
+                    <td><%= month %></td>
+                    <td><%= years[year][month] %></td>
+                </tr>
+            <% end %>
         <% end %>
     </tbody>
 </table>
