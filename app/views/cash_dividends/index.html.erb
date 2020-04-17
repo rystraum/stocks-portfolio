@@ -3,6 +3,7 @@
 <%= link_to 'New Cash Dividend', new_cash_dividend_path %>
 <br>
 <% years = {} %>
+<% amounts = {} %>
 <table>
     <thead>
         <tr>
@@ -18,6 +19,9 @@
             <% years[cash_dividend.pay_date.year] ||= {} %>
             <% years[cash_dividend.pay_date.year][cash_dividend.pay_date.month] ||= Set.new %>
             <% years[cash_dividend.pay_date.year][cash_dividend.pay_date.month] << cash_dividend.company.ticker %>
+            <% amounts[cash_dividend.pay_date.year] ||= {} %>
+            <% amounts[cash_dividend.pay_date.year][cash_dividend.pay_date.month] ||= 0 %>
+            <% amounts[cash_dividend.pay_date.year][cash_dividend.pay_date.month] += cash_dividend.amount %>
             <tr>
                 <td><%= link_to cash_dividend.company, cash_dividend.company %></td>
                 <td class="r-align"><%= format_currency cash_dividend.amount %></td>
@@ -37,6 +41,7 @@
             <th>Year</th>
             <th>Month</th>
             <th>Count</th>
+            <th style="text-align: right">Amount</th>
             <th style="text-align: left">Tickers</th>
         </tr>
     </thead>
@@ -47,6 +52,7 @@
                     <td><%= year %></td>
                     <td><%= month %></td>
                     <td><%= years[year][month]&.length %></td>
+                    <td style="text-align: right"><%= format_currency amounts[year][month] %></td>
                     <td><%= years[year][month]&.to_a&.sort&.join(', ') %></td>
                 </tr>
             <% end %>
