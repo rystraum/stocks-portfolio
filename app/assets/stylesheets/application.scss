@@ -10,6 +10,7 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
+ *= require dashkitty
  *= require_tree .
  *= require_self
  */
@@ -28,23 +29,6 @@
   color: red;
   display: inline-block;
   font-size: 90%;
-}
-
-table {
-  border-collapse: collapse;
-}
-
-tr:nth-child(2n) {
-  background-color: #ddd;
-}
-
-th {
-  font-weight: bold;
-}
-
-th,
-td {
-  padding: 0.5rem 1rem;
 }
 
 .card {
@@ -147,16 +131,4 @@ dl.price-update {
   li {
     padding: 0.5rem;
   }
-}
-
-table {
-  border: 1px solid #999;
-}
-
-th {
-  border-bottom: 1px solid #999;
-}
-
-tfoot tr {
-  border-top: 1px solid #999;
 }
