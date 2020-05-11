@@ -87,3 +87,15 @@
         </tr>
     </tfoot>
 </table>
+<h1>Top 5 Losers</h1>
+<ul>
+    <% cs.companies.sort_by { |c| c.profit_loss }.first(5).each do |company| %>
+        <li><%= company %> - <%= green_red company.profit_loss %> (<%= green_red_percent company.profit_loss, company.actual_total_costs %>)</li>
+    <% end %>
+</ul>
+<h1>Top 5 Losers (%)</h1>
+<ul>
+    <% cs.companies.sort_by { |c| c.profit_loss_percent }.filter { |c| !c.profit_loss_percent.in? [1.0, -1.0] }.first(5).each do |company| %>
+        <li><%= company %> - <%= green_red_percent company.profit_loss, company.actual_total_costs %></li>
+    <% end %>
+</ul>

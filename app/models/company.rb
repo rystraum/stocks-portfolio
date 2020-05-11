@@ -72,6 +72,10 @@ class Company < ApplicationRecord
     cash_dividends_total + profit_loss
   end
 
+  def profit_loss_percent
+    profit_loss / actual_total_costs
+  end
+
   protected
 
   def cash_dividends_average_dps
