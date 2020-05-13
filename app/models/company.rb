@@ -76,6 +76,43 @@ class Company < ApplicationRecord
     profit_loss / actual_total_costs
   end
 
+  def fetch_history
+    require 'net/http'
+    require 'uri'
+
+    uri = URI.parse('https://www.pse.com.ph/stockMarket/companyInfoHistoricalData.html?method=getRecentSecurityQuoteData&ajax=true')
+    request = Net::HTTP::Post.new(uri)
+    request.content_type = 'application/x-www-form-urlencoded; charset=UTF-8'
+    request['Connection'] = 'keep-alive'
+    request['Pragma'] = 'no-cache'
+    request['Cache-Control'] = 'no-cache'
+    request['Dnt'] = '1'
+    request['X-Requested-With'] = 'XMLHttpRequest'
+    request['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36'
+    request['Accept'] = '*/*'
+    request['Origin'] = 'https://www.pse.com.ph'
+    request['Sec-Fetch-Site'] = 'same-origin'
+    request['Sec-Fetch-Mode'] = 'cors'
+    request['Sec-Fetch-Dest'] = 'empty'
+    request['Referer'] = "https://www.pse.com.ph/stockMarket/companyInfo.html?id=#{pse_company_id}&security=#{pse_security_id}&tab=0"
+    request['Accept-Language'] = 'en-US,en;q=0.9'
+    request['Cookie'] = 'cookieconsent_status=dismiss; JSESSIONID=f1c6408c99945028c5731c7670793530dd1fbeabe2b4094556e57e886ae0b10a.e38NbNeRbx0Pa40Lc3mMa3qQah4Me0'
+    request.set_form_data(
+      'security' => pse_security_id.to_s
+    )
+
+    req_options = {
+      use_ssl: uri.scheme == 'https'
+    }
+
+    response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+      http.request(request)
+    end
+
+    puts response.code
+    response.body
+  end
+
   protected
 
   def cash_dividends_average_dps
