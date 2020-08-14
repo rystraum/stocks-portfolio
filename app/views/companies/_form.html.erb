@@ -10,26 +10,23 @@
         </div>
     <% end %>
     <div class="field">
-        <%= form.label :ticker %>
-        <%= form.text_field :ticker %>
+        <%= form.text_field :ticker, class: 'form-control form-control-sm', placeholder: "Ticker" %>
     </div>
     <div class="field">
-        <%= form.label :industry %>
-        <%= form.text_field :industry %>
+        <%= form.select :industry, options_for_select(company_industry_options), {include_blank: "Industry"}, required: :required, class: 'form-control form-control-sm' %>
+    </div>
+
+    <div class="field">
+        <%= form.text_field :pse_company_id, class: 'form-control form-control-sm', placeholder: "PSE Company ID" %>
     </div>
     <div class="field">
-        <%= form.label :inactive %>
-        <%= form.check_box :inactive %>
+        <%= form.text_field :pse_security_id, class: 'form-control form-control-sm', placeholder: "PSE Security ID" %>
     </div>
-    <div class="field">
-        <%= form.label :pse_company_id %>
-        <%= form.text_field :pse_company_id %>
-    </div>
-    <div class="field">
-        <%= form.label :pse_security_id %>
-        <%= form.text_field :pse_security_id %>
+    <div class="field form-check">
+        <%= form.check_box :inactive, class: 'form-check-input'  %>
+        <%= form.label :inactive, class: 'form-check-label'  %>
     </div>
     <div class="actions">
-        <%= form.submit %>
+        <%= form.submit "Add", class: "btn btn-sm btn-primary" %>
     </div>
 <% end %>

@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  def active_tab?(path)
+    return 'active' if request.path == path
+    ''
+  end
+
+  def company_industry_options
+    ["Real Estate", "Finance", "Holding", "Preferred", "Services", "Industrial"]
+  end
+
   def format_currency(amount)
     number_to_currency amount, unit: ''
   end
@@ -17,6 +26,10 @@ module ApplicationHelper
 
   def green_red_percent(amount, denominator)
     tag.span format_percentage(amount, denominator), class: (amount.negative? ? 'text-red' : 'text-green').to_s
+  end
+
+  def green_red_percent_badge(amount, denominator)
+    tag.span format_percentage(amount, denominator), class: (amount.negative? ? 'badge badge-soft-danger' : 'badge badge-soft-success').to_s
   end
 
   def format_date(date)

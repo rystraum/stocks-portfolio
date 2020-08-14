@@ -1,32 +1,42 @@
-<p id="notice"><%= notice %></p>
-<h1>Activities</h1>
-<%= link_to 'New Activity', new_activity_path %>
-<br>
-<table>
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Company</th>
-            <th>Activity type</th>
-            <th>Number of shares</th>
-            <th>Total price</th>
-            <th>Charges</th>
-            <th colspan="3"></th>
-        </tr>
-    </thead>
-    <tbody>
-        <% @activities.each do |activity| %>
-            <tr>
-                <td><%= format_date activity.date %></td>
-                <td><%= activity.company %></td>
-                <td><%= activity.activity_type %></td>
-                <td><%= activity.number_of_shares %></td>
-                <td class="r-align"><%= number_to_currency activity.total_price, unit: "" %></td>
-                <td class="r-align"><%= number_to_currency activity.charges, unit: "" %></td>
-                <td><%= link_to 'Show', activity %></td>
-                <td><%= link_to 'Edit', edit_activity_path(activity) %></td>
-                <td><%= link_to 'Destroy', activity, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-            </tr>
-        <% end %>
-    </tbody>
-</table>
+<div class="container-fluid">
+    <p id="notice"><%= notice %></p>
+    <div class="p-2 d-flex justify-content-between align-items-center">
+        <h1 class="display-4">Activities</h1>
+        <h3 class="add-button"><%= link_to "<span class='text-info fe fe-plus-square'></span><span class='text-info'> Add new activity</span>".html_safe, new_activity_path %></h3>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-sm table-striped table-hover">
+            <thead class="thead-dark">
+                <tr class="text-center">
+                    <th>Date</th>
+                    <th>Company</th>
+                    <th>Activity type</th>
+                    <th>Number of shares</th>
+                    <th class="text-right">Total price</th>
+                    <th class="text-right">Charges</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% @activities.each do |activity| %>
+                    <tr class="text-center">
+                        <th><%= format_date activity.date %></th>
+                        <th><%= link_to activity.company, activity.company %></th>
+                        <td><span class="<%= activity.activity_type == 'BUY' ? "badge badge-success" : "badge badge-danger" %>" style="font-size: 12px;"><%= activity.activity_type %></span></td>
+                        <td><%= activity.number_of_shares %></td>
+                        <td class="text-right"><%= number_to_currency activity.total_price, unit: "" %></td>
+                        <td class="text-right"><%= number_to_currency activity.charges, unit: "" %></td>
+                        <td class="text-right" style="width: 6%;">
+                            <span class="align-middle" style="font-size: 15px;">
+                                <%= link_to "<span class='fe fe-eye'></span>".html_safe, activity %>
+                                <%= link_to "<span class='fe fe-edit'></span>".html_safe, edit_activity_path(activity) %>
+                                <%= link_to "<span class='fe fe-trash'></span>".html_safe, activity, method: :delete, data: { confirm: 'Are you sure?' } %>
+                            </span>
+                        </td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+    </div>
+</div>

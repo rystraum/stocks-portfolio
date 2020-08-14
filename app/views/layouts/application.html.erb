@@ -2,13 +2,38 @@
 <html>
     <head>
         <title>StocksPortfolio</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <%= csrf_meta_tags %>
         <%= csp_meta_tag %>
         <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
         <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     </head>
     <body>
-        <%= link_to "Dashboard", root_path %>
-        <%= yield %>
+        <div class="main-container">
+            <nav class="navbar navbar-expand-sm navbar-dark main-nav">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation-bar" aria-controls="navigation-bar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navigation-bar">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><%= link_to "<span class='fe fe-home'></span>".html_safe, root_path, class: "text-success nav-link" %></li>
+                    <li class="nav-item"><%= link_to "Price Update", new_price_update_path, class: "text-white flex-sm-fill nav-link #{active_tab?(new_price_update_path)}" %></li>
+                    <li class="nav-item"><%= link_to "New Activity", new_activity_path, class: "text-white flex-sm-fill nav-link #{active_tab?(new_activity_path)}" %></li>
+                    <li class="nav-item"><%= link_to "Companies", companies_path, class: "text-white flex-sm-fill nav-link #{active_tab?(companies_path)}" %></li>
+                    <li class="nav-item"><%= link_to "Dividends", cash_dividends_path, class: "text-white flex-sm-fill nav-link #{active_tab?(cash_dividends_path)}" %></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white <%= active_tab?(activities_path) %> <%= active_tab?(price_updates_path) %>" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">History</a>
+                        <div class="dropdown-menu">
+                            <%= link_to "Activity History", activities_path, class: "text-dark flex-sm-fill nav-link" %>
+                            <%= link_to "Price History", price_updates_path, class: "text-dark flex-sm-fill nav-link" %>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="body-container yield-padding">
+                <%= yield %>
+            </div>
+        </div>
     </body>
 </html>

@@ -44,7 +44,7 @@
                                 <th>Date</th>
                                 <th>Type</th>
                                 <th>Shares</th>
-                                <th class="r-align">Amount</th>
+                                <th class="text-right">Amount</th>
                             </tr>
                         </thead>
                         <% @company.activities.each do |activity| %>
@@ -52,7 +52,7 @@
                                 <td><%= activity.date.to_formatted_s(:long) %></td>
                                 <td><%= activity.activity_type %></td>
                                 <td><%= activity.number_of_shares %></td>
-                                <td class="r-align"><%= format_currency activity.total_price %></td>
+                                <td class="text-right"><%= format_currency activity.total_price %></td>
                             </tr>
                         <% end %>
                     </table>
