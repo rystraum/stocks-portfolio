@@ -5,6 +5,7 @@ class CashDividendsController < ApplicationController
   # GET /cash_dividends.json
   def index
     @cash_dividends = CashDividend.all
+    @stock_dividends = StockDividend.all
   end
 
   # GET /cash_dividends/1
