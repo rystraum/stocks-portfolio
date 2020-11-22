@@ -1,6 +1,6 @@
-<div class="ml-auto">
-    <%= link_to 'Edit', edit_company_path(@company) %> |
-    <%= link_to 'Back', companies_path %>
+<div class="ml-auto mt-4 btn-group">
+    <%= link_to '<i class="fe fe-chevron-left"></i> Back'.html_safe, companies_path, class: "btn btn-primary" %>
+    <%= link_to 'Edit', edit_company_path(@company), class: "btn btn-secondary" %>
 </div>
 <p id="notice"><%= notice %></p>
 <div class="container-fluid">
