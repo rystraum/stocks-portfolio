@@ -44,6 +44,7 @@
                                 <th>Date</th>
                                 <th>Type</th>
                                 <th>Shares</th>
+                                <th>Cost Per Share</th>
                                 <th class="text-right">Amount</th>
                             </tr>
                         </thead>
@@ -52,6 +53,7 @@
                                 <td><%= activity.date.to_formatted_s(:long) %></td>
                                 <td><%= activity.activity_type %></td>
                                 <td><%= activity.number_of_shares %></td>
+                                <td><%= format_currency activity.cost_per_share %></td>
                                 <td class="text-right"><%= format_currency activity.total_price %></td>
                             </tr>
                         <% end %>

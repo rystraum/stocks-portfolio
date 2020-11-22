@@ -13,6 +13,10 @@ class Activity < ApplicationRecord
     is_buy? ? sum + number_of_shares : sum - number_of_shares
   end
 
+  def cost_per_share
+    total_price / number_of_shares
+  end
+
   protected
 
   def is_buy?
