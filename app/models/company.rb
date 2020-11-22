@@ -129,23 +129,27 @@ class Company < ApplicationRecord
     @cash_dividends_count_in_a_year ||= (count.sum.to_f / count.length).round(0)
   end
 
-  def bought_shares
-    activities.buy.pluck(:number_of_shares).sum
-  end
-
-  def sold_shares
-    activities.sell.pluck(:number_of_shares).sum
-  end
-
   def stock_dividend_shares
     stock_dividends.pluck(:amount).sum
   end
 
+  def bought_shares
+    activities_calculator.bought_shares
+  end
+
+  def sold_shares
+    activities_calculator.sold_shares
+  end
+
   def buy_costs
-    activities.buy.pluck(:total_price).sum
+    activities_calculator.buy_costs
   end
 
   def sell_gains
-    activities.sell.pluck(:total_price).sum
+    activities_calculator.sell_gains
+  end
+
+  def activities_calculator
+    @activities_calculator ||= ActivitiesCalculator.new(activities)
   end
 end
