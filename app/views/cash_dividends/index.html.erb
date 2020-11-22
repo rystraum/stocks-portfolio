@@ -72,30 +72,38 @@
         <div class="tab-pane" id="by_month" role="tabpanel" aria-labelledby="by_month_tab">
             <!-- <h1 class="display-4 d-block p-2">Cash Dividends By Month Over Years</h1> -->
             <div class="table-responsive">
+                <% (2017..DateTime.now.year).each do |year| %>
                 <table class="table table-sm table-striped table-bordered table-dark">
                     <thead class="thead-dark">
+                      <tr>
+                        <th colspan="4" class="text-center"><%= year %></th>
+                      </tr>
                         <tr class="text-center">
-                            <th>Year</th>
                             <th>Month</th>
                             <th>Count</th>
                             <th class="text-right">Amount</th>
-                            <th class="text-left">Tickers</th>
+                            <th class="text-left w-50">Tickers</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <% (2017..DateTime.now.year).each do |year| %>
-                            <% (1..12).each do |month| %>
-                                <tr>
-                                    <td><%= year %></td>
-                                    <td><%= Date::MONTHNAMES[month] %></td>
-                                    <td><%= years[year][month]&.length %></td>
-                                    <td class="text-right"><%= format_currency amounts[year][month] %></td>
-                                    <td><%= years[year][month]&.to_a&.sort&.collect { |ticker| link_to(ticker, company_path(ticker), target: :_blank, class: "btn btn-secondary mr-2 btn-sm") }&.join&.html_safe %></td>
-                                </tr>
-                            <% end %>
-                        <% end %>
-                    </tbody>
+                      <% annual_sum = 0 %>
+                      <tbody>
+                          <% (1..12).each do |month| %>
+                              <tr>
+                                  <td><%= Date::MONTHNAMES[month] %></td>
+                                  <td><%= years[year][month]&.length %></td>
+                                  <td class="text-right"><%= format_currency amounts[year][month] %></td>
+                                  <td><%= years[year][month]&.to_a&.sort&.collect { |ticker| link_to(ticker, company_path(ticker), target: :_blank, class: "btn btn-secondary mr-2 btn-sm") }&.join&.html_safe %></td>
+                              </tr>
+                              <% annual_sum += (amounts[year][month] || 0) %>
+                          <% end %>
+                          <tr>
+                            <td colspan="2"><%= year %> Total</td>
+                            <td class="text-right"><%= format_currency annual_sum %></td>
+                            <td>&nbsp;</td>
+                          </tr>
+                      </tbody>
                 </table>
+                <% end %>
             </div>
         </div>
 
