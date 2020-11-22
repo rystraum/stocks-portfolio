@@ -17,7 +17,7 @@ module ApplicationHelper
   def format_percentage(numerator, denominator)
     return '-' if denominator.zero?
 
-    number_to_percentage numerator * 100 / denominator, precision: 2, format: '%n %'
+    number_to_percentage (numerator * 100 / denominator), precision: 1, format: '%n%'
   end
 
   def green_red(amount)

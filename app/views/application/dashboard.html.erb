@@ -31,7 +31,7 @@
                         <td class="tables-percent-cost text-right"><%= format_percentage company.total_costs, cs.total_costs %></td>
                         <td class="tables-last-price text-right">
                             <%= format_currency company.last_price %><br>
-                            <small><%= company.last_price_timestamp.to_formatted_s(:short) %></small>
+                            <small class="smaller text-gray"><%= company.last_price_timestamp.to_formatted_s(:short) %></small>
                         </td>
                         <td class="tables-last-value text-right"><%= format_currency company.last_value %></td>
                         <td class="tables-percent-value text-right"><%= format_percentage company.last_value, cs.total_value %></td>
