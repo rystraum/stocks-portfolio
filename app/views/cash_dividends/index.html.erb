@@ -90,7 +90,7 @@
                                     <td><%= Date::MONTHNAMES[month] %></td>
                                     <td><%= years[year][month]&.length %></td>
                                     <td class="text-right"><%= format_currency amounts[year][month] %></td>
-                                    <td><%= years[year][month]&.to_a&.sort&.join(', ') %></td>
+                                    <td><%= years[year][month]&.to_a&.sort&.collect { |ticker| link_to(ticker, company_path(ticker), target: :_blank, class: "btn btn-secondary mr-2 btn-sm") }&.join&.html_safe %></td>
                                 </tr>
                             <% end %>
                         <% end %>
