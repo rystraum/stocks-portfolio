@@ -11,6 +11,8 @@ class CashDividend < ApplicationRecord
   store_accessor :meta, :dividend_per_share
   store_accessor :meta, :stocks_at_ex_date
 
+  before_create :set_meta
+
   def display_date
     if ex_date.blank?
       "EX: UNKNOWN <br> PAY: #{pay_date.to_formatted_s(:long)}"
@@ -25,5 +27,19 @@ class CashDividend < ApplicationRecord
 
   def update_stocks(val, force = false)
     update(stocks_at_ex_date: val) if stocks_at_ex_date.blank? || force
+  end
+
+  private
+
+  def set_meta
+    return if ex_date.blank?
+    return unless dividend_per_share.blank? || stocks_at_ex_date.blank?
+
+    ac = ActivitiesCalculator.new(company.activities.where('date < ?', ex_date))
+    current_shares = ac.ending_shares
+    update(
+      dividend_per_share: amount / current_shares,
+      stocks_at_ex_date: current_shares
+    )
   end
 end
