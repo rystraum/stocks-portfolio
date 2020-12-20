@@ -74,8 +74,8 @@
                             <tr>
                                 <th>Cash</th>
                                 <th>Stock</th>
-                                <th>Pay Date</th>
                                 <th>Ex Date</th>
+                                <th>Pay Date</th>
                                 <th>Stocks Held on Ex Date</th>
                             </tr>
                         </thead>
@@ -83,8 +83,8 @@
                             <tr>
                                 <td><%= dividend.is_a?(CashDividend) ? format_currency(dividend.amount) : "" %></td>
                                 <td><%= dividend.is_a?(StockDividend) ? dividend.amount : "" %></td>
-                                <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
                                 <td><%= dividend.ex_date.blank? ? "-" : dividend.ex_date.to_formatted_s(:long) %></td>
+                                <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
                                 <td><%= dividend.is_a?(CashDividend) ? dividend.stocks_at_ex_date : "" %></td>
                             </tr>
                         <% end %>
@@ -162,21 +162,14 @@
                         <% end %>
                         <% if thing.is_a?(CashDividend) %>
                             <div>
-                                <dt>Dividend Per Share Saved:</dt>
+                                <dt>Shares on Ex Date:</dt>
+                                <dd><%= thing.stocks_at_ex_date %></dd>
+                            </div>
+                            <div>
+                                <dt>Dividend Per Share:</dt>
                                 <dd><%= format_currency thing.dividend_per_share %></dd>
+                                <% last_dividend_rate = thing.dividend_per_share %>
                             </div>
-                            <div>
-                                <dt>Dividend Per Share Computed:</dt>
-                                <% last_dividend_rate = thing.amount / number_of_shares %>
-                                <dd><%= format_currency last_dividend_rate %></dd>
-                            </div>
-                            <div>
-                                <code>
-                                    CashDividend.find(<%= thing.id %>).update_dps(<%= last_dividend_rate %>, true) if not the same
-                                </code>
-                            </div>
-                            <% thing.update_stocks(number_of_shares, false) %>
-                            <% thing.update_dps(last_dividend_rate, false) %>
                         <% end %>
                     </dl>
                 </div>
