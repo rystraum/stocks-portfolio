@@ -1,17 +1,16 @@
 class CashDividendsController < ApplicationController
-  before_action :set_cash_dividend, only: [:show, :edit, :update, :destroy]
+  before_action :set_cash_dividend, only: %i[show edit update destroy]
 
   # GET /cash_dividends
   # GET /cash_dividends.json
   def index
-    @cash_dividends = CashDividend.all
-    @stock_dividends = StockDividend.all
+    @cash_dividends = CashDividend.order('pay_date desc')
+    @stock_dividends = StockDividend.order('pay_date desc')
   end
 
   # GET /cash_dividends/1
   # GET /cash_dividends/1.json
-  def show
-  end
+  def show; end
 
   # GET /cash_dividends/new
   def new
@@ -19,8 +18,7 @@ class CashDividendsController < ApplicationController
   end
 
   # GET /cash_dividends/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /cash_dividends
   # POST /cash_dividends.json
@@ -63,13 +61,14 @@ class CashDividendsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_cash_dividend
-      @cash_dividend = CashDividend.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def cash_dividend_params
-      params.require(:cash_dividend).permit(:company_id, :amount, :pay_date, :ex_date)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_cash_dividend
+    @cash_dividend = CashDividend.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def cash_dividend_params
+    params.require(:cash_dividend).permit(:company_id, :amount, :pay_date, :ex_date)
+  end
 end
