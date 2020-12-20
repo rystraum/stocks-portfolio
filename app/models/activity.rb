@@ -10,9 +10,11 @@ class Activity < ApplicationRecord
   scope :buy, -> { where(activity_type: 'BUY') }
   scope :sell, -> { where(activity_type: 'SELL') }
 
-  def adjust(sum)
+  def adjust(sum, include_planned: false)
     return sum + number_of_shares if is_buy?
     return sum - number_of_shares if is_sell?
+    return sum + number_of_shares if include_planned && activity_type == 'PLANNED BUY'
+    return sum - number_of_shares if include_planned && activity_type == 'PLANNED SELL'
 
     sum
   end
