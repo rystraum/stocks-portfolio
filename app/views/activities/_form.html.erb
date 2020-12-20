@@ -20,7 +20,7 @@
                 <% companies = Company.pluck(:ticker, :id) %>
                 <%= form.select :company_id, companies, {}, { class: "js-activity-company" } %>
                 <div class="js-company-link ml-2">
-                    <%= link_to "LINK", company_path(companies.first.second), target: :_blank %>
+                    <%= link_to "LINK", company_path(activity.company || companies.first.second), target: :_blank %>
                 </div>
             </div>
         </div>
