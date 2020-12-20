@@ -21,6 +21,10 @@ class CashDividend < ApplicationRecord
     end
   end
 
+  def last_price
+    company.price_updates.where('date(datetime) <= ?', ex_date).order('datetime desc').first
+  end
+
   def update_dps(val, force = false)
     update(dividend_per_share: val) if dividend_per_share.blank? || force
   end

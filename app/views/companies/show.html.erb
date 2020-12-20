@@ -77,6 +77,7 @@
                                 <th>Ex Date</th>
                                 <th>Pay Date</th>
                                 <th>Stocks Held on Ex Date</th>
+                                <th>Closest Price</th>
                             </tr>
                         </thead>
                         <% @company.dividends.each do |dividend| %>
@@ -86,6 +87,7 @@
                                 <td><%= dividend.ex_date.blank? ? "-" : dividend.ex_date.to_formatted_s(:long) %></td>
                                 <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
                                 <td><%= dividend.is_a?(CashDividend) ? dividend.stocks_at_ex_date : "" %></td>
+                                <td><%= dividend.is_a?(CashDividend) ? dividend.last_price&.to_formatted_s : "" %></td>
                             </tr>
                         <% end %>
                     </table>
