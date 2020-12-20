@@ -4,6 +4,10 @@ class ActivitiesCalculator
     @activities = activities
   end
 
+  def ending_shares
+    bought_shares - sold_shares
+  end
+
   def bought_shares
     @bought_shares ||= buy.collect(&:number_of_shares).sum
   end
@@ -23,10 +27,10 @@ class ActivitiesCalculator
   protected
 
   def buy
-    @buy ||= activities.select { |a| a.activity_type == "BUY" }
+    @buy ||= activities.select { |a| a.activity_type == 'BUY' }
   end
 
   def sell
-    @sell ||= activities.select { |a| a.activity_type == "SELL" }
+    @sell ||= activities.select { |a| a.activity_type == 'SELL' }
   end
 end
