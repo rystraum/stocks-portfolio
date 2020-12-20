@@ -5,26 +5,27 @@
             <a class="nav-link active" id="cash_dividend_tab" data-toggle="tab" href="#cash_dividend" role="tab" aria-controls="cash_dividend" aria-selected="true">Cash Dividends</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="by_month_tab" data-toggle="tab" href="#by_month" role="tab" aria-controls="by_month" aria-selected="false">Cash Dividends By Month Over Years</a>
+            <a class="nav-link" id="by_month_tab" data-toggle="tab" href="#by_month" role="tab" aria-controls="by_month" aria-selected="false">Monthly Divs Ladder</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="stocks_dividend_tab" data-toggle="tab" href="#stocks_dividend" role="tab" aria-controls="stocks_dividend" aria-selected="false">Stock Dividends</a>
         </li>
+        <li class="nav-item">
+            <%= link_to "New Cash Dividend", new_cash_dividend_path, class: "nav-link" %>
+        </li>
     </ul>
-
     <ul class="d-none nav nav-pills flex-column mb-4" id="mobile_dividends_tab" role="tablist" aria-orientation="vertical">
         <li class="nav-item">
             <a class="nav-link active" id="cash_dividend_tab" data-toggle="tab" href="#cash_dividend" role="tab" aria-controls="cash_dividend" aria-selected="true">Cash Dividends</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="by_month_tab" data-toggle="tab" href="#by_month" role="tab" aria-controls="by_month" aria-selected="false">Cash Dividends By Month Over Years</a>
+            <a class="nav-link" id="by_month_tab" data-toggle="tab" href="#by_month" role="tab" aria-controls="by_month" aria-selected="false">Monthly Divs Ladder</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" id="stocks_dividend_tab" data-toggle="tab" href="#stocks_dividend" role="tab" aria-controls="stocks_dividend" aria-selected="false">Stock Dividends</a>
         </li>
         <hr>
     </ul>
-
     <div class="tab-content">
         <div class="tab-pane active" id="cash_dividend" role="tabpanel" aria-labelledby="cash_dividend_tab">
             <% years = {} %>
@@ -34,9 +35,11 @@
                     <thead class="thead-dark">
                         <tr class="text-center">
                             <th>Company</th>
-                            <th>Amount</th>
                             <th>Pay date</th>
                             <th>Ex date</th>
+                            <th>Stocks at Ex-Date</th>
+                            <th>DPS</th>
+                            <th>Amount</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -50,9 +53,11 @@
                             <% amounts[cash_dividend.pay_date.year][cash_dividend.pay_date.month] += cash_dividend.amount %>
                             <tr>
                                 <th><%= link_to cash_dividend.company, cash_dividend.company %></th>
+                                <td class="text-center"><%= format_date cash_dividend.pay_date %></td>
+                                <td class="text-center"><%= format_date cash_dividend.ex_date %></td>
+                                <td class="text-center"><%= cash_dividend.stocks_at_ex_date %></td>
+                                <td class="text-right"><%= format_currency cash_dividend.dividend_per_share %></td>
                                 <td class="text-right"><%= format_currency cash_dividend.amount %></td>
-                                <td><%= format_date cash_dividend.pay_date %></td>
-                                <td><%= format_date cash_dividend.ex_date %></td>
                                 <td class="text-right" style="width: 7%;">
                                     <span class="align-middle" style="font-size: 15px;">
                                         <%= link_to "<span class='fe fe-eye'></span>".html_safe, cash_dividend %>
@@ -65,48 +70,44 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
-
-
         <div class="tab-pane" id="by_month" role="tabpanel" aria-labelledby="by_month_tab">
-            <!-- <h1 class="display-4 d-block p-2">Cash Dividends By Month Over Years</h1> -->
+            <!-- <h1 class="display-4 d-block p-2">Monthly Divs Ladder</h1> -->
             <div class="table-responsive">
                 <% (2017..DateTime.now.year).each do |year| %>
-                <table class="table table-sm table-striped table-bordered table-dark">
-                    <thead class="thead-dark">
-                      <tr>
-                        <th colspan="4" class="text-center"><%= year %></th>
-                      </tr>
-                        <tr class="text-center">
-                            <th>Month</th>
-                            <th>Count</th>
-                            <th class="text-right">Amount</th>
-                            <th class="text-left w-50">Tickers</th>
-                        </tr>
-                    </thead>
-                      <% annual_sum = 0 %>
-                      <tbody>
-                          <% (1..12).each do |month| %>
-                              <tr>
-                                  <td><%= Date::MONTHNAMES[month] %></td>
-                                  <td><%= years[year][month]&.length %></td>
-                                  <td class="text-right"><%= format_currency amounts[year][month] %></td>
-                                  <td><%= years[year][month]&.to_a&.sort&.collect { |ticker| link_to(ticker, company_path(ticker), target: :_blank, class: "btn btn-secondary mr-2 btn-sm") }&.join&.html_safe %></td>
-                              </tr>
-                              <% annual_sum += (amounts[year][month] || 0) %>
-                          <% end %>
-                          <tr>
-                            <td colspan="2"><%= year %> Total</td>
-                            <td class="text-right"><%= format_currency annual_sum %></td>
-                            <td>&nbsp;</td>
-                          </tr>
-                      </tbody>
-                </table>
+                    <table class="table table-sm table-striped table-bordered table-dark">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th colspan="4" class="text-center"><%= year %></th>
+                            </tr>
+                            <tr class="text-center">
+                                <th>Month</th>
+                                <th>Count</th>
+                                <th class="text-right">Amount</th>
+                                <th class="text-left w-50">Tickers</th>
+                            </tr>
+                        </thead>
+                        <% annual_sum = 0 %>
+                        <tbody>
+                            <% (1..12).each do |month| %>
+                                <tr>
+                                    <td><%= Date::MONTHNAMES[month] %></td>
+                                    <td><%= years[year][month]&.length %></td>
+                                    <td class="text-right"><%= format_currency amounts[year][month] %></td>
+                                    <td><%= years[year][month]&.to_a&.sort&.collect { |ticker| link_to(ticker, company_path(ticker), target: :_blank, class: "btn btn-secondary mr-2 btn-sm") }&.join&.html_safe %></td>
+                                </tr>
+                                <% annual_sum += (amounts[year][month] || 0) %>
+                            <% end %>
+                            <tr>
+                                <td colspan="2"><%= year %> Total</td>
+                                <td class="text-right"><%= format_currency annual_sum %></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 <% end %>
             </div>
         </div>
-
         <div class="tab-pane" id="stocks_dividend" role="tabpanel" aria-labelledby="stocks_dividend_tab">
             <div class="table-responsive">
                 <table class="table table-sm table-striped table-bordered table-hover">
@@ -140,5 +141,4 @@
             </div>
         </div>
     </div>
-
 </div>
