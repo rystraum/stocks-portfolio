@@ -23,8 +23,6 @@ class Activity < ApplicationRecord
     total_price / number_of_shares
   end
 
-  protected
-
   def is_buy?
     activity_type == 'BUY'
   end

@@ -4,7 +4,6 @@
         <h1 class="display-4">Activities</h1>
         <h3 class="add-button"><%= link_to "<span class='text-info fe fe-plus-square'></span><span class='text-info'> Add new activity</span>".html_safe, new_activity_path %></h3>
     </div>
-
     <div class="table-responsive">
         <table class="table table-sm table-striped table-hover">
             <thead class="thead-dark">
@@ -23,7 +22,7 @@
                     <tr class="text-center">
                         <th><%= format_date activity.date %></th>
                         <th><%= link_to activity.company, activity.company %></th>
-                        <td><span class="<%= activity.activity_type == 'BUY' ? "badge badge-success" : "badge badge-danger" %>" style="font-size: 12px;"><%= activity.activity_type %></span></td>
+                        <td><span class="<%= activity.is_buy? ? "badge badge-success" : activity.is_sell? ? "badge badge-danger" : "badge badge-warning" %>" style="font-size: 12px;"><%= activity.activity_type %></span></td>
                         <td><%= activity.number_of_shares %></td>
                         <td class="text-right"><%= number_to_currency activity.total_price, unit: "" %></td>
                         <td class="text-right"><%= number_to_currency activity.charges, unit: "" %></td>
