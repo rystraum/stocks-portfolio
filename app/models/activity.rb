@@ -3,6 +3,7 @@
 class Activity < ApplicationRecord
   belongs_to :company
 
+  validates :date, presence: true, on: :create
   validates :number_of_shares, presence: true
   validates :activity_type, presence: true
 
@@ -10,10 +11,15 @@ class Activity < ApplicationRecord
   scope :sell, -> { where(activity_type: 'SELL') }
 
   def adjust(sum)
-    is_buy? ? sum + number_of_shares : sum - number_of_shares
+    return sum + number_of_shares if is_buy?
+    return sum - number_of_shares if is_sell?
+
+    sum
   end
 
   def cost_per_share
+    return 0 unless is_buy? && is_sell?
+
     total_price / number_of_shares
   end
 
@@ -21,5 +27,9 @@ class Activity < ApplicationRecord
 
   def is_buy?
     activity_type == 'BUY'
+  end
+
+  def is_sell?
+    activity_type == 'SELL'
   end
 end
