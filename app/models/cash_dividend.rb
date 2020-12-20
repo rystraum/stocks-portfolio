@@ -3,6 +3,7 @@
 class CashDividend < ApplicationRecord
   validates :amount, presence: true
   validates :pay_date, presence: true
+  validates :ex_date, presence: true, on: :create
 
   belongs_to :company
 
