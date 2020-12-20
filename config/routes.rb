@@ -5,7 +5,11 @@ Rails.application.routes.draw do
   resources :cash_dividends
   resources :stock_dividends
   resources :activities
-  resources :companies
+  resources :companies do
+    member do
+      get :last_price
+    end
+  end
   root to: 'application#dashboard'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

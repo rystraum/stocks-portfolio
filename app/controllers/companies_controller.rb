@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CompaniesController < ApplicationController
-  before_action :set_company, only: %i[show edit update destroy]
+  before_action :set_company, only: %i[show edit update destroy last_price]
 
   # GET /companies
   # GET /companies.json
@@ -13,6 +13,13 @@ class CompaniesController < ApplicationController
   # GET /companies/1
   # GET /companies/1.json
   def show; end
+
+  def last_price
+    respond_to do |format|
+      format.html
+      format.json { render json: { lastPrice: @company.last_price } }
+    end
+  end
 
   # GET /companies/new
   def new
