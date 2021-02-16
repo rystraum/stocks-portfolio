@@ -130,7 +130,7 @@
                 <div class="card-body">
                     <h1 class="card-header">Top 5 Losers (%)</h1>
                     <ul class="card-text list-group list-group-flush">
-                      <% cs.companies.sort_by { |c| c.profit_loss_percent }.filter { |c| !c.profit_loss_percent.in? [1.0, -1.0] }.first(5).each do |company| %>
+                      <% cs.companies.filter { |c| !c.profit_loss_percent.nan? }.sort_by { |c| c.profit_loss_percent }.filter { |c| !c.profit_loss_percent.in? [1.0, -1.0] }.first(5).each do |company| %>
                           <li class="list-group-item">
                             <div class="row">
                                 <div class="col"> <%= company %> </div>
