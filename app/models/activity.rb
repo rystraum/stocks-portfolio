@@ -19,8 +19,8 @@ class Activity < ApplicationRecord
     sum
   end
 
-  def cost_per_share
-    return 0 unless is_buy? && is_sell?
+  def cost_per_share(include_planned: false)
+    return 0 if !include_planned && is_buy? && is_sell?
 
     total_price / number_of_shares
   end

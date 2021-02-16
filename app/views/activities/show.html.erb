@@ -1,27 +1,36 @@
 <p id="notice"><%= notice %></p>
-<p>
-    <strong>Company:</strong>
-    <%= @activity.date %>
-</p>
-<p>
-    <strong>Company:</strong>
-    <%= link_to @activity.company, @activity.company %>
-</p>
-<p>
-    <strong>Activity type:</strong>
-    <%= @activity.activity_type %>
-</p>
-<p>
-    <strong>Number of shares:</strong>
-    <%= @activity.number_of_shares %>
-</p>
-<p>
-    <strong>Total price:</strong>
-    <%= format_currency @activity.total_price %>
-</p>
-<p>
-    <strong>Charges</strong>
-    <%= @activity.charges %>
-</p>
+<div class="w-25 mb-4">
+  <dl class="">
+    <div>
+        <dt>Company:</dt>
+        <dd><%= @activity.date %></dd>
+    </div>
+    <div>
+        <dt>Company:</dt>
+        <dd><%= link_to @activity.company, @activity.company %></dd>
+    </div>
+    <div>
+        <dt>Activity type:</dt>
+        <dd><%= @activity.activity_type %></dd>
+    </div>
+    <div>
+        <dt>Number of shares:</dt>
+        <dd><%= @activity.number_of_shares %></dd>
+    </div>
+    <div>
+        <dt>Price per share:</dt>
+        <dd><%= format_currency @activity.cost_per_share(include_planned: true) %></dd>
+    </div>
+    <div>
+        <dt>Total price:</dt>
+        <dd><%= format_currency @activity.total_price %></dd>
+    </div>
+    <div>
+        <dt>Charges</dt>
+        <dd><%= @activity.charges %></dd>
+    </div>
+  </dl>
+</div>
+
 <%= link_to 'Edit', edit_activity_path(@activity) %> |
 <%= link_to 'Back', activities_path %>
