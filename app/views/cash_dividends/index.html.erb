@@ -1,3 +1,6 @@
+<div class="container-fluid mt-2 d-flex">
+  <%= link_to "New Cash Dividend", new_cash_dividend_path, class: "btn btn-primary ml-auto" %>
+</div>
 <div class="container-fluid">
     <p id="notice"><%= notice %></p>
     <ul class="nav nav-tabs mb-4" id="dividends_tab" role="tablist">
@@ -9,9 +12,6 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" id="stocks_dividend_tab" data-toggle="tab" href="#stocks_dividend" role="tab" aria-controls="stocks_dividend" aria-selected="false">Stock Dividends</a>
-        </li>
-        <li class="nav-item">
-            <%= link_to "New Cash Dividend", new_cash_dividend_path, class: "nav-link" %>
         </li>
     </ul>
     <ul class="d-none nav nav-pills flex-column mb-4" id="mobile_dividends_tab" role="tablist" aria-orientation="vertical">
@@ -74,7 +74,7 @@
         <div class="tab-pane" id="by_month" role="tabpanel" aria-labelledby="by_month_tab">
             <!-- <h1 class="display-4 d-block p-2">Monthly Divs Ladder</h1> -->
             <div class="table-responsive">
-                <% (2017..DateTime.now.year).each do |year| %>
+                <% (2017..DateTime.now.year).reverse_each do |year| %>
                     <table class="table table-sm table-striped table-bordered table-dark">
                         <thead class="thead-dark">
                             <tr>
@@ -92,11 +92,11 @@
                             <% (1..12).each do |month| %>
                                 <tr>
                                     <td><%= Date::MONTHNAMES[month] %></td>
-                                    <td><%= years[year][month]&.length %></td>
-                                    <td class="text-right"><%= format_currency amounts[year][month] %></td>
-                                    <td><%= years[year][month]&.to_a&.sort&.collect { |ticker| link_to(ticker, company_path(ticker), target: :_blank, class: "btn btn-secondary mr-2 btn-sm") }&.join&.html_safe %></td>
+                                    <td><%= years.keys.include?(year) && years[year][month]&.length %></td>
+                                    <td class="text-right"><%= format_currency years.keys.include?(year) && amounts[year][month] %></td>
+                                    <td><%= years.keys.include?(year) && years[year][month]&.to_a&.sort&.collect { |ticker| link_to(ticker, company_path(ticker), target: :_blank, class: "btn btn-secondary mr-2 btn-sm") }&.join&.html_safe %></td>
                                 </tr>
-                                <% annual_sum += (amounts[year][month] || 0) %>
+                                <% annual_sum += (years.keys.include?(year) && amounts[year][month] || 0) %>
                             <% end %>
                             <tr>
                                 <td colspan="2"><%= year %> Total</td>
