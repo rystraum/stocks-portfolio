@@ -49,9 +49,27 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def backup
+    return if Rails.env.production?
+
     dest = "#{Dir.home}/Dropbox/Finances/Stocks/DB"
     return unless File.directory?(dest)
 
-    `cp #{Rails.root.join('db')}/development.sqlite3 #{dest}/backup-#{DateTime.now.to_formatted_s(:iso8601).parameterize}.sqlite3`
+    adapter = Rails.configuration.database_configuration[Rails.env]["adapter"]
+    db = Rails.configuration.database_configuration[Rails.env]["database"]
+
+    filename = "backup-#{DateTime.now.to_formatted_s(:iso8601).parameterize}"
+
+    if adapter.match? /sqlite/
+      `cp #{Rails.root.join('db')}/development.sqlite3 #{dest}/#{filename}.sqlite3`
+    elsif adapter.match? /postgresql/
+      sqldump = "#{Rails.root.join('tmp')}/#{filename}.sql"
+      `pg_dump #{db} > #{sqldump}; cp #{sqldump} #{dest}/#{filename}.sql`
+    end
+
+    ActiveRecord::Base.connection.tables.each do |t|
+      t.classify.constantize.to_csv
+    rescue NameError
+      # there are tables that are not part of the app, I think
+    end
   end
 end
