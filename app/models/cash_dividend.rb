@@ -41,9 +41,7 @@ class CashDividend < ApplicationRecord
 
     ac = ActivitiesCalculator.new(company.activities.where('date < ?', ex_date))
     current_shares = ac.ending_shares
-    update(
-      dividend_per_share: amount / current_shares,
-      stocks_at_ex_date: current_shares
-    )
+    self.dividend_per_share = amount / current_shares
+    self.stocks_at_ex_date = current_shares
   end
 end
