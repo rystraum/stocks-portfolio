@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_16_030250) do
+ActiveRecord::Schema.define(version: 2021_03_28_125129) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "activities", force: :cascade do |t|
     t.date "date"
@@ -46,17 +49,6 @@ ActiveRecord::Schema.define(version: 2021_02_16_030250) do
     t.string "pse_company_id"
     t.index ["industry"], name: "index_companies_on_industry"
     t.index ["ticker"], name: "index_companies_on_ticker", unique: true
-  end
-
-  create_table "mautic_connections", force: :cascade do |t|
-    t.string "type"
-    t.string "url"
-    t.string "client_id"
-    t.string "secret"
-    t.string "token"
-    t.string "refresh_token"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "price_updates", force: :cascade do |t|
