@@ -22,6 +22,32 @@ class ApplicationRecord < ActiveRecord::Base
     File.write("#{base}/#{table_name}.csv", csv_string)
   end
 
+  def self.from_csv(date)
+    require 'csv'
+
+    file = "#{Dir.home}/Dropbox/Finances/Stocks/CSV/#{date.to_date.to_s}/#{table_name}.csv"
+
+    CSV.foreach(file, headers: true) do |row|
+      record = self.find_by(id: row["id"])
+
+      attrs = row.to_h
+      if !row["meta"].blank?
+        attrs["meta"] = JSON.parse row["meta"].gsub("=>", ":")
+      end
+
+      if record.blank?
+        create(attrs)
+      else
+        # update?
+      end
+
+      # If PK sequence is not set properly:
+      # ActiveRecord::Base.connection.tables.each do |t|
+      #   ActiveRecord::Base.connection.reset_pk_sequence!(t)
+      # end
+    end
+  end
+
   def backup
     dest = "#{Dir.home}/Dropbox/Finances/Stocks/DB"
     return unless File.directory?(dest)
