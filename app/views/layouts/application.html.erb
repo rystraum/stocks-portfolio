@@ -32,6 +32,11 @@
             </nav>
 
             <div class="body-container yield-padding">
+                <% flash.each do |type, msg| %>
+                    <div class="alert alert-<%= type == "alert" ? "danger" : "info" %>">
+                        <%= msg %>
+                    </div>
+                <% end %>
                 <%= yield %>
             </div>
         </div>
