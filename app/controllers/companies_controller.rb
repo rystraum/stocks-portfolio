@@ -21,7 +21,7 @@ class CompaniesController < ApplicationController
 
     respond_to do |format|
       format.html do
-        flash[:notice] = "Succeeded with price update from PSE."
+        flash[:notice] = "Succeeded with price update from PSE of #{@company.ticker}."
         redirect_back(fallback_location: @company)
       end
       format.json { render json: { price_update: price_update } }
