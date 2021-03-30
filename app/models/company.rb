@@ -80,6 +80,51 @@ class Company < ApplicationRecord
     profit_loss / actual_total_costs
   end
 
+  def can_update_from_pse?
+    !pse_company_id.blank? && !pse_security_id.blank?
+  end
+
+  def price_update_from_pse
+    body = HTTParty.get("https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id.to_s}&security_id=#{pse_security_id.to_s}")
+    document = Nokogiri::HTML.parse(body)
+
+    # Expecting a structure something like:
+    # <form name="form1" action="/companyPage/stockData.do">
+    #   <input type="hidden" name="cmpy_id" value="57">
+    #   <select name="security_id" onchange="document.form1.submit();">
+    #     <option value="180" selected="">AC</option>
+    #     <option value="651">APB2R</option>
+    #     <option value="546">ACPA</option>
+    #     <option value="523">ACPB1</option>
+    #   </select>
+    #   <span style="margin-left:1em;">As of Mar 30, 2021 12:50 PM</span>
+    #   <span style="float:right; margin-left:1em;">
+    #   </span>
+    # </form>
+    begin
+      date_string = document.css("form[name=form1]").first.children[5].children.first.to_s
+      datetime = DateTime.strptime("#{date_string.match(/As of (.*)/)[1]} +0800", "%h %d, %Y %H:%M %p %z")
+    rescue NoMethodError => e
+      binding.pry if Rails.env.development?
+      raise "HTML does not match expected format: #{document.to_s}"
+    rescue Date::Error => e
+      binding.pry if Rails.env.development?
+      raise "HTML does not match expected format: #{document.to_s}"
+    end
+
+    last_trade_label = document.css("table.view").last.children[3].children[1].to_s
+    raise "HTML does not match expected format" if !last_trade_label.match? /Last Traded Price/
+
+    last_trade_value = document.css("table.view").last.children[3].children[3].children.to_s.sub("\r\n", "").to_d
+
+    price_update = price_updates.where(datetime: datetime).first_or_create do |update|
+      update.price = last_trade_value
+      update.notes = body
+    end
+
+    price_update
+  end
+
   def fetch_history
     require 'net/http'
     require 'uri'
@@ -114,8 +159,6 @@ class Company < ApplicationRecord
     req_options = {
       use_ssl: uri.scheme == 'https'
     }
-
-    binding.pry
 
     response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
       http.request(request)
