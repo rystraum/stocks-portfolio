@@ -6,7 +6,7 @@ class PriceUpdatesController < ApplicationController
   # GET /price_updates
   # GET /price_updates.json
   def index
-    @price_updates = PriceUpdate.all
+    @price_updates = PriceUpdate.latest_first
   end
 
   # GET /price_updates/1
