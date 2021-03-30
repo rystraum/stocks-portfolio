@@ -15,16 +15,18 @@
                 <table class="table table-sm table-striped table-bordered">
                     <thead class="thead-dark">
                         <tr>
-                            <th class="w-50">Ticker</th>
+                            <th class="w-25">Ticker</th>
                             <th class="w-25">Industry</th>
+                            <th class="w-25">Last Price</th>
                             <th class="action-column">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% @companies.each do |company| %>
-                            <tr>
-                                <td style="padding: 20px 0px 20px 10px;"><%= link_to company.ticker, company %></td>
+                            <tr class="company-row">
+                                <td><%= link_to company.ticker, company %></td>
                                 <td><%= company.industry %></td>
+                                <td style="display: flex"><%= company.last_price %><%= link_to "Update from PSE", [:price_update_from_pse, company], method: :post, style: "margin-left: auto" if company.can_update_from_pse? %></td>
                                 <td class="text-right" style="width: 6%;">
                                     <span class="align-middle" style="font-size: 15px;">
                                         <%= link_to "<span class='fe fe-eye'></span>".html_safe, company %>

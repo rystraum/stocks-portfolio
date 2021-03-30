@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resources :companies do
     member do
       get :last_price
+      post :price_update_from_pse
     end
   end
   root to: 'application#dashboard'

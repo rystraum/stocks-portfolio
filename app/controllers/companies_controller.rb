@@ -1,18 +1,32 @@
 # frozen_string_literal: true
 
 class CompaniesController < ApplicationController
-  before_action :set_company, only: %i[show edit update destroy last_price]
+  before_action :set_company, only: %i[show edit update destroy last_price price_update_from_pse]
 
   # GET /companies
   # GET /companies.json
   def index
-    @companies = Company.all
+    @companies = Company.alphabetical
     @company = Company.new
   end
 
   # GET /companies/1
   # GET /companies/1.json
   def show; end
+
+  def price_update_from_pse
+    price_update = @company.price_update_from_pse
+
+    redirect_back(fallback_location: @company, alert: "Price update failed.") and return unless price_update.persisted?
+
+    respond_to do |format|
+      format.html do
+        flash[:notice] = "Succeeded with price update from PSE."
+        redirect_back(fallback_location: @company)
+      end
+      format.json { render json: { price_update: price_update } }
+    end
+  end
 
   def last_price
     respond_to do |format|
