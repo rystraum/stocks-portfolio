@@ -1,19 +1,28 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Company:</strong>
-  <%= @price_update.company %>
-</p>
+<dl>
+  <div>
+    <dt>Company:</dt>
+    <dd><%= @price_update.company %></dd>
+  </div>
 
-<p>
-  <strong>Datetime:</strong>
-  <%= @price_update.datetime %>
-</p>
+  <div>
+    <dt>Datetime:</dt>
+    <dd><%= @price_update.datetime %></dd>
+  </div>
 
-<p>
-  <strong>Price:</strong>
-  <%= @price_update.price %>
-</p>
+  <div>
+    <dt>Price:</dt>
+    <dd><%= @price_update.price %></dd>
+  </div>
+
+
+  <div>
+    <dt>Notes:</dt>
+    <dd><code style="overflow: scroll; display: block; overflow: scroll; max-height: 10rem;"><%= @price_update.notes %></code></dd>
+  </div>
+</dl>
+
 
 <%= link_to 'Edit', edit_price_update_path(@price_update) %> |
 <%= link_to 'Back', price_updates_path %>

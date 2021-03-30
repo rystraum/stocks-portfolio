@@ -22,7 +22,7 @@
                         <th class="w-25 p-3"><%= format_date price_update.datetime %></th>
                         <th class="w-25 p-3"><%= link_to price_update.company, price_update.company %></th>
                         <td class="text-right"><%= format_currency price_update.price %></td>
-                        <td><%= price_update.notes.blank? ? "No" : "Yes" %></td>
+                        <td><span class="<%= price_update.notes.blank? ? "badge badge-info" : "badge badge-warning" %>" style="font-size: 12px;"><%= price_update.notes.blank? ? "No" : "Yes" %></span></td>
                         <td class="text-right" style="width: 6%;">
                             <span class="align-middle" style="font-size: 15px;">
                                 <%= link_to "<span class='fe fe-eye'></span>".html_safe, price_update %>
