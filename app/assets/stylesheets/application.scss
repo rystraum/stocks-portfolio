@@ -260,3 +260,15 @@ thead th {
 .text-gray {
   color: rgba(180,180,180,1.0);
 }
+
+.portfolio-header th {
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: .08em;
+  padding: 5px;
+  font-size: 0.625rem;
+
+  a {
+    color: inherit;
+  }
+}

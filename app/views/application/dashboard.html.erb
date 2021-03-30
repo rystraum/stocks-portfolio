@@ -2,39 +2,61 @@
     <p id="notice"><%= notice %></p>
 
     <h1 class="display-4 d-block p-2 ">Portfolio (All Time)</h1>
+    <%
+      portfolio_headers = <<~HEREDOC
+        <tr class="thead-dark portfolio-header">
+            <th scope="col">Company</th>
+            <th scope="col"><a href="#" class="list-sort" data-sort="tables-shares">Shares</a></th>
+            <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-total-cost">Total Cost</a></th>
+            <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-cps">CPS</a></th>
+            <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-percent-cost">% cost</a></th>
+            <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-last-price">Last Price</a></th>
+            <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-last-value">Last Value</a></th>
+            <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-percent-value">% Value</a></th>
+            <th scope="col" colspan="2">P/L</th>
+            <th scope="col" colspan="2">Divs</th>
+            <th scope="col" colspan="2">Annual DPS</th>
+            <th scope="col" colspan="2">P/L + Divs</th>
+        </tr>
+      HEREDOC
+    %>
     <div class="table-responsive" id="portfolioTableID">
         <table class="table table-sm table-striped table-bordered table-hover table-condensed portfolio">
             <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Company</th>
-                    <th scope="col"><a href="#" class="list-sort" data-sort="tables-shares">Shares</a></th>
-                    <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-total-cost">Total Cost</a></th>
-                    <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-cps">CPS</a></th>
-                    <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-percent-cost">% cost</a></th>
-                    <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-last-price">Last Price</a></th>
-                    <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-last-value">Last Value</a></th>
-                    <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-percent-value">% Value</a></th>
-                    <th scope="col" colspan="2">P/L</th>
-                    <th scope="col" colspan="2">Divs</th>
-                    <th scope="col" colspan="2">Annual DPS</th>
-                    <th scope="col" colspan="2">P/L + Divs</th>
-                </tr>
+                <%= raw portfolio_headers %>
             </thead>
             <tbody class="list">
                 <% cs = CompanySet.new(Company.all) %>
                 <% cs.companies.each do |company| %>
-                    <tr class="<%= company.inactive? ? "table-secondary text-secondary" : "active" %>">
-                        <th scope="row" class="tables-company"><%= link_to company, company %><%= "*" if company.inactive? %></th>
-                        <td class="tables-shares"><%= number_with_delimiter company.total_shares %></td>
-                        <td class="tables-total-cost text-right"><%= format_currency company.total_costs %></td>
-                        <td class="tables-cps text-right"><%= format_currency company.cps %></td>
-                        <td class="tables-percent-cost text-right"><%= format_percentage company.total_costs, cs.total_costs %></td>
+                    <% next if company.total_shares.zero? && !company.inactive? %>
+                    <tr class="<%= cycle('odd', 'even') %> <%= company.inactive? ? "table-secondary text-secondary" : "active" %>">
+                        <th scope="row" class="tables-company">
+                          <%= link_to company, company %><%= "*" if company.inactive? %>
+                        </th>
+                        <td class="tables-shares">
+                          <%= number_with_delimiter company.total_shares %>
+                        </td>
+                        <td class="tables-total-cost text-right">
+                          <%= format_currency company.total_costs %>
+                        </td>
+                        <td class="tables-cps text-right">
+                          <%= format_currency company.cps %>
+                        </td>
+                        <td class="tables-percent-cost text-right">
+                          <%= format_percentage company.total_costs, cs.total_costs %>
+                        </td>
                         <td class="tables-last-price text-right">
                             <%= format_currency company.last_price %><br>
-                            <small class="smaller text-gray"><%= company.last_price_timestamp.to_formatted_s(:short) %></small>
+                            <small class="smaller text-gray">
+                              <%= company.last_price_timestamp.strftime("%h %m %Y %H:%M") %>
+                            </small>
                         </td>
-                        <td class="tables-last-value text-right"><%= format_currency company.last_value %></td>
-                        <td class="tables-percent-value text-right"><%= format_percentage company.last_value, cs.total_value %></td>
+                        <td class="tables-last-value text-right">
+                          <%= format_currency company.last_value %>
+                        </td>
+                        <td class="tables-percent-value text-right">
+                          <%= format_percentage company.last_value, cs.total_value %>
+                        </td>
                         <% if company.inactive? %>
                             <td class="text-right text-secondary"><%= format_currency company.profit_loss %></td>
                         <% else %>
@@ -47,21 +69,34 @@
                             <td class="text-right"><%= green_red_percent company.profit_loss, company.actual_total_costs %></td>
                         <% end %>
 
-                        <td class="text-right"><%= format_currency company.cash_dividends_total %></td>
-                        <td class="text-right"><%= format_percentage company.cash_dividends_total, company.total_costs %></td>
                         <td class="text-right">
-                            <% begin %>
-                                <%= format_currency company.cash_dividends_annual_dps %>
-                                <% rescue ZeroDivisionError %>
-                                <%= link_to "Recompute", company %>
+                          <%= format_currency company.cash_dividends_total %>
+                        </td>
+                        <td class="text-right">
+                          <%= format_percentage company.cash_dividends_total, company.total_costs %>
+                        </td>
+                        <td class="text-right">
+                            <% if company.inactive? %>
+                                -
+                            <% else %>
+                                <% begin %>
+                                    <%= format_currency company.cash_dividends_annual_dps %>
+                                    <% rescue ZeroDivisionError %>
+                                    <%= link_to "Recompute", company %>
+                                <% end %>
                             <% end %>
                         </td>
                         <td class="text-right">
-                            <% begin %>
-                                <%= format_percentage company.cash_dividends_annual_dps, company.cps %>
-                                <% rescue ZeroDivisionError %>
-                                <%= link_to "Recompute", company %>
-                            <% end %></td>
+                            <% if company.inactive? %>
+                                -
+                            <% else %>
+                                <% begin %>
+                                    <%= format_percentage company.cash_dividends_annual_dps, company.cps %>
+                                    <% rescue ZeroDivisionError %>
+                                    <%= link_to "Recompute", company %>
+                                <% end %>
+                            <% end %>
+                        </td>
 
                         <% if company.inactive? %>
                             <td class="text-right text-secondary"><%= format_currency company.final_profit_loss %></td>
@@ -82,17 +117,17 @@
                     <th>Totals</th>
                     <td>-</td>
                     <td class="text-right"><%= format_currency cs.total_costs %></td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>-</td>
+                    <td class="text-right">-</td>
+                    <td class="text-right">-</td>
+                    <td class="text-right">-</td>
                     <td class="text-right"><%= format_currency cs.total_value %></td>
-                    <td>-</td>
+                    <td class="text-right">-</td>
                     <td class="text-right"><%= green_red cs.total_profit_loss %></td>
                     <td class="text-right"><%= green_red_percent cs.total_profit_loss, cs.total_value %></td>
                     <td class="text-right"><%= format_currency cs.total_dividends %></td>
                     <td class="text-right"><%= format_percentage cs.total_dividends, cs.total_costs %></td>
-                    <td>-</td>
-                    <td>-</td>
+                    <td class="text-right">-</td>
+                    <td class="text-right">-</td>
                     <td class="text-right"><%= green_red cs.final_profit_loss %></td>
                     <td class="text-right"><%= green_red_percent cs.final_profit_loss, cs.total_value %></td>
                 </tr>
@@ -100,6 +135,7 @@
                     <td colspan=8>* inactive</td>
                     <td colspan=8>P/L Total also includes P/L from 0 share stocks</td>
                 </tr>
+                <%= raw portfolio_headers %>
             </tfoot>
         </table>
     </div>

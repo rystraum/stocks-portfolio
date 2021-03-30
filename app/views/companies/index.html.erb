@@ -23,7 +23,7 @@
                     </thead>
                     <tbody>
                         <% @companies.each do |company| %>
-                            <tr class="company-row">
+                            <tr class="company-row <%= cycle('odd', 'even') %>">
                                 <td class="d-flex">
                                   <%= link_to company.ticker, company %>
                                   <span class="badge ml-auto <%= company.inactive? ? "badge-danger" : "badge-info" %>" style="font-size: 12px;"><%= company.inactive? ? "No" : "Yes" %></span>

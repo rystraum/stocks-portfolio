@@ -18,11 +18,17 @@ option:first-of-type {
   }
 }
 
+tr.odd {
+  background-color: #ffffc4;
+}
+
 .company-table {
   margin-left: 26.5%;
 
-  .company-row td {
-    padding: 0.5rem;
+  .company-row {
+    td {
+      padding: 0.5rem;
+    }
   }
 }
 
