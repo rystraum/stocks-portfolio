@@ -118,7 +118,7 @@ class Company < ApplicationRecord
     last_trade_value = document.css("table.view").last.children[3].children[3].children.to_s.sub("\r\n", "").to_d
 
     price_update = price_updates.where(datetime: datetime).first_or_create do |update|
-      update.price = last_trade_value
+      update.price = last_trade_value.zero? ? last_price : last_trade_value
       update.notes = body
     end
 
