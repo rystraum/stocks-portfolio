@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class StockDividend < ApplicationRecord
+  belongs_to :user
   belongs_to :company
 
   def display_date
