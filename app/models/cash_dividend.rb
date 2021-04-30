@@ -5,6 +5,7 @@ class CashDividend < ApplicationRecord
   validates :pay_date, presence: true
   validates :ex_date, presence: true, on: :create
 
+  belongs_to :user
   belongs_to :company
 
   serialize :meta, Hash
