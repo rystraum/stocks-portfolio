@@ -1,9 +1,11 @@
 class UserPortfolio
+  attr_accessor :user
+
   def initialize(user)
     @user = user
   end
 
   def companies
-    Company.all
+    user.companies
   end
 end
