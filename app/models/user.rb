@@ -6,4 +6,6 @@ class User < ApplicationRecord
   
   has_many :cash_dividends
   has_many :stock_dividends
+  has_many :activities
+  has_many :companies, through: :activities
 end

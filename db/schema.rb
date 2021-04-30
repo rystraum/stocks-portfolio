@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_30_180652) do
+ActiveRecord::Schema.define(version: 2021_04_30_181031) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,8 +24,10 @@ ActiveRecord::Schema.define(version: 2021_04_30_180652) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "charges", precision: 15, scale: 4
+    t.bigint "user_id"
     t.index ["activity_type"], name: "index_activities_on_activity_type"
     t.index ["company_id"], name: "index_activities_on_company_id"
+    t.index ["user_id"], name: "index_activities_on_user_id"
   end
 
   create_table "cash_dividends", force: :cascade do |t|
@@ -88,6 +90,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_180652) do
   end
 
   add_foreign_key "activities", "companies"
+  add_foreign_key "activities", "users"
   add_foreign_key "cash_dividends", "companies"
   add_foreign_key "cash_dividends", "users"
   add_foreign_key "price_updates", "companies"
