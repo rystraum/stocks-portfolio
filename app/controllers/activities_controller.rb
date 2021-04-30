@@ -2,11 +2,12 @@
 
 class ActivitiesController < ApplicationController
   before_action :set_activity, only: %i[show edit update destroy]
+  before_action :authenticate_user!
 
   # GET /activities
   # GET /activities.json
   def index
-    @activities = Activity.order('date desc')
+    @activities = current_user.activities.order('date desc')
   end
 
   # GET /activities/1
@@ -24,7 +25,7 @@ class ActivitiesController < ApplicationController
   # POST /activities
   # POST /activities.json
   def create
-    @activity = Activity.new(activity_params)
+    @activity = current_user.activities.build(activity_params)
 
     respond_to do |format|
       if @activity.save
@@ -65,7 +66,7 @@ class ActivitiesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_activity
-    @activity = Activity.find(params[:id])
+    @activity = current_user.activities.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

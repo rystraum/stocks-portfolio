@@ -1,10 +1,11 @@
 class StockDividendsController < ApplicationController
   before_action :set_stock_dividend, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!
 
   # GET /stock_dividends
   # GET /stock_dividends.json
   def index
-    @stock_dividends = StockDividend.all
+    @stock_dividends = current_user.stock_dividends
   end
 
   # GET /stock_dividends/1
@@ -24,7 +25,7 @@ class StockDividendsController < ApplicationController
   # POST /stock_dividends
   # POST /stock_dividends.json
   def create
-    @stock_dividend = StockDividend.new(stock_dividend_params)
+    @stock_dividend = current_user.stock_dividends.build(stock_dividend_params)
 
     respond_to do |format|
       if @stock_dividend.save
@@ -64,7 +65,7 @@ class StockDividendsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_stock_dividend
-      @stock_dividend = StockDividend.find(params[:id])
+      @stock_dividend = current_user.stock_dividends.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

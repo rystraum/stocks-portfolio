@@ -1,11 +1,12 @@
 class CashDividendsController < ApplicationController
   before_action :set_cash_dividend, only: %i[show edit update destroy]
+  before_action :authenticate_user!
 
   # GET /cash_dividends
   # GET /cash_dividends.json
   def index
-    @cash_dividends = CashDividend.order('pay_date desc')
-    @stock_dividends = StockDividend.order('pay_date desc')
+    @cash_dividends = current_user.cash_dividends.order('pay_date desc')
+    @stock_dividends = current_user.stock_dividends.order('pay_date desc')
   end
 
   # GET /cash_dividends/1
@@ -23,7 +24,7 @@ class CashDividendsController < ApplicationController
   # POST /cash_dividends
   # POST /cash_dividends.json
   def create
-    @cash_dividend = CashDividend.new(cash_dividend_params)
+    @cash_dividend = current_user.cash_dividends.build(cash_dividend_params)
 
     respond_to do |format|
       if @cash_dividend.save
@@ -64,7 +65,7 @@ class CashDividendsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_cash_dividend
-    @cash_dividend = CashDividend.find(params[:id])
+    @cash_dividend = current_user.cash_dividends.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
