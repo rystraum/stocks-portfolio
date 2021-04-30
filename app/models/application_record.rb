@@ -50,14 +50,20 @@ class ApplicationRecord < ActiveRecord::Base
 
   def backup
     return if Rails.env.production?
+    return if ENV.fetch('STOCKS_BACKUP', 'false') == 'false'
 
-    dest = "#{Dir.home}/Dropbox/Finances/Stocks/DB"
-    return unless File.directory?(dest)
+    base = "#{Dir.home}/Dropbox/Finances/Stocks/DB"
+    return unless File.directory?(base)
 
     adapter = Rails.configuration.database_configuration[Rails.env]["adapter"]
     db = Rails.configuration.database_configuration[Rails.env]["database"]
 
-    filename = "backup-#{DateTime.now.to_formatted_s(:iso8601).parameterize}"
+    timestamp = DateTime.now
+    
+    dest = "#{base}/#{timestamp.year}/#{format('%02d', timestamp.month)}/#{format('%02d', timestamp.day)}"
+    FileUtils.mkdir_p("#{dest}")
+
+    filename = "#{timestamp.to_formatted_s(:iso8601).parameterize}"
 
     if adapter.match? /sqlite/
       `cp #{Rails.root.join('db')}/development.sqlite3 #{dest}/#{filename}.sqlite3`
