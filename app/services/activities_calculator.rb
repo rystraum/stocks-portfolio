@@ -8,6 +8,10 @@ class ActivitiesCalculator
     bought_shares - sold_shares
   end
 
+  def ending_pnl
+    sell_gains - buy_costs
+  end
+
   def bought_shares
     @bought_shares ||= buy.collect(&:number_of_shares).sum
   end
@@ -22,6 +26,10 @@ class ActivitiesCalculator
 
   def sell_gains
     @sell_gains ||= sell.collect(&:total_price).sum
+  end
+
+  def cps_on_buy
+    buy_costs / bought_shares
   end
 
   protected
