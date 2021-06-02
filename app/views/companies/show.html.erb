@@ -49,7 +49,8 @@
                                 <th class="text-right">Amount</th>
                             </tr>
                         </thead>
-                        <% @company.activities.each do |activity| %>
+                        <tbody>
+                        <% current_user.company_activities(@company).each do |activity| %>
                             <tr>
                                 <td><%= activity.date.to_formatted_s(:long) %></td>
                                 <td><%= activity.activity_type %></td>
@@ -58,6 +59,16 @@
                                 <td class="text-right"><%= format_currency activity.total_price %></td>
                             </tr>
                         <% end %>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Buy Totals</th>
+                                <th>&nbsp;</th>
+                                <th><%= current_user.bought_shares(@company) %></th>
+                                <th><%= format_currency current_user.cps_on_buy(@company) %></th>
+                                <th class="text-right"><%= format_currency current_user.cost_basis(@company) %></th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -81,17 +92,33 @@
                                 <th>Closest Price</th>
                             </tr>
                         </thead>
-                        <% @company.dividends.each do |dividend| %>
-                            <tr>
-                                <td><%= dividend.is_a?(CashDividend) ? format_currency(dividend.amount) : "" %></td>
-                                <td><%= dividend.is_a?(StockDividend) ? dividend.amount : "" %></td>
-                                <td><%= dividend.ex_date.blank? ? "-" : dividend.ex_date.to_formatted_s(:long) %></td>
-                                <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
-                                <td><%= dividend.is_a?(CashDividend) ? dividend.stocks_at_ex_date : "" %></td>
-                                <td><%= dividend.is_a?(CashDividend) ? dividend.last_price&.to_formatted_s : "" %></td>
-                            </tr>
-                        <% end %>
+                        <tbody>
+                            <% current_user.company_dividends(@company).each do |dividend| %>
+                                <tr>
+                                    <td><%= dividend.is_a?(CashDividend) ? format_currency(dividend.amount) : "" %></td>
+                                    <td><%= dividend.is_a?(StockDividend) ? dividend.amount : "" %></td>
+                                    <td><%= dividend.ex_date.blank? ? "-" : dividend.ex_date.to_formatted_s(:long) %></td>
+                                    <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
+                                    <td>
+                                        <% if dividend.is_a?(CashDividend) %>
+                                            <%= dividend.stocks_at_ex_date %> × <%= format_currency(dividend.amount / dividend.stocks_at_ex_date) %> per share
+                                        <% end %>
+                                    </td>
+                                    <td><%= dividend.is_a?(CashDividend) ? dividend.last_price&.to_formatted_s : "" %></td>
+                                </tr>
+                            <% end %>
+                        </tbody>
                     </table>
+                    <dl class="w-25 my-3 pl-4">
+                        <div>
+                            <dt>Total Cash Dividends:</dt>
+                            <dd><%= format_currency current_user.cash_sum_dividends(@company) %></dd>
+                        </div>
+                        <div>
+                            <dt>% of Cost Basis:</dt>
+                            <dd><%= format_percentage current_user.cash_sum_dividends(@company), current_user.cost_basis(@company) %></dd>
+                        </div>
+                    </dl>
                 </div>
             </div>
         </div>

@@ -8,4 +8,39 @@ class User < ApplicationRecord
   has_many :stock_dividends
   has_many :activities
   has_many :companies, -> { distinct }, through: :activities
+
+  def company_dividends(company)
+    return (stock_dividends.where(company: company) + cash_dividends.where(company: company)).sort_by(&:pay_date)
+  end
+
+  def cash_sum_dividends(company)
+    return cash_dividends.where(company: company).sum(:amount)
+  end
+
+  def company_activities(company)
+    return activities.where(company: company)
+  end
+
+  def bought_shares(company)
+    get_calculator(company).bought_shares
+  end
+
+  def total_shares(company)
+    get_calculator(company).ending_shares
+  end
+
+  def cost_basis(company)
+    get_calculator(company).buy_costs
+  end
+
+  def cps_on_buy(company)
+    get_calculator(company).cps_on_buy
+  end
+
+  private
+
+  def get_calculator(company)
+    @calculator ||= {}
+    @calculator[company.id] ||= ActivitiesCalculator.new(company_activities(company))
+  end
 end
