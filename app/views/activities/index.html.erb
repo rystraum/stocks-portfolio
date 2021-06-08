@@ -14,6 +14,7 @@
                     <th>Number of shares</th>
                     <th class="text-right">Total price</th>
                     <th class="text-right">Charges</th>
+                    <th class="text-right">Notes</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -26,6 +27,7 @@
                         <td><%= activity.number_of_shares %></td>
                         <td class="text-right"><%= number_to_currency activity.total_price, unit: "" %></td>
                         <td class="text-right"><%= number_to_currency activity.charges, unit: "" %></td>
+                        <td class="text-right"><%= truncate activity.notes %></td>
                         <td class="text-right" style="width: 6%;">
                             <span class="align-middle" style="font-size: 15px;">
                                 <%= link_to "<span class='fe fe-eye'></span>".html_safe, activity %>

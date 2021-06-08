@@ -71,7 +71,7 @@ class ActivitiesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def activity_params
-    hash = params.require(:activity).permit(:company_id, :activity_type, :number_of_shares, :total_price, :date, :charges)
+    hash = params.require(:activity).permit(:company_id, :activity_type, :number_of_shares, :total_price, :date, :charges, :notes)
     hash[:total_price] = hash[:total_price].gsub(",", "")
     return hash
   end
