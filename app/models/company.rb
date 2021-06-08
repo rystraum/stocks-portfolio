@@ -83,6 +83,11 @@ class Company < ApplicationRecord
     !pse_company_id.blank? && !pse_security_id.blank?
   end
 
+  def pse_url
+    return "" if pse_company_id.blank?
+    "https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id}"
+  end
+
   protected
 
   def cash_dividends_average_dps

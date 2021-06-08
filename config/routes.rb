@@ -11,6 +11,9 @@ Rails.application.routes.draw do
       get :last_price
       post :price_update_from_pse
     end
+    collection do
+      post :price_update_all_from_pse
+    end
   end
   root to: 'dashboard#show'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
