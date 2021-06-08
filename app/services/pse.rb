@@ -37,8 +37,12 @@ class PSE
 
     last_trade_value = document.css("table.view").last.children[3].children[3].children.to_s.sub("\r\n", "").to_d
 
+    final_price = last_trade_value.zero? || last_trade_value.blank? ? company.last_price : last_trade_value
+    
+    return company.price_updates.order("created_at desc").first if final_price.blank?
+
     price_update = company.price_updates.where(datetime: datetime).first_or_create do |update|
-      update.price = last_trade_value.zero? || last_trade_value.blank? ? company.last_price : last_trade_value
+      update.price = final_price
       update.notes = body
     end
 
