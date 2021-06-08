@@ -29,6 +29,7 @@ class ActivitiesCalculator
   end
 
   def cps_on_buy
+    return 0 if bought_shares.zero?
     buy_costs / bought_shares
   end
 
