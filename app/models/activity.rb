@@ -33,4 +33,13 @@ class Activity < ApplicationRecord
   def is_sell?
     activity_type == 'SELL'
   end
+
+  def is_planned?
+   activity_type.include? "PLANNED" 
+  end
+
+  def convert_planned!
+    return update(activity_type: "BUY") if activity_type == "PLANNED BUY"
+    return update(activity_type: "SELL") if activity_type == "PLANNED SELL"
+  end
 end

@@ -5,7 +5,11 @@ Rails.application.routes.draw do
   resources :price_updates
   resources :cash_dividends
   resources :stock_dividends
-  resources :activities
+  resources :activities do
+    member do
+      post :convert_planned
+    end
+  end
   resources :companies do
     member do
       get :last_price

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ActivitiesController < ApplicationController
-  before_action :set_activity, only: %i[show edit update destroy]
+  before_action :set_activity, only: %i[show edit update destroy convert_planned]
   before_action :authenticate_user!
 
   # GET /activities
@@ -58,6 +58,14 @@ class ActivitiesController < ApplicationController
     @activity.destroy
     respond_to do |format|
       format.html { redirect_to activities_url, notice: 'Activity was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
+  def convert_planned
+    @activity.convert_planned!
+    respond_to do |format|
+      format.html { redirect_to activities_url, notice: "Activity converted to #{@activity.activity_type}" }
       format.json { head :no_content }
     end
   end
