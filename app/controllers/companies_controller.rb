@@ -15,7 +15,7 @@ class CompaniesController < ApplicationController
   def show; end
 
   def price_update_from_pse
-    price_update = @company.price_update_from_pse
+    price_update = PSE.new(@company).price_update!
 
     redirect_back(fallback_location: @company, alert: "Price update failed.") and return unless price_update.persisted?
 
