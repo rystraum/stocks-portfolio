@@ -2,27 +2,77 @@
   "name": "stocks-portfolio",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.3.13",
+    "@babel/preset-react": "^7.13.13",
+    "@babel/runtime": "^7.14.0",
+    "@heroicons/react": "^1.0.0",
+    "@rails/actioncable": "^6.0.0",
+    "@rails/activestorage": "^6.0.0",
+    "@rails/ujs": "^6.0.0",
     "@rails/webpacker": "^6.0.0-beta.7",
+    "@tailwindcss/aspect-ratio": "^0.2.0",
+    "@tailwindcss/forms": "^0.2.1",
+    "@tailwindcss/line-clamp": "^0.2.0",
+    "@tailwindcss/typography": "^0.4.0",
+    "autoprefixer": "^10.2.5",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "css-loader": "^5.2.4",
+    "formik": "^2.2.6",
+    "graphql": "^15.5.0",
+    "jquery": "^3.6.0",
+    "mini-css-extract-plugin": "^1.6.0",
+    "postcss": "^8.2.15",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-import": "^14.0.2",
+    "postcss-loader": "^5.2.0",
+    "postcss-preset-env": "^6.7.0",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "sass": "^1.32.13",
+    "sass-loader": "^11.1.1",
+    "select2": "^4.1.0-rc.0",
+    "style-loader": "^2.0.0",
+    "tailwindcss": "^2.1.2",
+    "turbolinks": "^5.2.0",
     "webpack": "^5.11.0",
     "webpack-cli": "^4.2.0"
   },
+  "version": "0.1.0",
   "devDependencies": {
-    "@tailwindcss/aspect-ratio": "^0.2.1",
-    "@tailwindcss/forms": "^0.3.3",
-    "@tailwindcss/line-clamp": "^0.2.1",
-    "@tailwindcss/typography": "^0.4.1",
-    "@webpack-cli/serve": "^1.5.1",
-    "autoprefixer": "^10.2.6",
-    "postcss": "^8.3.2",
-    "tailwindcss": "^2.1.4",
+    "@babel/core": "^7.13.14",
+    "@babel/eslint-parser": "^7.13.14",
+    "@babel/plugin-proposal-optional-chaining": "^7.13.12",
+    "@babel/plugin-transform-runtime": "^7.14.2",
+    "@babel/preset-env": "^7.14.2",
+    "@prettier/plugin-ruby": "^1.5.5",
+    "@webpack-cli/serve": "^1.4.0",
+    "eslint": "^7.26.0",
+    "eslint-config-react-app": "^6.0.0",
+    "eslint-plugin-import": "2.x",
+    "eslint-plugin-jsx-a11y": "6.x",
+    "eslint-plugin-react": "7.x",
+    "eslint-plugin-react-hooks": "1.5.0",
+    "prettier": "^2.3.0",
     "webpack-dev-server": "^3.11.2"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 4,
+    "semi": true,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.{rb,erb}",
+        "options": {
+          "tabWidth": 2
+        }
+      }
+    ]
   },
   "babel": {
     "presets": [
       "./node_modules/@rails/webpacker/package/babel/preset.js"
     ]
-  },
-  "browserslist": [
-    "defaults"
-  ]
+  }
 }

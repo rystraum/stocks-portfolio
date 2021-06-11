@@ -7,6 +7,9 @@
         <%= csp_meta_tag %>
         <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
         <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        <%= stylesheet_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
     </head>
     <body>
         <div class="main-container">
@@ -38,9 +41,20 @@
                         <%= msg %>
                     </div>
                 <% end %>
+                <div class="bg-gradient-to-r from-light-blue-50 to-light-blue-100">
+                    <div class="p-6 max-w-sm mx-auto bg-white rounded-xl shadow-md flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <img class="h-12 w-12" src="/img/logo.svg" alt="ChitChat Logo">
+                        </div>
+                        <div>
+                            <div class="text-xl font-medium text-black">ChitChat</div>
+                            <p class="text-gray-500">You have a new message!</p>
+                        </div>
+                    </div>
+                </div>
                 <%= yield %>
             </div>
-            <%= javascript_packs_with_chunks_tag 'index', 'data-turbolinks-track': 'reload' %>
+            <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
         </div>
     </body>
 </html>

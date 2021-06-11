@@ -1,17 +1,35 @@
 module.exports = {
     mode: "jit",
-    purge: ["./public/**/*.html"],
+    purge: [
+        "./app/views/**/*.erb",
+        "./app/helpers/application_helper.rb",
+        "./app/javascript/**/*.{js,jsx,ts,tsx,vue}",
+        "./app/components/**/*.erb",
+    ],
     darkMode: false, // or 'media' or 'class'
     theme: {
-        extend: {},
+        extend: {
+            colors: {
+                primary: {
+                    DEFAULT: "#f9983b",
+                },
+                transparent: "transparent",
+                current: "currentColor",
+            },
+            fontSize: {
+                xxs: ["0.5rem", { lineHeight: "1rem" }],
+            },
+        },
     },
     variants: {
-        extend: {},
+        extend: {
+            opacity: ["disabled"],
+        },
     },
     plugins: [
         require("@tailwindcss/typography"),
         require("@tailwindcss/forms"),
         require("@tailwindcss/line-clamp"),
-        require("@tailwindcss/aspect-ratio")
+        require("@tailwindcss/aspect-ratio"),
     ],
 };
