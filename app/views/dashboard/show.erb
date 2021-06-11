@@ -1,37 +1,43 @@
-<div class="container-fluid main-body">
-    <p id="notice"><%= notice %></p>
+<header class="bg-white shadow">
+    <div class="mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-bold text-gray-900">
+            All Time Portfolio
+        </h1>
+    </div>
+</header>
 
-    <h1 class="display-4 d-block p-2 ">Portfolio (All Time)</h1>
+
+<div class="container-fluid main-body">
     <%
       portfolio_headers = <<~HEREDOC
-        <tr class="thead-dark portfolio-header">
-            <th scope="col">Company</th>
-            <th scope="col"><a href="#" class="list-sort" data-sort="tables-shares">Shares</a></th>
-            <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-total-cost">Total Cost</a></th>
-            <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-cps">CPS</a></th>
-            <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-percent-cost">% cost</a></th>
-            <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-last-price">Last Price</a></th>
-            <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-last-value">Last Value</a></th>
-            <th scope="col"><a href="#" class="list-sort text-right" data-sort="tables-percent-value">% Value</a></th>
-            <th scope="col" colspan="2">P/L</th>
-            <th scope="col" colspan="2">Divs</th>
-            <th scope="col" colspan="2">Annual DPS</th>
-            <th scope="col" colspan="2">P/L + Divs</th>
+        <tr class="portfolio-header bg-blue-800 text-white">
+            <th scope="col" class="text-left">Company</th>
+            <th scope="col" class="text-left">Shares</th>
+            <th scope="col" class="text-right">Total Cost</th>
+            <th scope="col" class="text-right">CPS</th>
+            <th scope="col" class="text-right">% Cost</th>
+            <th scope="col" class="text-right">Last Price</th>
+            <th scope="col" class="text-right">Last Value</th>
+            <th scope="col" class="text-right">% Value</th>
+            <th scope="col" class="text-left" colspan="2">P/L</th>
+            <th scope="col" class="text-left" colspan="2">Divs</th>
+            <th scope="col" class="text-left" colspan="2">Annual DPS</th>
+            <th scope="col" class="text-left" colspan="2">P/L + Divs</th>
         </tr>
       HEREDOC
     %>
     <div class="table-responsive" id="portfolioTableID">
-        <table class="table table-sm table-striped table-bordered table-hover table-condensed portfolio">
-            <thead class="thead-dark">
+        <table class="company-table min-w-full border border-collapse">
+            <thead>
                 <%= raw portfolio_headers %>
             </thead>
-            <tbody class="list">
+            <tbody class="list divide-x divide-y divide-gray-400">
                 <% company_set.companies.each do |company| %>
                     <% next if company.total_shares.zero? && !company.inactive? %>
-                    <tr class="<%= cycle('odd', 'even') %> <%= company.inactive? ? "table-secondary text-secondary" : "active" %>">
-                        <th scope="row" class="tables-company">
+                    <tr class="<%= company.inactive? ? "bg-gray-700 bg-gray-700 text-white" : cycle('bg-white', 'bg-blue-50') %>">
+                        <td scope="row" class="tables-company">
                           <%= link_to company, company %><%= "*" if company.inactive? %>
-                        </th>
+                        </td>
                         <td class="tables-shares">
                           <%= number_with_delimiter company.total_shares %>
                         </td>

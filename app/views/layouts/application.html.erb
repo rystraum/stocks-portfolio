@@ -11,15 +11,11 @@
     </head>
     <body>
         <%= render user_signed_in? ? "shared/logged_in_header" : "shared/logged_out_header" %>
-        <div class="main-container">
-            <div class="body-container yield-padding">
-                <% flash.each do |type, msg| %>
-                    <%= render "shared/alert", message: msg, type: type %>
-                <% end %>
-                
-                <%= yield %>
-            </div>
-            <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-        </div>
+        <% flash.each do |type, msg| %>
+            <%= render "shared/alert", message: msg, type: type %>
+        <% end %>
+        
+        <%= yield %>
+        <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
     </body>
 </html>

@@ -1,5 +1,6 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
-<% bg_color = type == :notice ? "bg-green-500" : "bg-yellow-500" %>
+<% bg_color = type == "notice" ? "bg-green-500" : "bg-yellow-500" %>
+<!-- <%= type %> -->
 <div class="<%= bg_color %>">
     <div class="mx-auto py-3 px-3 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between flex-wrap">

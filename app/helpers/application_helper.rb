@@ -21,11 +21,11 @@ module ApplicationHelper
   end
 
   def green_red(amount)
-    tag.span format_currency(amount), class: (amount.negative? ? 'text-red' : 'text-green').to_s
+    tag.span format_currency(amount), class: (amount.negative? ? 'text-red-500' : 'text-green-500').to_s
   end
 
   def green_red_percent(amount, denominator)
-    tag.span format_percentage(amount, denominator), class: (amount.negative? ? 'text-red' : 'text-green').to_s
+    tag.span format_percentage(amount, denominator), class: (amount.negative? ? 'text-red-500' : 'text-green-500').to_s
   end
 
   def green_red_percent_badge(amount, denominator)
