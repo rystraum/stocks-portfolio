@@ -1,0 +1,24 @@
+<!-- This example requires Tailwind CSS v2.0+ -->
+<% bg_color = type == :notice ? "bg-green-500" : "bg-yellow-500" %>
+<div class="<%= bg_color %>">
+    <div class="mx-auto py-3 px-3 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between flex-wrap">
+            <div class="w-0 flex-1 flex items-center">
+                <span class="flex p-2 rounded-lg <%= bg_color %>">
+                    <!-- Heroicon name: outline/speakerphone -->
+                    <%= speaker_icon %>
+                </span>
+                <p class="ml-3 font-medium text-white truncate">
+                    <%= message %>
+                </p>
+            </div>
+            <div class="order-2 flex-shrink-0 sm:order-3 sm:ml-3">
+                <button type="button" class="-mr-1 flex p-2 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2">
+                    <span class="sr-only">Dismiss</span>
+                    <!-- Heroicon name: outline/x -->
+                    <%= x_icon %>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

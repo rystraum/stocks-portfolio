@@ -5,53 +5,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <%= csrf_meta_tags %>
         <%= csp_meta_tag %>
-        <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-        <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         <%= stylesheet_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
     </head>
     <body>
+        <%= render user_signed_in? ? "shared/logged_in_header" : "shared/logged_out_header" %>
         <div class="main-container">
-            <nav class="navbar navbar-expand-sm navbar-dark main-nav">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation-bar" aria-controls="navigation-bar" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navigation-bar">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><%= link_to "<span class='fe fe-home'></span>".html_safe, root_path, class: "text-success nav-link" %></li>
-                    <li class="nav-item"><%= link_to "New Cash Dividend", new_cash_dividend_path, class: "text-white flex-sm-fill nav-link #{active_tab?(new_cash_dividend_path)}" %></li>
-                    <li class="nav-item"><%= link_to "New Activity", new_activity_path, class: "text-white flex-sm-fill nav-link #{active_tab?(new_activity_path)}" %></li>
-                    <li class="nav-item"><%= link_to "Companies", companies_path, class: "text-white flex-sm-fill nav-link #{active_tab?(companies_path)}" %></li>
-                    <li class="nav-item"><%= link_to "Dividends", cash_dividends_path, class: "text-white flex-sm-fill nav-link #{active_tab?(cash_dividends_path)}" %></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white <%= active_tab?(activities_path) %> <%= active_tab?(price_updates_path) %>" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">History</a>
-                        <div class="dropdown-menu">
-                            <%= link_to "Activity History", activities_path, class: "text-dark flex-sm-fill nav-link" %>
-                            <%= link_to "Price History", price_updates_path, class: "text-dark flex-sm-fill nav-link" %>
-                            <%= link_to "Price Update", new_price_update_path, class: "text-dark flex-sm-fill nav-link" %>
-                        </div>
-                    </li>
-                </ul>
-            </nav>
-
             <div class="body-container yield-padding">
                 <% flash.each do |type, msg| %>
-                    <div class="alert alert-<%= type == "alert" ? "danger" : "info" %>">
-                        <%= msg %>
-                    </div>
+                    <%= render "shared/alert", message: msg, type: type %>
                 <% end %>
-                <div class="bg-gradient-to-r from-light-blue-50 to-light-blue-100">
-                    <div class="p-6 max-w-sm mx-auto bg-white rounded-xl shadow-md flex items-center space-x-4">
-                        <div class="flex-shrink-0">
-                            <img class="h-12 w-12" src="/img/logo.svg" alt="ChitChat Logo">
-                        </div>
-                        <div>
-                            <div class="text-xl font-medium text-black">ChitChat</div>
-                            <p class="text-gray-500">You have a new message!</p>
-                        </div>
-                    </div>
-                </div>
+                
                 <%= yield %>
             </div>
             <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
