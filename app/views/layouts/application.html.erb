@@ -40,6 +40,7 @@
                 <% end %>
                 <%= yield %>
             </div>
+            <%= javascript_packs_with_chunks_tag 'index', 'data-turbolinks-track': 'reload' %>
         </div>
     </body>
 </html>
