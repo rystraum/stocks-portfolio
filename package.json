@@ -8,10 +8,15 @@
   },
   "devDependencies": {
     "@webpack-cli/serve": "^1.5.1",
+    "autoprefixer": "^10.2.6",
+    "postcss": "^8.3.2",
+    "tailwindcss": "^2.1.4",
     "webpack-dev-server": "^3.11.2"
   },
   "babel": {
-    "presets": ["./node_modules/@rails/webpacker/package/babel/preset.js"]
+    "presets": [
+      "./node_modules/@rails/webpacker/package/babel/preset.js"
+    ]
   },
   "browserslist": [
     "defaults"
