@@ -5,7 +5,7 @@ class CashDividendsController < ApplicationController
   # GET /cash_dividends
   # GET /cash_dividends.json
   def index
-    @cash_dividends = current_user.cash_dividends.order('pay_date desc')
+    @cash_dividends = CashDividendSet.new(current_user.cash_dividends.order('pay_date desc'))
     @stock_dividends = current_user.stock_dividends.order('pay_date desc')
   end
 

@@ -36,9 +36,9 @@
                         <td class="text-right"><%= truncate activity.notes %></td>
                         <td class="text-right" style="width: 6%;">
                             <span class="align-middle" style="font-size: 15px;">
-                                <%= link_to "<span class='fe fe-eye'></span>".html_safe, activity %>
-                                <%= link_to "<span class='fe fe-edit'></span>".html_safe, edit_activity_path(activity) %>
-                                <%= link_to "<span class='fe fe-trash'></span>".html_safe, activity, method: :delete, data: { confirm: 'Are you sure?' } %>
+                                <%= link_to eye_icon, activity %>
+                                <%= link_to edit_icon, edit_activity_path(activity) %>
+                                <%= link_to trash_icon, activity, method: :delete, data: { confirm: 'Are you sure?' } %>
                             </span>
                         </td>
                     </tr>

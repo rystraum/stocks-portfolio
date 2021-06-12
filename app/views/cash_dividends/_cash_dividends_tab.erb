@@ -1,0 +1,38 @@
+<div class="flex flex-col">
+    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div class="dividends-table-container">
+                <table>
+                    <thead class="thead-dark">
+                        <tr class="text-center">
+                            <th>Company</th>
+                            <th>Pay date</th>
+                            <th>Ex date</th>
+                            <th>Stocks at Ex-Date</th>
+                            <th>DPS</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% cash_dividends.each do |cash_dividend| %>
+                            <tr>
+                                <th><%= link_to cash_dividend.company, cash_dividend.company %></td>
+                                <td class="text-center"><%= format_date cash_dividend.pay_date %></td>
+                                <td class="text-center"><%= format_date cash_dividend.ex_date %></td>
+                                <td class="text-center"><%= cash_dividend.stocks_at_ex_date %></td>
+                                <td class="text-right"><%= format_currency cash_dividend.dividend_per_share %></td>
+                                <td class="text-right"><%= format_currency cash_dividend.amount %></td>
+                                <td class="text-right actions">
+                                    <%= link_to eye_icon, cash_dividend %>
+                                    <%= link_to edit_icon, edit_cash_dividend_path(cash_dividend) %>
+                                    <%= link_to trash_icon, cash_dividend, method: :delete, data: { confirm: 'Are you sure?' } %>
+                                </td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

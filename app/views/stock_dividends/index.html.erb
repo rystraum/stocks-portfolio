@@ -24,8 +24,8 @@
                         <td>
                             <%= link_to 'Show', stock_dividend, class: "btn btn-primary btn-sm" %>
                             <span class="align-middle" style="font-size: 20px;">
-                                <%= link_to "<span class='fe fe-edit'></span>".html_safe, edit_stock_dividend_path(stock_dividend) %>
-                                <%= link_to "<span class='fe fe-trash'></span>".html_safe, stock_dividend, method: :delete, data: { confirm: 'Are you sure?' } %>
+                                <%= link_to edit_icon, edit_stock_dividend_path(stock_dividend) %>
+                                <%= link_to trash_icon, stock_dividend, method: :delete, data: { confirm: 'Are you sure?' } %>
                             </span>
                         </td>
                     </tr>

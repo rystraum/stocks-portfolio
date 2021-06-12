@@ -40,9 +40,9 @@
                             </button>
                             <div class="opacity-0 invisible dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95">
                                 <div class="absolute left-0 w-56 mt-2 origin-top-left bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" id="history-menu-items" role="menu">
-                                    <%= header_link_to "Activity History", activities_path, class: "block", id: "history-menu-item-0" %>
-                                    <%= header_link_to "Price History", price_updates_path, class: "block", id: "history-menu-item-1" %>
-                                    <%= header_link_to "Price Update", new_price_update_path, class: "block", id: "history-menu-item-2" %>
+                                    <%= header_link_to "Activity History", activities_path, class: "block text-gray-700", id: "history-menu-item-0" %>
+                                    <%= header_link_to "Price History", price_updates_path, class: "block text-gray-700", id: "history-menu-item-1" %>
+                                    <%= header_link_to "Price Update", new_price_update_path, class: "block text-gray-700", id: "history-menu-item-2" %>
                                 </div>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                         <div class="absolute right-0 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" id="profile-menu-items" role="menu">
                             <div class="px-4 py-3">
                                 <p class="text-sm leading-5">Signed in as</p>
-                                <p class="text-sm font-medium leading-5 text-gray-900 truncate"><%= current_user.email %></p>
+                                <p class="text-sm font-medium leading-5 text-black truncate"><%= current_user.email %></p>
                             </div>
                             <%= header_link_to "Logout", destroy_user_session_path, method: :delete, class: "block", id: "profile-menu-item-1" %>
                         </div>
