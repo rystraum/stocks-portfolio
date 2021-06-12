@@ -4,15 +4,15 @@ module TailwindHelper
 
     if is_active_path
       css_class =
-        'bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium'
+        'bg-gray-900 text-white'
       args[:aria] ||= {}
       args[:aria][:current] = 'page'
     else
       css_class =
-        'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium'
+        'text-gray-300 hover:bg-gray-700 hover:text-white'
     end
 
-    args[:class] = "#{args[:class]} #{css_class}"
+    args[:class] = "rounded-md text-sm font-medium border-0 px-3 py-2 #{css_class} #{args[:class]}"
     link_to(text, path, args)
   end
 

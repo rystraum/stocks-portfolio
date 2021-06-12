@@ -2,6 +2,18 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+a {
+  @apply border-b;
+}
+
+.btn {
+  @apply px-4 py-2 inline-block m-2 rounded shadow;
+}
+
+.btn-primary {
+  @apply bg-primary-500;
+}
+
 .dropdown:focus-within .dropdown-menu {
   opacity:1;
   transform: translate(0) scale(1);
@@ -55,11 +67,11 @@
   }
 
   a {
-    @apply shadow border px-4 py-1 border-gray-900 text-white bg-blue-800 inline-block;
+    @apply px-4 py-1 m-0 mr-2 bg-primary-500 inline-block;
   }
 
   table {
-    @apply shadow min-w-full divide-y divide-gray-200 bg-blue-900 text-white;
+    @apply shadow min-w-full divide-y divide-gray-200 bg-white;
   }
 
   thead {
@@ -70,10 +82,10 @@
 
   tbody {
     tr {
-      @apply border-b border-gray-600;
+      @apply border-b border-gray-300;
 
       &:nth-child(odd) td {
-        @apply bg-gray-800;
+        @apply bg-blue-50;
       }
     }
 

@@ -7,7 +7,7 @@
     </div>
 </header>
 -->
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
         <div>
             <h1 class="text-3xl font-bold text-gray-900 text-center">D. Ladder</h1>
@@ -16,7 +16,7 @@
             </h2>
             <p class="mt-2 text-center text-sm text-gray-600">
                 Or
-                <%= link_to new_registration_path(resource_name), class: "font-medium text-indigo-600 hover:text-indigo-500" do %>
+                <%= link_to new_registration_path(resource_name), class: "font-medium text-primary-600 hover:text-primary-500" do %>
                     start your free trial
                 <% end %>
             </p>
@@ -26,24 +26,24 @@
             <div class="rounded-md shadow-sm -space-y-px">
                 <div>
                     <%= f.label :email %>
-                    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" %>
+                    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm" %>
                 </div>
                 <div>
                     <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
-                    <%= f.password_field :password, autocomplete: "current-password", class: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" %>
+                    <%= f.password_field :password, autocomplete: "current-password", class: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm" %>
                 </div>
             </div>
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <%= f.check_box :remember_me, class: "h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" %>
+                    <%= f.check_box :remember_me, class: "h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded" %>
                     <%= f.label :remember_me, class: "ml-2 block text-sm text-gray-900" %>
                 </div>
                 <div class="text-sm">
-                    <%= link_to "Forgot your password?", new_password_path(resource_name), class: "font-medium text-indigo-600 hover:text-indigo-500" %>
+                    <%= link_to "Forgot your password?", new_password_path(resource_name), class: "font-medium text-primary-600 hover:text-primary-500" %>
                 </div>
             </div>
             <div>
-                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                     <span class="absolute left-0 inset-y-0 flex items-center pl-3">
                         <!-- Heroicon name: solid/lock-closed -->
                         <%= closed_lock_icon %>
@@ -54,39 +54,3 @@
         <% end %>
     </div>
 </div>
-<main>
-    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <!-- Replace with your content -->
-        <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "max-w-lg" }) do |f| %>
-            <div class="mb-3">
-                <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
-                <div class="mt-1 relative rounded-md shadow-sm">
-                    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-600" %>
-                </div>
-            </div>
-            <div class="mb-3">
-                <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
-                <div class="mt-1 relative rounded-md shadow-sm">
-                    <%= f.email_field :password, autocomplete: "current-password", class: "focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-600" %>
-                </div>
-            </div>
-            <% if devise_mapping.rememberable? %>
-                <div class="flex items-start mb-3">
-                    <div class="flex items-center h-5">
-                        <%= f.check_box :remember_me, class: "focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" %>
-                    </div>
-                    <div class="ml-3 text-sm">
-                        <%= f.label :remember_me, class: "font-medium text-gray-700" %>
-                        <!-- <p class="text-gray-500">Get notified when someones posts a comment on a posting.</p> -->
-                    </div>
-                </div>
-            <% end %>
-            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Login
-            </button>
-        <% end %>
-        <hr class="my-4">
-        <%= render "devise/shared/links" %>
-        <!-- /End replace -->
-    </div>
-</main>

@@ -10,7 +10,9 @@
         <%= stylesheet_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
     </head>
     <body>
-        <%= render user_signed_in? ? "shared/logged_in_header" : "shared/logged_out_header" %>
+        <% if !devise_controller? %>
+            <%= render user_signed_in? ? "shared/logged_in_header" : "shared/logged_out_header" %>
+        <% end %>
         <% flash.each do |type, msg| %>
             <%= render "shared/alert", message: msg, type: type %>
         <% end %>
