@@ -9,6 +9,10 @@ class User < ApplicationRecord
   has_many :activities
   has_many :companies, -> { distinct }, through: :activities
 
+  def gravatar_hash
+    Digest::MD5.hexdigest email.downcase
+  end
+
   def company_dividends(company)
     return (stock_dividends.where(company: company) + cash_dividends.where(company: company)).sort_by(&:pay_date)
   end
