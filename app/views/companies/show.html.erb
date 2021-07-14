@@ -1,10 +1,10 @@
 <div class="ml-auto mt-4 btn-group">
-    <%= link_to '<i class="fe fe-chevron-left"></i> Back'.html_safe, companies_path, class: "btn btn-primary" %>
-    <%= link_to 'Edit', edit_company_path(@company), class: "btn btn-secondary" %>
+    <%= link_to "#{chevron_left_icon} Back".html_safe, companies_path, class: "btn btn-primary" %>
+    <%= link_to "#{edit_icon} Edit".html_safe, edit_company_path(@company), class: "btn btn-secondary" %>
     <%= link_to "Update from PSE", [:price_update_from_pse, @company], method: :post, class: "btn btn-secondary" if @company.can_update_from_pse? %>
 </div>
-<p id="notice"><%= notice %></p>
-<div class="container-fluid">
+
+<div class="flex">
     <div class="row mb-4">
         <div class="col-4">
             <div class="card">
@@ -216,17 +216,18 @@
             </div>
         </div>
     <% end %>
-    <div class="w-25">
-        <p>Expected Next Dividend based from Last Dividend Rate:</p>
-        <dl class="">
-            <div class="">
-                <dt>Shares on hand</dt>
-                <dd><%= format_currency number_of_shares * last_dividend_rate %></dd>
-            </div>
-            <div class="">
-                <dt>Planned</dt>
-                <dd><%= format_currency planned_number_of_shares * last_dividend_rate %></dd>
-            </div>
-        </dl>
-    </div>
+</div>
+
+<div class="w-25">
+    <p>Expected Next Dividend based from Last Dividend Rate:</p>
+    <dl class="">
+        <div class="">
+            <dt>Shares on hand</dt>
+            <dd><%= format_currency number_of_shares * last_dividend_rate %></dd>
+        </div>
+        <div class="">
+            <dt>Planned</dt>
+            <dd><%= format_currency planned_number_of_shares * last_dividend_rate %></dd>
+        </div>
+    </dl>
 </div>
