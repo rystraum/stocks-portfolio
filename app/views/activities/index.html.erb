@@ -1,49 +1,47 @@
-<div class="container-fluid">
-    <p id="notice"><%= notice %></p>
-    <div class="p-2 d-flex justify-content-between align-items-center">
-        <h1 class="display-4">Activities</h1>
-        <h3 class="add-button"><%= link_to "<span class='text-info fe fe-plus-square'></span><span class='text-info'> Add new activity</span>".html_safe, new_activity_path %></h3>
-    </div>
-    <div class="table-responsive">
-        <table class="table table-sm table-striped table-hover">
-            <thead class="thead-dark">
-                <tr class="text-center">
-                    <th>Date</th>
-                    <th>Company</th>
-                    <th>Activity type</th>
-                    <th>Number of shares</th>
-                    <th class="text-right">Total price</th>
-                    <th class="text-right">Charges</th>
-                    <th class="text-right">Notes</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% @activities.each do |activity| %>
-                    <tr class="text-center">
-                        <th><%= format_date activity.date %></th>
-                        <th><%= link_to activity.company, activity.company %></th>
-                        <td>
-                            <span class="<%= activity.is_buy? ? "badge badge-success" : activity.is_sell? ? "badge badge-danger" : "badge badge-warning" %>" style="font-size: 12px;">
-                                <%= activity.activity_type %>
-                            </span>
-                            <br>
-                            <%= link_to "Convert", [:convert_planned, activity], method: :post, data: { confirm: "Are you sure you want to convert #{activity.activity_type}?" }, class: "btn btn-sm btn-outline-secondary d-inline-block mt-2" if activity.is_planned? %>
-                        </td>
-                        <td><%= activity.number_of_shares %></td>
-                        <td class="text-right"><%= number_to_currency activity.total_price, unit: "" %></td>
-                        <td class="text-right"><%= number_to_currency activity.charges, unit: "" %></td>
-                        <td class="text-right"><%= truncate activity.notes %></td>
-                        <td class="text-right" style="width: 6%;">
-                            <span class="align-middle" style="font-size: 15px;">
-                                <%= link_to eye_icon, activity %>
-                                <%= link_to edit_icon, edit_activity_path(activity) %>
-                                <%= link_to trash_icon, activity, method: :delete, data: { confirm: 'Are you sure?' } %>
-                            </span>
-                        </td>
-                    </tr>
-                <% end %>
-            </tbody>
-        </table>
-    </div>
-</div>
+<%= render "shared/header", text: "Activities" do %>
+    <%= link_to new_activity_path, class: "btn btn-primary" do %>
+        <%= add_icon %>
+        <span>New Activity</span>
+    <% end %>
+<% end %>
+
+<table class="table table-striped m-auto">
+    <thead class="thead-dark">
+        <tr class="text-center">
+            <th>Date</th>
+            <th>Company</th>
+            <th>Activity type</th>
+            <th>Number of shares</th>
+            <th class="text-right">Total price</th>
+            <th class="text-right">Charges</th>
+            <th class="text-right">Notes</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @activities.each do |activity| %>
+            <tr>
+                <th><%= format_date activity.date %></th>
+                <th><%= link_to activity.company, activity.company %></th>
+                <td>
+                    <span class="<%= activity.is_buy? ? "badge badge-success" : activity.is_sell? ? "badge badge-danger" : "badge badge-warning" %>" style="font-size: 12px;">
+                        <%= activity.activity_type %>
+                    </span>
+                    <br>
+                    <%= link_to "Convert", [:convert_planned, activity], method: :post, data: { confirm: "Are you sure you want to convert #{activity.activity_type}?" }, class: "btn btn-primary" if activity.is_planned? %>
+                </td>
+                <td><%= activity.number_of_shares %></td>
+                <td class="text-right"><%= number_to_currency activity.total_price, unit: "" %></td>
+                <td class="text-right"><%= number_to_currency activity.charges, unit: "" %></td>
+                <td class="text-right"><%= truncate activity.notes %></td>
+                <td>
+                    <div class="flex w-20">
+                        <%= link_to eye_icon, activity, class: "w-8 h-8" %>
+                        <%= link_to edit_icon, edit_activity_path(activity), class: "w-8 h-8" %>
+                        <%= link_to trash_icon, activity, method: :delete, data: { confirm: 'Are you sure?' }, class: "w-8 h-8" %>
+                    </div>
+                </td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
