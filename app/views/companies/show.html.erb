@@ -43,8 +43,8 @@
                         <thead>
                             <tr>
                                 <th>Date</th>
-                                <th>Type</th>
-                                <th>Shares</th>
+                                <th>BUY</th>
+                                <th>SELL</th>
                                 <th>Cost Per Share</th>
                                 <th class="text-right">Amount</th>
                             </tr>
@@ -53,8 +53,8 @@
                         <% current_user.company_activities(@company).each do |activity| %>
                             <tr>
                                 <td><%= activity.date.to_formatted_s(:long) %></td>
-                                <td><%= activity.activity_type %></td>
-                                <td><%= activity.number_of_shares %></td>
+                                <td><%= activity.is_buy? ? activity.number_of_shares : "-"  %></td>
+                                <td><%= activity.is_sell? ? activity.number_of_shares : "-" %></td>
                                 <td><%= format_currency activity.cost_per_share %></td>
                                 <td class="text-right"><%= format_currency activity.total_price %></td>
                             </tr>
@@ -62,11 +62,18 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>Buy Totals</th>
-                                <th>&nbsp;</th>
-                                <th><%= current_user.bought_shares(@company) %></th>
+                                <th>Buy Summary</th>
+                                <th colspan="2"><%= current_user.bought_shares(@company) %></th>
                                 <th><%= format_currency current_user.cps_on_buy(@company) %></th>
                                 <th class="text-right"><%= format_currency current_user.cost_basis(@company) %></th>
+                            </tr>
+                            <tr>
+                                <th>Sell Summary</th>
+                                <th colspan="2"><%= current_user.sold_shares(@company) %></th>
+                                <th>Profit/Loss</th>
+                                <th class="text-right">
+                                    <%= format_currency current_user.total_amount(@company) %>
+                                </th>
                             </tr>
                         </tfoot>
                     </table>

@@ -29,8 +29,16 @@ class User < ApplicationRecord
     get_calculator(company).bought_shares
   end
 
+  def sold_shares(company)
+    get_calculator(company).sold_shares
+  end
+
   def total_shares(company)
     get_calculator(company).ending_shares
+  end
+
+  def total_amount(company)
+    get_calculator(company).ending_pnl
   end
 
   def cost_basis(company)
