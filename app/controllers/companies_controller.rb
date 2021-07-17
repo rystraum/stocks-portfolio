@@ -15,16 +15,10 @@ class CompaniesController < ApplicationController
   def show; end
 
   def price_update_all_from_pse
-    c = 0
-    Company.alphabetical.each.with_index do |company, index|
-      next if !company.can_update_from_pse?
-      PriceUpdateJob.set(wait: 2.seconds * index).perform_later(company)
-      c += 1
-    end
-
+    count = PriceUpdateCompanies.new.run!
     respond_to do |format|
       format.html do
-        flash[:notice] = "Queued price update for #{c} companies."
+        flash[:notice] = "Queued price update for #{count} companies."
         redirect_back(fallback_location: companies_url)
       end
     end
