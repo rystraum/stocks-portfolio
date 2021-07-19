@@ -161,4 +161,8 @@ a {
       @apply mr-2 items-center;
     }
   }
+
+  .form-check input {
+    @apply mr-2;
+  }
 }
