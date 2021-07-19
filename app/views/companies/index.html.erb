@@ -1,23 +1,13 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col company-new border-right w-25">
-            <div class="card">
-                <div class="card-body">
-                    <h2> Add new company</h2>
-                    <%= render 'form', company: @company %>
-                </div>
-            </div>
-        </div>
-        <div class="col col-9 company-table">
-            <p id="notice"><%= notice %></p>
-            <div class="d-flex">
-                <h1 class="display-4 d-block p-2">Companies</h1>
-                <div class="ml-auto">
-                    <%= link_to "Update all from PSE", price_update_all_from_pse_companies_path, method: :post, class: "btn btn-primary" %>
-                </div>
-            </div>
-        </div>
-    </div>
+<%= render "shared/header", text: "Companies" do %>
+    <%= link_to price_update_all_from_pse_companies_path, method: :post, class: "btn btn-primary" do %>
+        <span class="mr-2 inline-block"><%= save_as_icon %></span>
+        <span>Update all from PSE</span>
+    <% end %>
+<% end %>
+
+<div class="card company-new w-1/4">
+    <h2 class="font-bold text-2xl text-gray-900"> Add new company</h2>
+    <%= render 'companies/form', company: @company %>
 </div>
 
 <table class="table table-striped m-6">

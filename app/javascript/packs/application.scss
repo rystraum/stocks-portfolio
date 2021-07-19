@@ -155,7 +155,7 @@ a {
   @apply p-2;
 
   .field {
-    @apply flex mb-2;
+    @apply flex mb-2 items-center;
 
     label {
       @apply mr-2 items-center;

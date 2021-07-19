@@ -1,4 +1,4 @@
-<%= form_with(model: cash_dividend, local: true, class: "w-25") do |form| %>
+<%= form_with(model: cash_dividend, local: true, class: "form w-25") do |form| %>
     <% if cash_dividend.errors.any? %>
         <div id="error_explanation">
             <h2><%= pluralize(cash_dividend.errors.count, "error") %> prohibited this cash_dividend from being saved:</h2>
