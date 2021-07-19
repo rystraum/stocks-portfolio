@@ -1,5 +1,5 @@
-<div class="d-flex">
-    <%= form_with(model: activity, local: true, class: "js-activity-form mr-4") do |form| %>
+<div class="flex">
+    <%= form_with(model: activity, local: true, class: "form js-activity-form mr-4") do |form| %>
         <% if activity.errors.any? %>
             <div id="error_explanation">
                 <h2><%= pluralize(activity.errors.count, "error") %> prohibited this activity from being saved:</h2>
@@ -47,7 +47,7 @@
         <div class="js-last-price-container">
         </div>
         <div class="actions">
-            <%= form.submit %>
+            <%= form.submit class: "btn btn-primary" %>
         </div>
     <% end %>
     <table style="width: 416px; height: 340px;" cellspacing="1" cellpadding="1" border="1" align="left">

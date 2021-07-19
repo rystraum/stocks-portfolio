@@ -150,3 +150,15 @@ a {
     @apply ml-auto;
   }
 }
+
+.form {
+  @apply p-2;
+
+  .field {
+    @apply flex mb-2;
+
+    label {
+      @apply mr-2 items-center;
+    }
+  }
+}

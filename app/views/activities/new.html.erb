@@ -1,10 +1,5 @@
-<div class="container-fluid">
-    <p id="notice"><%= notice %></p>
-    <h1 class="display-4 d-block p-2">New Activity</h1>
+<%= render "shared/header", text: "New Activity" %>
 
-    <%= render 'form', activity: @activity %>
+<%= render 'form', activity: @activity %>
 
-    <%= link_to 'Back', activities_path, class: "btn btn-primary btn-sm" %>
-
-</div>
-
+<%= link_to "#{chevron_left_icon} Back".html_safe, activities_path, class: "btn btn-primary btn-sm" %>
