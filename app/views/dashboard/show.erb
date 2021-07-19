@@ -139,41 +139,38 @@
     </div>
 
     <br>
-    <div class="row">
-        <div class="col">
-            <div class="card border-0">
-                <div class="card-body">
-                    <h1 class="card-header">Top 5 Losers</h1>
-                    <ul class="card-text list-group list-group-flush">
-                        <% company_set.companies.sort_by { |c| c.profit_loss }.first(5).each do |company| %>
-                            <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col"> <%= company %> </div>
-                                    <div class="col"> <%= green_red company.profit_loss %> </div>
-                                    <div class="col"> <%= green_red_percent_badge company.profit_loss, company.actual_total_costs %> </div>
-                                </div>
-                            </li>
-                        <% end %>
-                    </ul>
-                </div>
+
+    <div class="flex">
+        <div class="card border-0">
+            <div class="card-body">
+                <h1 class="card-header">Top 5 Losers (Actual)</h1>
+                <ul class="card-text list-group list-group-flush">
+                    <% company_set.companies.sort_by { |c| c.profit_loss }.first(5).each do |company| %>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col"><%= company %></div>
+                                <div class="col"><%= green_red company.profit_loss %></div>
+                                <div class="col"><%= green_red_percent_badge company.profit_loss, company.actual_total_costs %></div>
+                            </div>
+                        </li>
+                    <% end %>
+                </ul>
             </div>
         </div>
 
-        <div class="col">
-            <div class="card border-0">
-                <div class="card-body">
-                    <h1 class="card-header">Top 5 Losers (%)</h1>
-                    <ul class="card-text list-group list-group-flush">
-                      <% company_set.companies.filter { |c| !c.profit_loss_percent.nan? }.sort_by { |c| c.profit_loss_percent }.filter { |c| !c.profit_loss_percent.in? [1.0, -1.0] }.first(5).each do |company| %>
-                          <li class="list-group-item">
-                            <div class="row">
-                                <div class="col"> <%= company %> </div>
-                                <div class="col"> <%= green_red_percent company.profit_loss, company.actual_total_costs %> </div>
-                            </div>
-                        </li>
-                      <% end %>
-                    </ul>
-                </div>
+        <div class="card border-0">
+            <div class="card-body">
+                <h1 class="card-header">Top 5 Losers (%)</h1>
+                <ul class="card-text list-group list-group-flush">
+                    <% company_set.companies.filter { |c| !c.profit_loss_percent.nan? }.sort_by { |c| c.profit_loss_percent }.filter { |c| !c.profit_loss_percent.in? [1.0, -1.0] }.first(5).each do |company| %>
+                        <li class="list-group-item">
+                        <div class="row">
+                            <div class="col"> <%= company %> </div>
+                            <div class="col"> <%= green_red_percent company.profit_loss, company.actual_total_costs %> </div>
+                        </div>
+                    </li>
+                    <% end %>
+                </ul>
             </div>
         </div>
     </div>
