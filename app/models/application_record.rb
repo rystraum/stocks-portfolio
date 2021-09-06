@@ -50,7 +50,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   def backup
     return if Rails.env.production?
-    return if ENV.fetch('STOCKS_BACKUP', 'false') == 'false'
+    return if ENV.fetch('STOCKS_BACKUP', 'true') == 'false'
 
     base = "#{Dir.home}/Dropbox/Finances/Stocks/DB"
     return unless File.directory?(base)
