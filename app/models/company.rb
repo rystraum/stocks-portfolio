@@ -19,7 +19,7 @@ class Company < ApplicationRecord
   end
 
   def total_shares
-    @total_shares ||= bought_shares - sold_shares + stock_dividend_shares
+    @total_shares ||= bought_shares - sold_shares + stock_dividend_shares || 0
   end
 
   def total_costs
@@ -38,7 +38,7 @@ class Company < ApplicationRecord
   end
 
   def last_price
-    @last_price ||= price_updates.order('datetime desc').first&.price
+    @last_price ||= price_updates.order('datetime desc').first&.price || 0
   end
 
   def last_price_timestamp
