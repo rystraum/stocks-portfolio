@@ -14,4 +14,12 @@ class PriceUpdateCompanies
 
     return c
   end
+
+  def run_from_console
+    @companies.each.with_index do |company, index|
+      next if !company.can_update_from_pse?      
+      PSE.new(company).price_update!
+      sleep(2.seconds * index)
+    end
+  end
 end
