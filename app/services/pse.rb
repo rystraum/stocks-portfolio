@@ -95,6 +95,42 @@ class PSE
     response.body
   end
 
+  def self.fetch_companies!(pages = 6)
+    pages.times do |page|
+      data = { 
+        pageNo: page + 1, 
+        dateSortType: "DESC", 
+        cmpySortType: "ASC",
+        symbolSortType: "ASC",
+        companyId: nil, 
+        keyword: nil, 
+        sector: "ALL", 
+        subsector: "ALL",
+      }
+
+      body = HTTParty.post("https://edge.pse.com.ph/companyDirectory/search.ax", body: data)
+      document = Nokogiri::HTML.parse(body.gsub("\r\n", "").gsub(/\s{2,}/, ""))
+
+      rows = document.css('tr')
+      rows.each do |row|
+        next if row.css('th').count.positive?
+        name_column, ticker_column, sector_column = row.children
+        
+        name = name_column.text
+        ticker = ticker_column.text
+        sector = sector_column.text
+        
+        _, company_id, security_id = name_column.to_s.match(/cmDetail\('(\d+)','(\d+)'\)/).to_a.collect(&:to_i)
+
+        Company.where(pse_company_id: company_id, pse_security_id: security_id).first_or_create do |create|
+          # create.name = name
+          create.ticker = ticker
+          create.industry = sector
+        end
+      end
+    end
+  end
+
   private
 
   def pse_company_id
