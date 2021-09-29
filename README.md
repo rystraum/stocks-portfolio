@@ -9,3 +9,8 @@
 [ ] Sort Portfolio by P/L + Divs %
 [ ] Scope Activity History to current user
 [ ] Add logout button
+
+# Cron
+
+# every 8pm
+0 20 * * * bash -lc 'cd /Users/rystraum/Code/personal/stocks-portfolio; rails runner "PriceUpdateCompanies.new.run_from_console"'
