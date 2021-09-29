@@ -1,6 +1,7 @@
 class PriceUpdateCompanies
-  def initialize(companies = Company.alphabetical)
+  def initialize(companies = Company.alphabetical, is_console = false)
     @companies = companies
+    @is_console = is_console
   end
 
   def run!
@@ -8,7 +9,14 @@ class PriceUpdateCompanies
 
     @companies.each.with_index do |company, index|
       next if !company.can_update_from_pse?
-      PriceUpdateJob.set(wait: 2.seconds * index).perform_later(company)
+      
+      if is_console
+        PSE.new(company).price_update!
+        sleep(2.seconds * index)
+      else
+        PriceUpdateJob.set(wait: 2.seconds * index).perform_later(company)
+      end
+
       c += 1
     end
 
