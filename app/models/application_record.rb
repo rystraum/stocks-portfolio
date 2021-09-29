@@ -63,7 +63,7 @@ class ApplicationRecord < ActiveRecord::Base
     dest = "#{base}/#{timestamp.year}/#{format('%02d', timestamp.month)}/#{format('%02d', timestamp.day)}"
     FileUtils.mkdir_p("#{dest}")
 
-    filename = "#{timestamp.to_formatted_s(:iso8601).parameterize}"
+    filename = "#{timestamp.beginning_of_hour.to_formatted_s(:iso8601).parameterize}"
 
     if adapter.match? /sqlite/
       `cp #{Rails.root.join('db')}/development.sqlite3 #{dest}/#{filename}.sqlite3`
