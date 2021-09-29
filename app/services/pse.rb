@@ -1,7 +1,8 @@
 class PSE
   attr_accessor :company
-  def initialize(company)
+  def initialize(company, force = false)
     @company = company
+    @force = force
   end
 
   def price_update!
@@ -35,7 +36,7 @@ class PSE
     last_trade_label = document.css("table.view").last.children[3].children[1].to_s
     raise "HTML does not match expected format" if !last_trade_label.match? /Last Traded Price/
 
-    last_trade_value = document.css("table.view").last.children[3].children[3].children.to_s.sub("\r\n", "").to_d
+    last_trade_value = document.css("table.view").last.children[3].children[3].children.to_s.sub("\r\n", "").sub(",","").to_d
 
     final_price = last_trade_value.zero? || last_trade_value.blank? ? company.last_price : last_trade_value
     
@@ -45,6 +46,8 @@ class PSE
       update.price = final_price
       update.notes = body
     end
+
+    price_update.update(price: final_price) if @force
 
     price_update
   end
