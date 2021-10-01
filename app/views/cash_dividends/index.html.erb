@@ -28,7 +28,7 @@
 
     <div class="bg-white p-4 text-center mx-auto border">
         <div x-show="activeTab === 0">
-            <%= render "cash_dividends/dividend_ladder", years: @cash_dividends.years, amounts: @cash_dividends.amounts %>
+            <%= render "cash_dividends/dividend_ladder", years: @cash_dividends.years, amounts: @cash_dividends.amounts, breakdown: @cash_dividends.breakdown %>
         </div>
         <div x-show="activeTab === 1">
             <%= render "cash_dividends/cash_dividends_tab", cash_dividends: @cash_dividends %>

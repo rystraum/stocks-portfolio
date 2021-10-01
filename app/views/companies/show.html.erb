@@ -18,16 +18,12 @@
                             <dd><%= @company.industry %></dd>
                         </div>
                         <div>
-                            <dt>Inactive</dt>
-                            <dd><%= @company.inactive? ? "Yes" : "No" %></dd>
+                            <dt>Status</dt>
+                            <dd><%= @company.inactive? ? "Inactive" : "Active" %></dd>
                         </div>
                         <div>
-                            <dt>PSE Security ID</dt>
-                            <dd><%= @company.pse_security_id || "-" %></dd>
-                        </div>
-                        <div>
-                            <dt>PSE Company ID</dt>
-                            <dd><%= @company.pse_company_id || "-" %></dd>
+                            <dt>Links</dt>
+                            <dd><%= link_to "View in PSE", @company.pse_url, target: :_blank %></dd>
                         </div>
                     </dl>
                 </div>

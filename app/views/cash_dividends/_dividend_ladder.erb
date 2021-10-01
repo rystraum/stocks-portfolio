@@ -22,7 +22,13 @@
                                     <td><%= Date::MONTHNAMES[month] %></td>
                                     <td><%= years.keys.include?(year) && years[year][month]&.length %></td>
                                     <td class="text-right"><%= format_currency years.keys.include?(year) && amounts[year][month] %></td>
-                                    <td class="text-left"><%= years.keys.include?(year) && years[year][month]&.to_a&.sort&.collect { |ticker| link_to(ticker, company_path(ticker), target: :_blank, class: "btn btn-secondary mr-2 btn-sm") }&.join&.html_safe %></td>
+                                    <td class="text-left">
+                                        <%= 
+                                            years.keys.include?(year) && breakdown[year][month]&.to_a&.sort&.collect do |ticker, amount| 
+                                                link_to("#{ticker} - #{amount}", company_path(ticker), target: :_blank, class: "btn btn-secondary mr-2 btn-sm") 
+                                            end&.join&.html_safe
+                                        %>
+                                    </td>
                                 </tr>
                                 <% annual_sum += (years.keys.include?(year) && amounts[year][month] || 0) %>
                             <% end %>
