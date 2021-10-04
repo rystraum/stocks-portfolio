@@ -5,7 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.0.0'
 
-gem 'rails', '~> 6.0.0'
+gem 'rails', '~> 6.0'
 gem 'sqlite3'
 gem 'pg'
 gem 'puma'
@@ -15,6 +15,7 @@ gem 'coffee-rails', '~> 4.2'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 gem 'devise'
+gem "view_component", require: "view_component/engine"
 
 gem 'webpacker', git: 'https://github.com/rails/webpacker.git'
 
