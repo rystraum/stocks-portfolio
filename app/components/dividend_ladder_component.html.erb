@@ -1,0 +1,25 @@
+<div class="dividends-ladder-container">
+    <table>
+        <thead class="thead-dark">
+            <tr>
+                <th colspan="4" class="year-label text-center"><%= @year %></th>
+            </tr>
+            <tr class="text-center">
+                <th class="text-left w-10">Month</th>
+                <th class="text-left w-10">Count</th>
+                <th class="text-right w-10">Amount</th>
+                <th class="text-left">Tickers</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% (1..12).each do |month| %>
+                <%= render(DividendStepComponent.new(year: @year, month: month, set: @set)) %>
+            <% end %>
+            <tr>
+                <td colspan="2" class="text-right"><%= @year %> Total</td>
+                <td class="text-right"><%= total_this_year %></td>
+                <td>&nbsp;</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

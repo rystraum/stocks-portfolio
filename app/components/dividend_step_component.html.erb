@@ -1,0 +1,12 @@
+<tr>
+    <td><%= month_name %></td>
+    <td><%= total_count_this_month %></td>
+    <td class="text-right"><%= total_amount_this_month %></td>
+    <td class="text-left">
+        <%= 
+            breakdown.collect do |ticker, amount| 
+                link_to("#{ticker} - #{amount}", company_path(ticker), target: :_blank, class: "btn btn-secondary mr-2 btn-sm") 
+            end&.join&.html_safe
+        %>
+    </td>
+</tr>

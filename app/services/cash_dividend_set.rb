@@ -3,10 +3,8 @@ require 'forwardable'
 
 class CashDividendSet
   extend Forwardable
-  include ApplicationHelper
-  include ActionView::Helpers::NumberHelper
   attr_accessor :dividends
-  attr_reader :dividends, :years, :amounts, :breakdown
+  attr_reader :dividends, :years, :amounts, :breakdown, :sums
 
   def_delegators :@dividends, :each
 
@@ -15,21 +13,28 @@ class CashDividendSet
     @years = {}
     @amounts = {}
     @breakdown = {}
+    @sums = {}
 
     dividends.each do |cash_dividend|
-      @years[cash_dividend.pay_date.year] ||= {}
-      @years[cash_dividend.pay_date.year][cash_dividend.pay_date.month] ||= Set.new
-      @years[cash_dividend.pay_date.year][cash_dividend.pay_date.month] << cash_dividend.company.ticker
+      year = cash_dividend.pay_date.year.to_s
+      month = cash_dividend.pay_date.month.to_s
+      ticker = cash_dividend.company.ticker
+      amount = cash_dividend.amount
 
-      @breakdown[cash_dividend.pay_date.year] ||= {}
-      @breakdown[cash_dividend.pay_date.year][cash_dividend.pay_date.month] ||= {}
-      @breakdown[cash_dividend.pay_date.year][cash_dividend.pay_date.month][cash_dividend.company.ticker] = format_currency(cash_dividend.amount)
+      @years[year] ||= {}
+      @years[year][month] ||= Set.new
+      @years[year][month] << ticker
 
-      @amounts[cash_dividend.pay_date.year] ||= {}
-      @amounts[cash_dividend.pay_date.year][cash_dividend.pay_date.month] ||= 0
-      @amounts[cash_dividend.pay_date.year][cash_dividend.pay_date.month] += cash_dividend.amount
+      @breakdown[year] ||= {}
+      @breakdown[year][month] ||= {}
+      @breakdown[year][month][ticker] = amount
+
+      @amounts[year] ||= {}
+      @amounts[year][month] ||= 0
+      @amounts[year][month] += amount
+
+      @sums[year] ||= 0
+      @sums[year] += amount
     end
   end
-
-  
 end
