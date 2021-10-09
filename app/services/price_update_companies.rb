@@ -16,7 +16,7 @@ class PriceUpdateCompanies
   end
 
   def run_from_console
-    @companies.each.with_index do |company, index|
+    @companies.to_a.shuffle.each.with_index do |company, index|
       next if !company.can_update_from_pse?      
       puts "== #{company.ticker} Starting price update"
       begin
