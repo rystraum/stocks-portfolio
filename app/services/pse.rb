@@ -6,8 +6,8 @@ class PSE
   end
 
   def price_update!
-    body = HTTParty.get("https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id.to_s}&security_id=#{pse_security_id.to_s}")
-    document = Nokogiri::HTML.parse(body)
+    response = HTTParty.get("https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id.to_s}&security_id=#{pse_security_id.to_s}")
+    document = Nokogiri::HTML.parse(response.body)
 
     # Expecting a structure something like:
     # <form name="form1" action="/companyPage/stockData.do">
@@ -44,7 +44,7 @@ class PSE
 
     price_update = company.price_updates.where(datetime: datetime).first_or_create do |update|
       update.price = final_price
-      update.notes = body
+      update.notes = response.body
     end
 
     price_update.update(price: final_price) if @force
