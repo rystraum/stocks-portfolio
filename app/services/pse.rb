@@ -44,7 +44,7 @@ class PSE
 
     price_update = company.price_updates.where(datetime: datetime).first_or_create do |update|
       update.price = final_price
-      update.notes = response.body
+      update.notes = final_price.zero? ? response.body : ""
     end
 
     price_update.update(price: final_price) if @force
