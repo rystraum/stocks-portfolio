@@ -18,7 +18,13 @@ class PriceUpdateCompanies
   def run_from_console
     @companies.each.with_index do |company, index|
       next if !company.can_update_from_pse?      
-      PSE.new(company).price_update!
+      puts "== #{company.ticker} Starting price update"
+      begin
+        PSE.new(company).price_update!
+      rescue Exception => e
+        puts "Failed price update for #{company.ticker} with error #{e.message}"
+      end
+      puts "== #{company.ticker} finished \n\n\n"
       sleep(2.seconds * index)
     end
   end
