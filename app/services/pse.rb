@@ -26,10 +26,10 @@ class PSE
       date_string = document.css("form[name=form1]").first.children[5].children.first.to_s
       datetime = DateTime.strptime("#{date_string.match(/As of (.*)/)[1]} +0800", "%h %d, %Y %H:%M %p %z")
     rescue NoMethodError => e
-      binding.pry if Rails.env.development?
+      # binding.pry if Rails.env.development?
       raise "HTML does not match expected format: #{document.to_s}"
     rescue Date::Error => e
-      binding.pry if Rails.env.development?
+      # binding.pry if Rails.env.development?
       raise "HTML does not match expected format: #{document.to_s}"
     end
 
