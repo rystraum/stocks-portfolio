@@ -16,7 +16,7 @@ class PriceUpdateCompanies
   end
 
   def run_from_console
-    @companies.to_a.shuffle.each.with_index do |company, index|
+    @companies.to_a.shuffle.each.with_index(1) do |company, index|
       next if !company.can_update_from_pse?      
       puts "== #{company.ticker} Starting price update"
       begin
@@ -25,7 +25,7 @@ class PriceUpdateCompanies
         puts "Failed price update for #{company.ticker} with error #{e.message}"
       end
       puts "== #{company.ticker} finished \n\n\n"
-      sleep(2.seconds * index)
+      sleep(index.seconds)
     end
   end
 end
