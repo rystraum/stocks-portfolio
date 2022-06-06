@@ -76,6 +76,8 @@ class Company < ApplicationRecord
   end
 
   def profit_loss_percent
+    return 0.0 if actual_total_costs.zero?
+
     profit_loss / actual_total_costs
   end
 
