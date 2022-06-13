@@ -69,7 +69,7 @@ class ApplicationRecord < ActiveRecord::Base
       `cp #{Rails.root.join('db')}/development.sqlite3 #{dest}/#{filename}.sqlite3`
     elsif adapter.match? /postgresql/
       sqldump = "#{Rails.root.join('tmp')}/#{filename}.sql"
-      `pg_dump #{db} > #{sqldump}; cp #{sqldump} #{dest}/#{filename}.sql`
+      `pg_dump #{db} > #{sqldump}; cp #{sqldump} #{dest}/#{filename}.sql && rm #{sqldump}`
     end
 
     ActiveRecord::Base.connection.tables.each do |t|
