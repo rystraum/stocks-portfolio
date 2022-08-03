@@ -1,5 +1,6 @@
 # TODOs
 
+```
 [x] Add button to convert Planned Acitivity into Actual Activity
 [x] Add "Update all from PSE" button
 [ ] Add graphs in Company view
@@ -9,6 +10,7 @@
 [ ] Sort Portfolio by P/L + Divs %
 [ ] Scope Activity History to current user
 [ ] Add logout button
+```
 
 # Cron
 
