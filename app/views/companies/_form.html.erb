@@ -14,6 +14,10 @@
         <%= form.text_field :ticker, class: 'w-full', placeholder: "Ticker" %>
     </div>
     <div class="field">
+        <%= form.label :name %>
+        <%= form.text_field :name, class: 'w-full', placeholder: "Company Name" %>
+    </div>
+    <div class="field">
         <%= form.label :industry %>
         <%= form.select :industry, options_for_select(company_industry_options, company.industry), {include_blank: "Industry"}, required: :required, class: 'w-full' %>
     </div>
