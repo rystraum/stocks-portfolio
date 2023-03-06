@@ -46,7 +46,7 @@ development:
   dev_server:
     https: false
     host: localhost
-    port: 3035
+    port: 4035
     # Hot Module Replacement updates modules while the application is running without a full reload
     hmr: false
     # If HMR is on, CSS will by inlined by delivering it as part of the script payload via style-loader. Be sure
