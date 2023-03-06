@@ -90,10 +90,6 @@ class Company < ApplicationRecord
     "https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id}"
   end
 
-  def simply_wall_st_url
-    "https://simplywall.st/stocks/ph/media/pse-#{ticker}/#{company_name.parameterize}-shares"
-  end
-
   def company_name
     return "ABS-CBN" if ticker == "ABS"
     return "GMA Network" if ticker == "GMA7"
