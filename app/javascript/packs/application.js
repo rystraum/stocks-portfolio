@@ -1,3 +1,5 @@
+import 'styles/application.scss';
+
 import Rails from '@rails/ujs';
 import * as ActiveStorage from '@rails/activestorage';
 import Alpine from 'alpinejs';
