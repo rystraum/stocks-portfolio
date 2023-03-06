@@ -10,7 +10,7 @@ class CompanyInfoComponent < ViewComponent::Base
 
   def simply_wall_st_url
     return "" if !with_company_name?
-    "https://simplywall.st/stocks/ph/media/pse-#{@company.ticker}/#{@company.company_name.parameterize}-shares"
+    "https://simplywall.st/stocks/ph/media/pse-#{@company.ticker}/#{@company.name.parameterize}-shares"
   end
 
   def marketwatch_url
