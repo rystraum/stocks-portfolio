@@ -12,19 +12,12 @@
                     <h1 class="card-header-title"><%= @company.ticker %></h1>
                 </div>
                 <div class="card-body">
-                    <dl class="">
-                        <div>
-                            <dt>Industry</dt>
-                            <dd><%= @company.industry %></dd>
-                        </div>
-                        <div>
-                            <dt>Status</dt>
-                            <dd><%= @company.inactive? ? "Inactive" : "Active" %></dd>
-                        </div>
-                        <div>
-                            <dt>Links</dt>
-                            <dd><%= link_to "View in PSE", @company.pse_url, target: :_blank %></dd>
-                        </div>
+                    <dl>
+                        <%= render DLTableComponent.new("Industry", @company.industry) %>
+                        <%= render DLTableComponent.new("Status", @company.inactive? ? "Inactive" : "Active") %>
+                        <%= render DLTableComponent.new("View in PSE") do %>
+                            <%= link_to "View in PSE", @company.pse_url, target: :_blank %>
+                        <% end %>
                     </dl>
                 </div>
             </div>
