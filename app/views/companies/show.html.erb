@@ -1,4 +1,4 @@
-<div class="ml-auto mt-4 btn-group">
+<div class="mt-4 flex flex-row">
     <%= link_to "#{chevron_left_icon} Back".html_safe, companies_path, class: "btn btn-primary" %>
     <%= link_to "#{edit_icon} Edit".html_safe, edit_company_path(@company), class: "btn btn-secondary" %>
     <%= link_to "Update from PSE", [:price_update_from_pse, @company], method: :post, class: "btn btn-secondary" if @company.can_update_from_pse? %>
@@ -7,20 +7,7 @@
 <div class="flex">
     <div class="row mb-4">
         <div class="col-4">
-            <div class="card">
-                <div class="card-header">
-                    <h1 class="card-header-title"><%= @company.ticker %></h1>
-                </div>
-                <div class="card-body">
-                    <dl>
-                        <%= render DLTableComponent.new("Industry", @company.industry) %>
-                        <%= render DLTableComponent.new("Status", @company.inactive? ? "Inactive" : "Active") %>
-                        <%= render DLTableComponent.new("View in PSE") do %>
-                            <%= link_to "View in PSE", @company.pse_url, target: :_blank %>
-                        <% end %>
-                    </dl>
-                </div>
-            </div>
+            <%= render CompanyInfoComponent.new(@company) %>
         </div>
         <div class="col-8">
             <div class="card">
