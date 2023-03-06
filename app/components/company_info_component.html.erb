@@ -10,7 +10,12 @@
         <h2 class="text-lg mt-2">Links</h2>
         <ul class="ml-4">
             <li><%= link_to "PSE Edge", company.pse_url, target: :_blank %></li>
-            <li><%= link_to "Simply Wall Street", simply_wall_st_url, target: :_blank %></li>
+            <% if with_company_name? %>
+                <li><%= link_to "Simply Wall Street", simply_wall_st_url, target: :_blank %></li>
+            <% else %>
+                <li><%= link_to "Simply Wall Street", simply_wall_st_url, target: :_blank %></li>
+            <% end %>
+            <li><%= link_to "Marketwatch", marketwatch_url, target: :_blank %></li>
         </ul>
     </div>
 </div>
