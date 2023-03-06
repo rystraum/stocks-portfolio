@@ -1,5 +1,7 @@
-<h1>New Cash Dividend</h1>
-
-<%= render 'form', cash_dividend: @cash_dividend %>
-
-<%= link_to 'Back', cash_dividends_path %>
+<div class="card w-1/4">
+    <h1 class="card-header">New Cash Dividend</h1>
+    <div class="card-body">
+        <%= render "cash_dividends/form", cash_dividend: @cash_dividend %>
+    </div>
+</div>
+<%= link_to "#{chevron_left_icon} Back".html_safe, cash_dividends_path, class: "btn btn-primary btn-sm ml-4" %>
