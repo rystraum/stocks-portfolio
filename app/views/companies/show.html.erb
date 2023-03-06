@@ -92,15 +92,9 @@
                             <% end %>
                         </tbody>
                     </table>
-                    <dl class="w-25 my-3 pl-4">
-                        <div>
-                            <dt>Total Cash Dividends:</dt>
-                            <dd><%= format_currency current_user.cash_sum_dividends(@company) %></dd>
-                        </div>
-                        <div>
-                            <dt>% of Cost Basis:</dt>
-                            <dd><%= format_percentage current_user.cash_sum_dividends(@company), current_user.cost_basis(@company) %></dd>
-                        </div>
+                    <dl class="w-1/2 my-3 pl-4">
+                        <%= render DLTableComponent.new("Total Cash Dividends:", format_currency(current_user.cash_sum_dividends(@company))) %>
+                        <%= render DLTableComponent.new("% of Cost Basis:", format_percentage(current_user.cash_sum_dividends(@company), current_user.cost_basis(@company))) %>
                     </dl>
                 </div>
             </div>
@@ -201,16 +195,10 @@
     <% end %>
 </div>
 
-<div class="w-25">
-    <p>Expected Next Dividend based from Last Dividend Rate:</p>
-    <dl class="">
-        <div class="">
-            <dt>Shares on hand</dt>
-            <dd><%= format_currency number_of_shares * last_dividend_rate %></dd>
-        </div>
-        <div class="">
-            <dt>Planned</dt>
-            <dd><%= format_currency planned_number_of_shares * last_dividend_rate %></dd>
-        </div>
+<div class="card w-1/3">
+    <h1 class="card-header">Expected Next Dividend</h1>
+    <dl class="card-body">
+        <%= render DLTableComponent.new("Shares on hand", "#{format_currency(number_of_shares * last_dividend_rate)} (#{number_of_shares} @ #{last_dividend_rate} DPS)") %>
+        <%= render DLTableComponent.new("Planned", "#{format_currency(planned_number_of_shares * last_dividend_rate)} (#{planned_number_of_shares} @ #{last_dividend_rate} DPS)") %>
     </dl>
 </div>
