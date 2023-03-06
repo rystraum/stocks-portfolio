@@ -17,7 +17,6 @@ gem 'jbuilder', '~> 2.5'
 gem 'devise'
 gem "view_component", require: "view_component/engine"
 
-gem 'webpacker', git: 'https://github.com/rails/webpacker.git'
 
 gem 'httparty'
 
@@ -43,3 +42,6 @@ group :test do
 end
 
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+
+# gem 'webpacker', git: 'https://github.com/rails/webpacker.git'
+gem "shakapacker", "= 6.5"
