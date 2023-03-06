@@ -6,8 +6,8 @@
 <% end %>
 
 <div class="card company-new w-1/4">
-    <h2 class="font-bold text-2xl text-gray-900"> Add new company</h2>
-    <%= render 'companies/form', company: @company %>
+    <h2 class="card-header">Add new company</h2>
+    <div class="card-body"><%= render 'companies/form', company: @company %></div>
 </div>
 
 <table class="table table-striped m-6">

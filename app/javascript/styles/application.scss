@@ -7,7 +7,7 @@ a {
 }
 
 .btn {
-  @apply px-4 py-2 inline-flex m-2 rounded shadow;
+  @apply px-4 py-2 inline-flex rounded shadow;
 }
 
 .btn-primary {
@@ -167,6 +167,7 @@ a {
 
     label {
       @apply mr-2 items-center;
+      min-width: fit-content;
     }
   }
 
