@@ -8,7 +8,7 @@ module.exports = {
         './app/javascript/**/*.{js,jsx,ts,tsx,vue}',
         './app/components/**/*.erb',
     ],
-    darkMode: false, // or 'media' or 'class'
+    darkMode: 'class', // or 'media' or 'class'
     theme: {
         extend: {
             colors: {
@@ -31,5 +31,7 @@ module.exports = {
         require('@tailwindcss/forms'),
         require('@tailwindcss/line-clamp'),
         require('@tailwindcss/aspect-ratio'),
+        require('flowbite/plugin'),
     ],
+    content: ['./node_modules/flowbite/**/*.js'],
 };
