@@ -1,4 +1,6 @@
-<%= render "shared/header", text: "All Time Portfolio" %>
+<%= render "shared/header", text: "All Time Portfolio" do %>
+    <%= link_to "Update Prices", update_prices_path, method: :put, class: "btn btn-secondary ml-auto" %>
+<% end %>
 
 <div class="container-fluid main-body">
     <%

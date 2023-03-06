@@ -6,6 +6,7 @@ class PSE
   end
 
   def price_update!
+    raise "Company can't update from PSE" if !company.can_update_from_pse?
     response = HTTParty.get("https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id.to_s}&security_id=#{pse_security_id.to_s}")
     document = Nokogiri::HTML.parse(response.body)
 

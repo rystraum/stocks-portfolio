@@ -19,6 +19,8 @@ Rails.application.routes.draw do
       post :price_update_all_from_pse
     end
   end
+
+  put :update_prices, to: "dashboard#update_prices"
   root to: 'dashboard#show'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
