@@ -13,19 +13,21 @@
 <table class="table table-striped m-6">
     <thead class="thead-dark">
         <tr>
-            <th class="w-25">Ticker / Active</th>
-            <th class="w-25">Industry</th>
-            <th class="w-25">Last Price</th>
+            <th class="w-1/5">Ticker / Active</th>
+            <th class="w-1/5">Name</th>
+            <th class="w-1/5">Industry</th>
+            <th class="w-1/5">Last Price</th>
             <th class="action-column">Actions</th>
         </tr>
     </thead>
     <tbody>
         <% @companies.each do |company| %>
             <tr class="company-row <%= cycle('odd', 'even') %>">
-                <td class="d-flex">
+                <td class="flex">
                     <%= link_to company.ticker, company %>
                     <span class="badge ml-auto <%= company.inactive? ? "badge-danger" : "badge-info" %>" style="font-size: 12px;"><%= company.inactive? ? "No" : "Yes" %></span>
                 </td>
+                <td><%= company.name %></td>
                 <td><%= company.industry %></td>
                 <td class="flex">
                     <%= company.last_price %>

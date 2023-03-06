@@ -90,11 +90,6 @@ class Company < ApplicationRecord
     "https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id}"
   end
 
-  def company_name
-    return "ABS-CBN" if ticker == "ABS"
-    return "GMA Network" if ticker == "GMA7"
-  end
-
   protected
 
   def cash_dividends_average_dps
