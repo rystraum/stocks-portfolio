@@ -1,5 +1,16 @@
-<%= render "shared/header", text: "New Activity" %>
+<div class="flex">
+    <div class="card">
+        <h1 class="card-header">New Activity</h1>
+        <div class="card-body">
+            <%= render "activities/form", activity: @activity %>
+        </div>
+    </div>
+    <div class="card">
+        <h1 class="card-header">Board Lot</h1>
+        <div class="card-body">
+            <%= render "activities/lot_sizes" %>
+        </div>
+    </div>
+</div>
 
-<%= render 'form', activity: @activity %>
-
-<%= link_to "#{chevron_left_icon} Back".html_safe, activities_path, class: "btn btn-primary btn-sm" %>
+<%= link_to "#{chevron_left_icon} Back".html_safe, activities_path, class: "btn btn-primary btn-sm ml-4" %>
