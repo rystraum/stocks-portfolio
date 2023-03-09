@@ -25,7 +25,8 @@ class PriceUpdateCompanies
         puts "Failed price update for #{company.ticker} with error #{e.message}"
       end
       puts "== #{company.ticker} finished \n\n\n"
-      sleep(index.seconds)
+      wait_time = index < 30 ? index : 30
+      sleep(wait_time.seconds)
     end
   end
 end
