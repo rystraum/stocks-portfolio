@@ -1,40 +1,18 @@
 <p id="notice"><%= notice %></p>
-<div class="w-25 mb-4">
-  <dl class="">
-    <div>
-        <dt>Company:</dt>
-        <dd><%= @activity.date %></dd>
-    </div>
-    <div>
-        <dt>Company:</dt>
-        <dd><%= link_to @activity.company, @activity.company %></dd>
-    </div>
-    <div>
-        <dt>Activity type:</dt>
-        <dd><%= @activity.activity_type %></dd>
-    </div>
-    <div>
-        <dt>Number of shares:</dt>
-        <dd><%= @activity.number_of_shares %></dd>
-    </div>
-    <div>
-        <dt>Price per share:</dt>
-        <dd><%= format_currency @activity.cost_per_share(include_planned: true) %></dd>
-    </div>
-    <div>
-        <dt>Total price:</dt>
-        <dd><%= format_currency @activity.total_price %></dd>
-    </div>
-    <div>
-        <dt>Charges</dt>
-        <dd><%= @activity.charges %></dd>
-    </div>
-    <div>
-        <dt>Notes</dt>
-        <dd><%= sanitize @activity.notes %></dd>
-    </div>
-  </dl>
-</div>
+<dl class="w-1/4 p-4 my-2">
+    <%= render DLTableComponent.new("Date", @activity.date.to_formatted_s(:long)) %>
+    <%= render DLTableComponent.new("Company") do %>
+        <%= link_to @activity.company, @activity.company %>
+    <% end %>
+    <%= render DLTableComponent.new("Type", @activity.activity_type) %>
+    <%= render DLTableComponent.new("Number of Shares", @activity.number_of_shares) %>
+    <%= render DLTableComponent.new("Price per Share", format_currency(@activity.cost_per_share(include_planned: true))) %>
+    <%= render DLTableComponent.new("Total Price", format_currency(@activity.total_price)) %>
+    <%= render DLTableComponent.new("Charges", format_currency(@activity.charges)) %>
+    <%= render DLTableComponent.new("Notes", sanitize(@activity.notes)) %>
+</dl>
 
-<%= link_to 'Edit', edit_activity_path(@activity) %> |
-<%= link_to 'Back', activities_path %>
+<div class="p-4">
+    <%= link_to "#{edit_icon} Edit".html_safe, edit_activity_path(@activity), class: "btn btn-secondary btn-sm mr-4" %>
+    <%= link_to "#{chevron_left_icon} Back".html_safe, activities_path, class: "btn btn-primary btn-sm mr-4" %>
+</div>
