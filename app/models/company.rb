@@ -22,10 +22,6 @@ class Company < ApplicationRecord
     @last_price_timestamp ||= price_updates.order('datetime desc').first&.datetime&.to_datetime || DateTime.now
   end
 
-  def cash_dividends_annual_dps
-    cash_dividends_average_dps * cash_dividends_count_in_a_year
-  end
-
   def history
     @history ||= (activities + stock_dividends + cash_dividends).sort_by do |thing|
       if thing.is_a?(Activity)
@@ -43,21 +39,5 @@ class Company < ApplicationRecord
   def pse_url
     return "" if pse_company_id.blank?
     "https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id}"
-  end
-
-  protected
-
-  def cash_dividends_average_dps
-    return 0 if cash_dividends.length.zero?
-
-    dividends = cash_dividends.collect(&:dividend_per_share).collect(&:to_f).reject(&:zero?)
-    @cash_dividends_average_dps ||= (dividends.sum / dividends.length)
-  end
-
-  def cash_dividends_count_in_a_year
-    return 0 if cash_dividends.length.zero?
-
-    count = cash_dividends.collect(&:pay_date).group_by(&:year).collect { |_year, arr| arr.count }
-    @cash_dividends_count_in_a_year ||= (count.sum.to_f / count.length).round(0)
   end
 end
