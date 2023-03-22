@@ -31,22 +31,23 @@
             </thead>
             <tbody class="list divide-x divide-y divide-gray-400">
                 <% company_set.companies.each do |company| %>
-                    <% next if company.total_shares.zero? && !company.inactive? %>
+                    <% portfolio = company_set.get_portfolio(company) %>
+                    <% next if portfolio.total_shares.zero? && !company.inactive? %>
                     <tr class="<%= company.inactive? ? "bg-gray-700 bg-gray-700 text-white" : cycle('bg-white', 'bg-blue-50') %>">
                         <td scope="row" class="tables-company">
                           <%= link_to company, company %><%= "*" if company.inactive? %>
                         </td>
                         <td class="tables-shares">
-                          <%= number_with_delimiter company.total_shares %>
+                          <%= number_with_delimiter portfolio.total_shares %>
                         </td>
                         <td class="tables-total-cost text-right">
-                          <%= format_currency company.total_costs %>
+                          <%= format_currency portfolio.total_costs %>
                         </td>
                         <td class="tables-cps text-right">
-                          <%= format_currency company.cps %>
+                          <%= format_currency portfolio.cps %>
                         </td>
                         <td class="tables-percent-cost text-right">
-                          <%= format_percentage company.total_costs, company_set.total_costs %>
+                          <%= format_percentage portfolio.total_costs, company_set.total_costs %>
                         </td>
                         <td class="tables-last-price text-right">
                             <%= format_currency company.last_price %><br>
@@ -55,35 +56,35 @@
                             </small>
                         </td>
                         <td class="tables-last-value text-right">
-                          <%= format_currency company.last_value %>
+                          <%= format_currency portfolio.last_value %>
                         </td>
                         <td class="tables-percent-value text-right">
-                          <%= format_percentage company.last_value, company_set.total_value %>
+                          <%= format_percentage portfolio.last_value, company_set.total_value %>
                         </td>
                         <% if company.inactive? %>
-                            <td class="text-right text-secondary"><%= format_currency company.profit_loss %></td>
+                            <td class="text-right text-secondary"><%= format_currency portfolio.profit_loss %></td>
                         <% else %>
-                            <td class="text-right"><%= green_red company.profit_loss %></td>
+                            <td class="text-right"><%= green_red portfolio.profit_loss %></td>
                         <% end %>
 
                         <% if company.inactive? %>
-                            <td class="text-right text-secondary"><%= format_percentage company.profit_loss, company.actual_total_costs %></td>
+                            <td class="text-right text-secondary"><%= format_percentage portfolio.profit_loss, portfolio.actual_total_costs %></td>
                         <% else %>
-                            <td class="text-right"><%= green_red_percent company.profit_loss, company.actual_total_costs %></td>
+                            <td class="text-right"><%= green_red_percent portfolio.profit_loss, portfolio.actual_total_costs %></td>
                         <% end %>
 
                         <td class="text-right">
-                          <%= format_currency company.cash_dividends_total %>
+                          <%= format_currency portfolio.cash_dividends_total %>
                         </td>
                         <td class="text-right">
-                          <%= format_percentage company.cash_dividends_total, company.total_costs %>
+                          <%= format_percentage portfolio.cash_dividends_total, portfolio.total_costs %>
                         </td>
                         <td class="text-right">
                             <% if company.inactive? %>
                                 -
                             <% else %>
                                 <% begin %>
-                                    <%= format_currency company.cash_dividends_annual_dps %>
+                                    <%= format_currency portfolio.cash_dividends_annual_dps %>
                                     <% rescue ZeroDivisionError %>
                                     <%= link_to "Recompute", company %>
                                 <% end %>
@@ -94,23 +95,23 @@
                                 -
                             <% else %>
                                 <% begin %>
-                                    <%= format_percentage company.cash_dividends_annual_dps, company.cps %>
-                                    <% rescue ZeroDivisionError %>
+                                    <%= format_percentage portfolio.cash_dividends_annual_dps, portfolio.cps %>
+                                <% rescue ZeroDivisionError %>
                                     <%= link_to "Recompute", company %>
                                 <% end %>
                             <% end %>
                         </td>
 
                         <% if company.inactive? %>
-                            <td class="text-right text-secondary"><%= format_currency company.final_profit_loss %></td>
+                            <td class="text-right text-secondary"><%= format_currency portfolio.final_profit_loss %></td>
                         <% else %>
-                            <td class="text-right"><%= green_red company.final_profit_loss %></td>
+                            <td class="text-right"><%= green_red portfolio.final_profit_loss %></td>
                         <% end %>
 
                         <% if company.inactive? %>
-                            <td class="text-right text-secondary"><%= format_percentage company.final_profit_loss, company.total_costs %></td>
+                            <td class="text-right text-secondary"><%= format_percentage portfolio.final_profit_loss, portfolio.total_costs %></td>
                         <% else %>
-                            <td class="text-right"><%= green_red_percent company.final_profit_loss, company.total_costs %></td>
+                            <td class="text-right"><%= green_red_percent portfolio.final_profit_loss, portfolio.total_costs %></td>
                         <% end %>
                     </tr>
                 <% end %>
@@ -150,12 +151,13 @@
             <div class="card-body">
                 <h1 class="card-header">Top 5 Losers (Actual)</h1>
                 <ul class="card-text list-group list-group-flush">
-                    <% company_set.companies.sort_by { |c| c.profit_loss }.first(5).each do |company| %>
+                    <% company_set.companies.sort_by { |company| company_set.get_portfolio(company).profit_loss }.first(5).each do |company| %>
+                        <% portfolio = company_set.get_portfolio(company) %>
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col"><%= company %></div>
-                                <div class="col"><%= green_red company.profit_loss %></div>
-                                <div class="col"><%= green_red_percent_badge company.profit_loss, company.actual_total_costs %></div>
+                                <div class="col"><%= green_red portfolio.profit_loss %></div>
+                                <div class="col"><%= green_red_percent_badge portfolio.profit_loss, portfolio.actual_total_costs %></div>
                             </div>
                         </li>
                     <% end %>
@@ -167,7 +169,7 @@
             <div class="card-body">
                 <h1 class="card-header">Top 5 Losers (%)</h1>
                 <ul class="card-text list-group list-group-flush">
-                    <% company_set.companies.filter { |c| !c.profit_loss_percent.nan? }.sort_by { |c| c.profit_loss_percent }.filter { |c| !c.profit_loss_percent.in? [1.0, -1.0] }.first(5).each do |company| %>
+                    <% company_set.companies.filter { |company| company_set.get_portfolio(company).profit_loss_percent.nan? }.sort_by { |company| company_set.get_portfolio(company).profit_loss_percent }.filter { |company| !company_set.get_portfolio(company).profit_loss_percent.in? [1.0, -1.0] }.first(5).each do |company| %>
                         <li class="list-group-item">
                         <div class="row">
                             <div class="col"> <%= company %> </div>
