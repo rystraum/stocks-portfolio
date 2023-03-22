@@ -15,6 +15,10 @@ class CompaniesController < ApplicationController
   def show; end
 
   def price_update_all_from_pse
+    if !@permissions.can?(:price_update, Company)
+      return redirect_back(fallback_location: companies_url, alert: "No permissions")
+    end
+
     count = PriceUpdateCompanies.new.run!
     respond_to do |format|
       format.html do
@@ -25,6 +29,9 @@ class CompaniesController < ApplicationController
   end
 
   def price_update_from_pse
+    if !@permissions.can?(:price_update, @company)
+      return redirect_back(fallback_location: @company, alert: "No permissions")
+    end
     price_update = PSE.new(@company).price_update!
 
     redirect_back(fallback_location: @company, alert: "Price update failed.") and return unless price_update.persisted?
@@ -47,15 +54,26 @@ class CompaniesController < ApplicationController
 
   # GET /companies/new
   def new
+    if !@permissions.can?(:create, Company)
+      return redirect_back(fallback_location: companies_url, alert: "No permissions")
+    end
     @company = Company.new
   end
 
   # GET /companies/1/edit
-  def edit; end
+  def edit
+    if !@permissions.can?(:update, @company)
+      return redirect_back(fallback_location: @company, alert: "No permissions")
+    end
+  end
 
   # POST /companies
   # POST /companies.json
   def create
+    if !@permissions.can?(:create, Company)
+      return redirect_back(fallback_location: companies_url, alert: "No permissions")
+    end
+
     @company = Company.new(company_params)
 
     respond_to do |format|
@@ -72,6 +90,10 @@ class CompaniesController < ApplicationController
   # PATCH/PUT /companies/1
   # PATCH/PUT /companies/1.json
   def update
+    if !@permissions.can?(:update, @company)
+      return redirect_back(fallback_location: @company, alert: "No permissions")
+    end
+
     respond_to do |format|
       if @company.update(company_params)
         format.html { redirect_to @company, notice: 'Company was successfully updated.' }
@@ -86,6 +108,10 @@ class CompaniesController < ApplicationController
   # DELETE /companies/1
   # DELETE /companies/1.json
   def destroy
+    if !@permissions.can?(:delete, @company)
+      return redirect_back(fallback_location: @company, alert: "No permissions")
+    end
+
     @company.destroy
     respond_to do |format|
       format.html { redirect_to companies_url, notice: 'Company was successfully destroyed.' }
