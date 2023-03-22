@@ -1,14 +1,18 @@
 <%= render "shared/header", text: "Companies" do %>
-    <%= link_to price_update_all_from_pse_companies_path, method: :post, class: "btn btn-primary" do %>
-        <span class="mr-2 inline-block"><%= save_as_icon %></span>
-        <span>Update all from PSE</span>
+    <% if @permissions.can? :price_update, Company %>
+        <%= link_to price_update_all_from_pse_companies_path, method: :post, class: "btn btn-primary" do %>
+            <span class="mr-2 inline-block"><%= save_as_icon %></span>
+            <span>Update all from PSE</span>
+        <% end %>
     <% end %>
 <% end %>
 
+<% if @permissions.can? :add, Company %>
 <div class="card company-new w-1/4">
     <h2 class="card-header">Add new company</h2>
     <div class="card-body"><%= render 'companies/form', company: @company %></div>
 </div>
+<% end %>
 
 <table class="table table-striped m-6">
     <thead class="thead-dark">
@@ -31,14 +35,20 @@
                 <td><%= company.industry %></td>
                 <td class="flex">
                     <%= company.last_price %>
-                    <%= link_to "Update from PSE", [:price_update_from_pse, company], method: :post, style: "margin-left: auto" if company.can_update_from_pse? %>
+                    <% if @permissions.can? :price_update, company %>
+                        <%= link_to "Update from PSE", [:price_update_from_pse, company], method: :post, style: "margin-left: auto" if company.can_update_from_pse? %>
+                    <% end %>
                 </td>
                 <td class="text-right" style="width: 6%;">
                     <div class="flex">
-                        <%= link_to "<span class='fe fe-link'></span>".html_safe, company.pse_url, target: :_blank %>
+                        <%= link_to link_icon, company.pse_url, target: :_blank %>
                         <%= link_to eye_icon, company %>
-                        <%= link_to edit_icon, edit_company_path(company) %>
-                        <%= link_to trash_icon, company, method: :delete, data: { confirm: 'Are you sure?' } %>
+                        <% if @permissions.can? :edit, company %>
+                            <%= link_to edit_icon, edit_company_path(company) %>
+                        <% end %>
+                        <% if @permissions.can? :delete, company %>
+                            <%= link_to trash_icon, company, method: :delete, data: { confirm: 'Are you sure?' } %>
+                        <% end %>
                     </div>
                 </td>
             </tr>
