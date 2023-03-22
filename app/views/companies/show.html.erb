@@ -1,7 +1,9 @@
 <div class="p-4 mt-4 flex flex-row">
     <%= link_to "#{chevron_left_icon} Back".html_safe, companies_path, class: "btn btn-primary" %>
-    <%= link_to "#{edit_icon} Edit".html_safe, edit_company_path(@company), class: "btn btn-secondary ml-auto" %>
-    <% if @company.can_update_from_pse? %>
+    <% if @permissions.can? :update, @company %>
+        <%= link_to "#{edit_icon} Edit".html_safe, edit_company_path(@company), class: "btn btn-secondary ml-auto" %>
+    <% end %>
+    <% if @company.can_update_from_pse? && @permissions.can?(:price_update, @company) %>
         <%= link_to [:price_update_from_pse, @company], method: :post, class: "btn btn-secondary ml-2" do %>
             <span class="mr-2 inline-block"><%= save_as_icon %></span>
             <span>Update from PSE</span>
