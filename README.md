@@ -8,8 +8,8 @@
 [ ] Sort Portfolio by P/L percent
 [ ] Sort Portfolio by Divs %
 [ ] Sort Portfolio by P/L + Divs %
-[ ] Scope Activity History to current user
-[ ] Add logout button
+[x] Scope Activity History to current user
+[x] Add logout button
 ```
 
 # Cron
