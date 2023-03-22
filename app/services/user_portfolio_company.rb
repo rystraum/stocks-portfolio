@@ -60,6 +60,10 @@ class UserPortfolioCompany
     profit_loss / actual_total_costs
   end
 
+  def cash_dividends_annual_dps
+    cash_dividends_average_dps * cash_dividends_count_in_a_year
+  end
+
   private
 
   def last_price
@@ -100,5 +104,19 @@ class UserPortfolioCompany
 
   def sell_gains
     activities_calculator.sell_gains
+  end
+
+  def cash_dividends_average_dps
+    return 0 if cash_dividends.length.zero?
+
+    dividends = cash_dividends.collect(&:dividend_per_share).collect(&:to_f).reject(&:zero?)
+    @cash_dividends_average_dps ||= (dividends.sum / dividends.length)
+  end
+
+  def cash_dividends_count_in_a_year
+    return 0 if cash_dividends.length.zero?
+
+    count = cash_dividends.collect(&:pay_date).group_by(&:year).collect { |_year, arr| arr.count }
+    @cash_dividends_count_in_a_year ||= (count.sum.to_f / count.length).round(0)
   end
 end
