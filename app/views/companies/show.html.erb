@@ -134,7 +134,8 @@
 <div class="timeline-container mb-4">
     <h1>Timeline</h1>
     <% planned_number_of_shares = number_of_shares = total_cost = last_dividend_rate = 0 %>
-    <% @company.history(current_user).each do |thing| %>
+    <% portfolio = UserPortfolioCompany.new(current_user, @company) %>
+    <% portfolio.history.each do |thing| %>
         <div class="card <%= thing.class.to_s.titleize.parameterize %>">
             <% if thing.is_a?(Activity) %>
                 <div class="card-body">

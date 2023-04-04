@@ -22,7 +22,7 @@ class Company < ApplicationRecord
     @last_price_timestamp ||= price_updates.order('datetime desc').first&.datetime&.to_datetime || DateTime.now
   end
 
-  def history
+  def history(user)
     @history ||= (activities + stock_dividends + cash_dividends).sort_by do |thing|
       if thing.is_a?(Activity)
         thing.date
