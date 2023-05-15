@@ -32,7 +32,6 @@
             <tbody class="list divide-x divide-y divide-gray-400">
                 <% company_set.companies.each do |company| %>
                     <% portfolio = company_set.get_portfolio(company) %>
-                    <% next if portfolio.total_shares.zero? && !company.inactive? %>
                     <tr class="<%= company.inactive? ? "bg-gray-700 bg-gray-700 text-white" : cycle('bg-white', 'bg-blue-50') %>">
                         <td scope="row" class="tables-company">
                           <%= link_to company, company %><%= "*" if company.inactive? %>
