@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
 class CompanySet
-  attr_accessor :companies, :user, :portfolio
+  attr_reader :user, :portfolio
   def initialize(companies, user)
-    @companies = companies.sort_by { |c| [c.inactive ? 1 : 0, c.ticker] }
+    @companies = companies
     @user = user
     @portfolio = {}
     
     @companies.each do |company|
       @portfolio[company.id] = UserPortfolioCompany.new(user, company)
     end
+  end
+
+  def companies
+    @companies.sort_by { |c| [c.inactive ? 1 : 0, get_portfolio(c).total_shares.zero? ? 1 : 0, c.ticker] }
   end
 
   def total_costs
