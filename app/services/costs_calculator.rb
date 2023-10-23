@@ -1,6 +1,6 @@
 class CostsCalculator
   def initialize(activities)
-    @activities = activities.sort_by!(&:date)
+    @activities = activities
   end
 
   def costs_as_of(year: -> { Date.today.year }.call, month: -> { Date.today.month }.call)
