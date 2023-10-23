@@ -10,8 +10,8 @@ module ApplicationHelper
     ["Real Estate", "Finance", "Holding", "Preferred", "Services", "Industrial", "Telecom", "Media"]
   end
 
-  def format_currency(amount)
-    number_to_currency amount, unit: ''
+  def format_currency(amount, places = 2)
+    number_to_currency amount, unit: '', precision: places
   end
 
   def format_percentage(numerator, denominator)
