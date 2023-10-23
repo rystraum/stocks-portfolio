@@ -91,7 +91,7 @@
                                     <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
                                     <td>
                                         <% if dividend.is_a?(CashDividend) %>
-                                            <%= dividend.stocks_at_ex_date %> × <%= format_currency(dividend.amount / dividend.stocks_at_ex_date) %> per share
+                                            <%= dividend.stocks_at_ex_date %> × <%= format_currency(dividend.amount / dividend.stocks_at_ex_date, 4) %> per share
                                         <% end %>
                                     </td>
                                     <td><%= dividend.is_a?(CashDividend) ? dividend.last_price&.to_formatted_s : "" %></td>
@@ -183,7 +183,7 @@
                             </div>
                             <div>
                                 <dt>Dividend Per Share:</dt>
-                                <dd><%= format_currency thing.dividend_per_share %></dd>
+                                <dd><%= format_currency thing.dividend_per_share, 4 %></dd>
                                 <% last_dividend_rate = thing.dividend_per_share %>
                             </div>
                         <% end %>
