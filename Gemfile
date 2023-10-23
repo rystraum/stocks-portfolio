@@ -15,7 +15,7 @@ gem 'coffee-rails', '~> 4.2'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 gem 'devise'
-gem "view_component", require: "view_component/engine"
+gem "view_component"
 
 
 gem 'httparty'
