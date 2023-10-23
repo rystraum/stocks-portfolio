@@ -5,6 +5,7 @@ class CashDividendsController < ApplicationController
   # GET /cash_dividends
   # GET /cash_dividends.json
   def index
+    @costs_calculator = CostsCalculator.new(current_user.activities)
     @cash_dividends = CashDividendSet.new(current_user.cash_dividends.order('pay_date desc'))
     @stock_dividends = current_user.stock_dividends.order('pay_date desc')
   end
