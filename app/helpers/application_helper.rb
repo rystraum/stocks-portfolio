@@ -7,7 +7,7 @@ module ApplicationHelper
   end
 
   def company_industry_options
-    ["Real Estate", "Finance", "Holding", "Preferred", "Services", "Industrial", "Telecom", "Media"]
+    ["Real Estate", "Finance", "Holding", "Preferred", "Services", "Industrial", "Telecom", "Media", "Capital Goods"]
   end
 
   def format_currency(amount, places = 2)
