@@ -12,7 +12,7 @@ class CashDividend < ApplicationRecord
   store_accessor :meta, :dividend_per_share
   store_accessor :meta, :stocks_at_ex_date
 
-  before_create :set_meta
+  before_update :set_meta
 
   def display_date
     if ex_date.blank?

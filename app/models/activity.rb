@@ -11,6 +11,8 @@ class Activity < ApplicationRecord
   scope :buy, -> { where(activity_type: 'BUY') }
   scope :sell, -> { where(activity_type: 'SELL') }
 
+  after_commit :update_dividends_after_this_activity
+
   def adjust(sum, include_planned: false)
     return sum + number_of_shares if is_buy?
     return sum - number_of_shares if is_sell?
@@ -41,5 +43,12 @@ class Activity < ApplicationRecord
   def convert_planned!
     return update(activity_type: "BUY") if activity_type == "PLANNED BUY"
     return update(activity_type: "SELL") if activity_type == "PLANNED SELL"
+  end
+
+  private
+
+  def update_dividends_after_this_activity
+    cash_dividends = company.cash_dividends.where("created_at > ?", created_at)
+    cash_dividends.map(&:save)
   end
 end
