@@ -91,7 +91,7 @@
                                     <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
                                     <td>
                                         <% if dividend.is_a?(CashDividend) %>
-                                            <%= dividend.stocks_at_ex_date %> × <%= format_currency(dividend.amount / dividend.stocks_at_ex_date, 4) %> per share
+                                            <%= dividend.stocks_at_ex_date %> × <%= format_currency(dividend.amount / dividend.stocks_at_ex_date, 4) rescue "-" %> per share
                                         <% end %>
                                     </td>
                                     <td><%= dividend.is_a?(CashDividend) ? dividend.last_price&.to_formatted_s : "" %></td>
@@ -206,7 +206,7 @@
 <div class="card w-1/3">
     <h1 class="card-header">Expected Next Dividend</h1>
     <dl class="card-body">
-        <%= render DLTableComponent.new("Shares on hand", "#{format_currency(number_of_shares * last_dividend_rate)} (#{number_of_shares} @ #{last_dividend_rate} DPS)") %>
-        <%= render DLTableComponent.new("Planned", "#{format_currency(planned_number_of_shares * last_dividend_rate)} (#{planned_number_of_shares} @ #{last_dividend_rate} DPS)") %>
+        <%= render DLTableComponent.new("Shares on hand", "#{format_currency(number_of_shares * last_dividend_rate)} (#{number_of_shares} @ #{last_dividend_rate} DPS)") rescue "" %>
+        <%= render DLTableComponent.new("Planned", "#{format_currency(planned_number_of_shares * last_dividend_rate)} (#{planned_number_of_shares} @ #{last_dividend_rate} DPS)") rescue "" %>
     </dl>
 </div>

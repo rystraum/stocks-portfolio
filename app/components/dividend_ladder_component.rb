@@ -3,7 +3,7 @@ class DividendLadderComponent < ViewComponent::Base
     @costs_calculator = costs_calculator
     @set = set
     @year = year.to_s
-    @dividends_this_year = year == 2023 ? (@set.sums[@year] + 4281) : @set.sums[@year]
+    @dividends_this_year = @set.sums[@year] || 0
     @costs_this_year = costs_calculator.costs_as_of(year: year.to_i, month: 12)
   end
 
