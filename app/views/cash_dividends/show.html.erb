@@ -1,27 +1,38 @@
-<p id="notice"><%= notice %></p>
-<p>
-    <strong>Company:</strong>
-    <%= @cash_dividend.company %>
-</p>
-<p>
-    <strong>Amount:</strong>
-    <%= @cash_dividend.amount %>
-</p>
-<p>
-    <strong>Pay date:</strong>
-    <%= @cash_dividend.pay_date %>
-</p>
-<p>
-    <strong>Ex date:</strong>
-    <%= @cash_dividend.ex_date %>
-</p>
-<p>
-    <strong>Dividends Per Share:</strong>
-    <%= @cash_dividend.meta['dividend_per_share'] %>
-</p>
-<p>
-    <strong>Meta:</strong>
-    <%= @cash_dividend.meta %>
-</p>
-<%= link_to 'Edit', edit_cash_dividend_path(@cash_dividend) %> |
-<%= link_to 'Back', cash_dividends_path %>
+<div class="p-5 w-1/2">
+  <div class="px-4 sm:px-0">
+    <h3 class="text-base font-semibold leading-7 text-gray-900">Cash Dividend #<%= @cash_dividend.id %></h3>
+  </div>
+  <div class="mt-6 border-t border-gray-100">
+    <dl class="divide-y divide-gray-100">
+      <div class="px-2 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <dt class="text-sm font-medium leading-6 text-gray-900">Company</dt>
+        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @cash_dividend.company %></dd>
+      </div>
+      <div class="px-2 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <dt class="text-sm font-medium leading-6 text-gray-900">Amount</dt>
+        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @cash_dividend.amount %></dd>
+      </div>
+      <div class="px-2 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <dt class="text-sm font-medium leading-6 text-gray-900">Pay Date</dt>
+        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @cash_dividend.pay_date %></dd>
+      </div>
+      <div class="px-2 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <dt class="text-sm font-medium leading-6 text-gray-900">Ex-Date</dt>
+        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @cash_dividend.ex_date %></dd>
+      </div>
+      <div class="px-2 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <dt class="text-sm font-medium leading-6 text-gray-900">Dividend Per Share</dt>
+        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @cash_dividend.meta['dividend_per_share'] %></dd>
+      </div>
+      <div class="px-2 py-3 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+        <dt class="text-sm font-medium leading-6 text-gray-900">Meta</dt>
+        <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><%= @cash_dividend.meta %></dd>
+      </div>
+    </dl>
+    <div class="flex">
+        <%= button_to 'Update Meta', update_meta_cash_dividend_path(@cash_dividend), method: :put, class: "mr-2 border rounded-md px-2 py-1" %>
+        <%= link_to 'Edit', edit_cash_dividend_path(@cash_dividend), class: "mr-2 border rounded-md px-2 py-1" %>
+        <%= link_to 'Back', cash_dividends_path, class: "mr-2 border rounded-md px-2 py-1" %>
+    </div>
+  </div>
+</div>
