@@ -18,6 +18,8 @@ class CompanySet
   def companies
     if @sort_by == "dividends_percent"
       @companies.sort_by { |c| [c.inactive ? 1 : 0, get_portfolio(c).total_shares.zero? ? 1 : 0, (1 - get_portfolio(c).cash_dividends_percent_of_total_costs)] }
+    elsif @sort_by == "final_pl_percent"
+      @companies.sort_by { |c| [c.inactive ? 1 : 0, get_portfolio(c).total_shares.zero? ? 1 : 0, (1 - get_portfolio(c).final_profit_loss_percent_of_total_costs)] }
     else
       @companies.sort_by { |c| [c.inactive ? 1 : 0, get_portfolio(c).total_shares.zero? ? 1 : 0, c.ticker] }
     end

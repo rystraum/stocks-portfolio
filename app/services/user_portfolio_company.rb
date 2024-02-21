@@ -70,6 +70,12 @@ class UserPortfolioCompany
     cash_dividends_total / total_costs.to_f
   end
 
+  def final_profit_loss_percent_of_total_costs
+    return 0.0 if total_costs.zero?
+
+    final_profit_loss / total_costs.to_f
+  end
+
   private
 
   def last_price
