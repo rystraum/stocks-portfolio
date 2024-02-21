@@ -1,5 +1,5 @@
 class CashDividendsController < ApplicationController
-  before_action :set_cash_dividend, only: %i[show edit update destroy]
+  before_action :set_cash_dividend, only: %i[show edit update destroy update_meta]
   before_action :authenticate_user!
 
   # GET /cash_dividends
@@ -59,6 +59,19 @@ class CashDividendsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to cash_dividends_url, notice: 'Cash dividend was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  def update_meta
+    @cash_dividend.set_meta
+    respond_to do |format|
+      if @cash_dividend.save
+        format.html { redirect_to @cash_dividend, notice: 'Cash dividend was successfully updated.' }
+        format.json { render :show, status: :ok, location: @cash_dividend }
+      else
+        format.html { render :edit }
+        format.json { render json: @cash_dividend.errors, status: :unprocessable_entity }
+      end
     end
   end
 

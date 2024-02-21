@@ -3,7 +3,11 @@
 Rails.application.routes.draw do
   devise_for :users
   resources :price_updates
-  resources :cash_dividends
+  resources :cash_dividends do
+    member do
+      put :update_meta
+    end
+  end
   resources :stock_dividends
   resources :activities do
     member do
