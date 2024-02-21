@@ -2,10 +2,13 @@
 
 class CompanySet
   attr_reader :user, :portfolio
+  attr_accessor :sort_by
+
   def initialize(companies, user)
     @companies = companies
     @user = user
     @portfolio = {}
+    @sort_by = "default"
     
     @companies.each do |company|
       @portfolio[company.id] = UserPortfolioCompany.new(user, company)
@@ -13,7 +16,11 @@ class CompanySet
   end
 
   def companies
-    @companies.sort_by { |c| [c.inactive ? 1 : 0, get_portfolio(c).total_shares.zero? ? 1 : 0, c.ticker] }
+    if @sort_by == "dividends_percent"
+      @companies.sort_by { |c| [c.inactive ? 1 : 0, get_portfolio(c).total_shares.zero? ? 1 : 0, (1 - get_portfolio(c).cash_dividends_percent_of_total_costs)] }
+    else
+      @companies.sort_by { |c| [c.inactive ? 1 : 0, get_portfolio(c).total_shares.zero? ? 1 : 0, c.ticker] }
+    end
   end
 
   def total_costs

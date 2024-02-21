@@ -6,6 +6,9 @@ class DashboardController < ApplicationController
       UserPortfolio.new(current_user).companies,
       current_user
     )
+    if params[:sort_by]
+      company_set.sort_by = params[:sort_by]
+    end
     render "show", locals: { company_set: company_set }
   end
 
