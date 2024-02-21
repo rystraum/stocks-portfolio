@@ -22,6 +22,21 @@
             <th scope="col" class="text-left" colspan="2">Annual DPS</th>
             <th scope="col" class="text-left" colspan="2">P/L + Divs</th>
         </tr>
+        <tr class="portfolio-header bg-blue-800 text-white">
+            <th scope="col" class="text-left">#{link_to 'Sort', root_path(sort_by: "ticker")}</th>
+            <th scope="col" class="text-left">&nbsp;</th>
+            <th scope="col" class="text-right">&nbsp;</th>
+            <th scope="col" class="text-right">&nbsp;</th>
+            <th scope="col" class="text-right">&nbsp;</th>
+            <th scope="col" class="text-right">&nbsp;</th>
+            <th scope="col" class="text-right">&nbsp;</th>
+            <th scope="col" class="text-right">&nbsp;</th>
+            <th scope="col" class="text-left" colspan="2">&nbsp;</th>
+            <th scope="col" class="text-left">&nbsp;</th>
+            <th scope="col" class="text-left">#{link_to 'Sort', root_path(sort_by: "dividends_percent")}</th>
+            <th scope="col" class="text-left" colspan="2">&nbsp;</th>
+            <th scope="col" class="text-left" colspan="2">&nbsp;</th>
+        </tr>
       HEREDOC
     %>
     <div class="p-4" id="portfolioTableID">

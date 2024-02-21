@@ -64,6 +64,12 @@ class UserPortfolioCompany
     cash_dividends_average_dps * cash_dividends_count_in_a_year
   end
 
+  def cash_dividends_percent_of_total_costs
+    return 0.0 if total_costs.zero?
+
+    cash_dividends_total / total_costs.to_f
+  end
+
   private
 
   def last_price
