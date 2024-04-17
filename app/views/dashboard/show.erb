@@ -4,7 +4,6 @@
         <span>Update Prices</span>
     <% end %>
 <% end %>
-
 <div class="container-fluid main-body">
     <%
       portfolio_headers = <<~HEREDOC
@@ -25,7 +24,7 @@
         <tr class="portfolio-header bg-blue-800 text-white">
             <th scope="col" class="text-left">#{link_to 'Sort', root_path(sort_by: "ticker")}</th>
             <th scope="col" class="text-left">&nbsp;</th>
-            <th scope="col" class="text-right">&nbsp;</th>
+            <th scope="col" class="text-right">#{link_to 'Sort', root_path(sort_by: "cost")}</th>
             <th scope="col" class="text-right">&nbsp;</th>
             <th scope="col" class="text-right">&nbsp;</th>
             <th scope="col" class="text-right">&nbsp;</th>
@@ -50,49 +49,47 @@
                     <% portfolio = company_set.get_portfolio(company) %>
                     <tr class="<%= company.inactive? ? "bg-gray-700 bg-gray-700 text-white" : cycle('bg-white', 'bg-blue-50') %>">
                         <td scope="row" class="tables-company">
-                          <%= link_to company, company %><%= "*" if company.inactive? %>
+                            <%= link_to company, company %><%= "*" if company.inactive? %>
                         </td>
                         <td class="tables-shares">
-                          <%= number_with_delimiter portfolio.total_shares %>
+                            <%= number_with_delimiter portfolio.total_shares %>
                         </td>
                         <td class="tables-total-cost text-right">
-                          <%= format_currency portfolio.total_costs %>
+                            <%= format_currency portfolio.total_costs %>
                         </td>
                         <td class="tables-cps text-right">
-                          <%= format_currency portfolio.cps %>
+                            <%= format_currency portfolio.cps %>
                         </td>
                         <td class="tables-percent-cost text-right">
-                          <%= format_percentage portfolio.total_costs, company_set.total_costs %>
+                            <%= format_percentage portfolio.total_costs, company_set.total_costs %>
                         </td>
                         <td class="tables-last-price text-right">
                             <%= format_currency company.last_price %><br>
                             <small class="smaller text-gray">
-                              <%= company.last_price_timestamp.strftime("%h %d %Y %H:%M") %>
+                                <%= company.last_price_timestamp.strftime("%h %d %Y %H:%M") %>
                             </small>
                         </td>
                         <td class="tables-last-value text-right">
-                          <%= format_currency portfolio.last_value %>
+                            <%= format_currency portfolio.last_value %>
                         </td>
                         <td class="tables-percent-value text-right">
-                          <%= format_percentage portfolio.last_value, company_set.total_value %>
+                            <%= format_percentage portfolio.last_value, company_set.total_value %>
                         </td>
                         <% if company.inactive? %>
                             <td class="text-right text-secondary"><%= format_currency portfolio.profit_loss %></td>
                         <% else %>
                             <td class="text-right"><%= green_red portfolio.profit_loss %></td>
                         <% end %>
-
                         <% if company.inactive? %>
                             <td class="text-right text-secondary"><%= format_percentage portfolio.profit_loss, portfolio.actual_total_costs %></td>
                         <% else %>
                             <td class="text-right"><%= green_red_percent portfolio.profit_loss, portfolio.actual_total_costs %></td>
                         <% end %>
-
                         <td class="text-right">
-                          <%= format_currency portfolio.cash_dividends_total %>
+                            <%= format_currency portfolio.cash_dividends_total %>
                         </td>
                         <td class="text-right">
-                          <%= format_percentage portfolio.cash_dividends_total, portfolio.total_costs %>
+                            <%= format_percentage portfolio.cash_dividends_total, portfolio.total_costs %>
                         </td>
                         <td class="text-right">
                             <% if company.inactive? %>
@@ -111,18 +108,16 @@
                             <% else %>
                                 <% begin %>
                                     <%= format_percentage portfolio.cash_dividends_annual_dps, portfolio.cps %>
-                                <% rescue ZeroDivisionError %>
+                                    <% rescue ZeroDivisionError %>
                                     <%= link_to "Recompute", company %>
                                 <% end %>
                             <% end %>
                         </td>
-
                         <% if company.inactive? %>
                             <td class="text-right text-secondary"><%= format_currency portfolio.final_profit_loss %></td>
                         <% else %>
                             <td class="text-right"><%= green_red portfolio.final_profit_loss %></td>
                         <% end %>
-
                         <% if company.inactive? %>
                             <td class="text-right text-secondary"><%= format_percentage portfolio.final_profit_loss, portfolio.total_costs %></td>
                         <% else %>
@@ -158,9 +153,7 @@
             </tfoot>
         </table>
     </div>
-
     <br>
-
     <div class="flex mb-8">
         <div class="card border-0 w-1/4">
             <div class="card-body">
@@ -179,7 +172,6 @@
                 </ul>
             </div>
         </div>
-
         <div class="card border-0 w-1/4">
             <div class="card-body">
                 <h1 class="card-header">Top 5 Losers (%)</h1>
@@ -197,7 +189,6 @@
                 </ul>
             </div>
         </div>
-
         <div class="card border-0 w-1/4">
             <div class="card-body">
                 <h1 class="card-header">Top 5 Gainers (Actual)</h1>
@@ -215,7 +206,6 @@
                 </ul>
             </div>
         </div>
-
         <div class="card border-0 w-1/4">
             <div class="card-body">
                 <h1 class="card-header">Top 5 Gainers (%)</h1>
@@ -234,5 +224,4 @@
             </div>
         </div>
     </div>
-
 </div>
