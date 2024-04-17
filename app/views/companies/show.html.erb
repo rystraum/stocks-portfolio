@@ -10,7 +10,6 @@
         <% end %>
     <% end %>
 </div>
-
 <div class="flex">
     <div class="row mb-4">
         <div class="col-4">
@@ -33,15 +32,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <% current_user.company_activities(@company).each do |activity| %>
-                            <tr>
-                                <td><%= activity.date.to_formatted_s(:long) %></td>
-                                <td><%= activity.is_buy? ? activity.number_of_shares : "-"  %></td>
-                                <td><%= activity.is_sell? ? activity.number_of_shares : "-" %></td>
-                                <td><%= format_currency activity.cost_per_share %></td>
-                                <td class="text-right"><%= format_currency activity.total_price %></td>
-                            </tr>
-                        <% end %>
+                            <% current_user.company_activities(@company).each do |activity| %>
+                                <tr>
+                                    <td><%= activity.date.to_formatted_s(:long) %></td>
+                                    <td><%= activity.is_buy? ? activity.number_of_shares : "-"  %></td>
+                                    <td><%= activity.is_sell? ? activity.number_of_shares : "-" %></td>
+                                    <td><%= format_currency activity.cost_per_share %></td>
+                                    <td class="text-right"><%= format_currency activity.total_price %></td>
+                                </tr>
+                            <% end %>
                         </tbody>
                         <tfoot>
                             <tr>
@@ -95,6 +94,7 @@
                                         <% end %>
                                     </td>
                                     <td><%= dividend.is_a?(CashDividend) ? dividend.last_price&.to_formatted_s : "" %></td>
+                                    <td><%= link_to(refresh_icon.html_safe, update_meta_cash_dividend_path(dividend), method: :put, class: "") %></td>
                                 </tr>
                             <% end %>
                         </tbody>
@@ -202,7 +202,6 @@
         </div>
     <% end %>
 </div>
-
 <div class="card w-1/3">
     <h1 class="card-header">Expected Next Dividend</h1>
     <dl class="card-body">
