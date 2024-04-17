@@ -8,6 +8,10 @@ class CashDividendsController < ApplicationController
     @costs_calculator = CostsCalculator.new(current_user.activities)
     @cash_dividends = CashDividendSet.new(current_user.cash_dividends.order('pay_date desc'))
     @stock_dividends = current_user.stock_dividends.order('pay_date desc')
+    @companies = CompanySet.new(
+      UserPortfolio.new(current_user).companies,
+      current_user
+    ).companies
   end
 
   # GET /cash_dividends/1

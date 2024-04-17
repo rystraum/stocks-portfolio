@@ -1,19 +1,18 @@
 <% @years = {} %>
 <% @amounts = {} %>
-
 <script type="text/javascript">
-	function setup() {
-    return {
-      activeTab: 0,
-      tabs: [
-          "Dividend Ladder",
-          "Cash Dividends",
-          "Stock Dividends",
-      ]
-    };
-  };
+    function setup() {
+        return {
+          activeTab: 0,
+          tabs: [
+              "Dividend Ladder",
+              "Dividend Calendar",
+              "Cash Dividends",
+              "Stock Dividends",
+          ]
+        };
+      };
 </script>
-
 <div x-data="setup()">
     <ul class="flex justify-center items-center my-4">
         <template x-for="(tab, index) in tabs" :key="index">
@@ -25,7 +24,6 @@
             <%= link_to "New Cash Dividend", new_cash_dividend_path, class: "border-0" %>
         </li>
     </ul>
-
     <div class="bg-white p-4 text-center mx-auto border">
         <div x-show="activeTab === 0">
             <div class="flex flex-col">
@@ -39,9 +37,12 @@
             </div>
         </div>
         <div x-show="activeTab === 1">
-            <%= render "cash_dividends/cash_dividends_tab", cash_dividends: @cash_dividends %>
+            <%= render "cash_dividends/dividends_calendar_tab", cash_dividends: @cash_dividends %>
         </div>
         <div x-show="activeTab === 2">
+            <%= render "cash_dividends/cash_dividends_tab", cash_dividends: @cash_dividends %>
+        </div>
+        <div x-show="activeTab === 3">
             <%= render "cash_dividends/stock_dividends_tab", stock_dividends: @stock_dividends %>
         </div>
     </div>
