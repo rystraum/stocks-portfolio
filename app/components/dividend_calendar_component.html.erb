@@ -1,0 +1,32 @@
+<div class="dividends-calendar-container">
+    <table>
+        <thead class="thead-dark">
+            <tr>
+                <th colspan="4" class="year-label text-center"><%= @year %></th>
+            </tr>
+            <tr class="text-center">
+                <th class="text-left w-10">Month</th>
+                <th class="text-left w-10">Count</th>
+                <th class="text-right w-10">Amount</th>
+                <% @companies.each do |company| %>
+                    <th class="text-center w-2"><%= company.ticker %></th>
+                <% end %>
+            </tr>
+        </thead>
+        <tbody>
+            <% (1..12).each do |month| %>
+                <%= render(DividendMonthComponent.new(companies: @companies, year: @year, month: month, set: @set)) %>
+            <% end %>
+            <tr>
+                <td colspan="2" class="text-right"><%= @year %> Total</td>
+                <td class="text-right"><%= total_this_year %></td>
+                <td class="text-left" colspan="5"><%= average_monthly_dividends %> monthly average</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-right">Total Costs Until EOY</td>
+                <td class="text-right"><%= formatted_costs_this_year %></td>
+                <td class="text-left" colspan="5"><%= percent_dividends_this_year %> dividends as of end of <%= @year %></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

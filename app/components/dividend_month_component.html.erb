@@ -1,0 +1,14 @@
+<tr>
+    <td><%= month_name %></td>
+    <td><%= total_count_this_month %></td>
+    <td class="text-right"><%= total_amount_this_month %></td>
+    <% @companies.each do |company| %>
+        <% ticker = company.ticker %>
+        <% amount = breakdown[ticker] %>
+        <td class="text-center">
+            <% if !amount.blank? %>
+                <%= link_to(amount, company_path(ticker), target: :_blank, class: "btn btn-secondary btn-sm mr-0") %>
+            <% end %>
+        </td>
+    <% end %>
+</tr>
