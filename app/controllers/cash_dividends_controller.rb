@@ -47,7 +47,7 @@ class CashDividendsController < ApplicationController
   def update
     respond_to do |format|
       if @cash_dividend.update(cash_dividend_params)
-        format.html { redirect_to @cash_dividend, notice: 'Cash dividend was successfully updated.' }
+        format.html { redirect_back(fallback_location: @cash_dividend, notice: 'Cash dividend was successfully updated.') }
         format.json { render :show, status: :ok, location: @cash_dividend }
       else
         format.html { render :edit }
@@ -70,7 +70,7 @@ class CashDividendsController < ApplicationController
     @cash_dividend.set_meta
     respond_to do |format|
       if @cash_dividend.save
-        format.html { redirect_to @cash_dividend, notice: 'Cash dividend was successfully updated.' }
+        format.html { redirect_back(fallback_location: @cash_dividend, notice: 'Cash dividend was successfully updated.') }
         format.json { render :show, status: :ok, location: @cash_dividend }
       else
         format.html { render :edit }
