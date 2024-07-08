@@ -67,7 +67,7 @@ class CashDividendsController < ApplicationController
   end
 
   def update_meta
-    @cash_dividend.set_meta
+    @cash_dividend.set_meta(true)
     respond_to do |format|
       if @cash_dividend.save
         format.html { redirect_back(fallback_location: @cash_dividend, notice: 'Cash dividend was successfully updated.') }

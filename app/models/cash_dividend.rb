@@ -34,9 +34,9 @@ class CashDividend < ApplicationRecord
     update(stocks_at_ex_date: val) if stocks_at_ex_date.blank? || force
   end
 
-  def set_meta
+  def set_meta(force = false)
     return if ex_date.blank?
-    return if dividend_per_share.present? && stocks_at_ex_date.present?
+    return if dividend_per_share.present? && stocks_at_ex_date.present? && !force
 
     ac = ActivitiesCalculator.new(company.activities.where('date < ?', ex_date).where(user: user))
     current_shares = ac.ending_shares
