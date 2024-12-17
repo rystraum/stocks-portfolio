@@ -14,6 +14,8 @@ class CashDividend < ApplicationRecord
 
   before_update :set_meta
 
+  belongs_to :last_price_update, class_name: 'PriceUpdate', foreign_key: :last_price_update_id
+
   def display_date
     if ex_date.blank?
       "EX: UNKNOWN <br> PAY: #{pay_date.to_formatted_s(:long)}"
@@ -23,7 +25,27 @@ class CashDividend < ApplicationRecord
   end
 
   def last_price
-    company.price_updates.where('date(datetime) <= ?', ex_date).order('datetime desc').first
+    return last_price_update if last_price_update.present?
+
+    lpu = company.price_updates.where('date(datetime) <= ?', ex_date).order('datetime desc').first
+    self.last_price_update = lpu
+    save
+
+    return lpu
+  end
+
+  def dividend_per_share
+    return if amount.blank?
+    return if stocks_at_ex_date.blank?
+
+    amount / stocks_at_ex_date
+  end
+
+  def rate_of_return_based_on_nearest_price
+    return if last_price.blank?
+    return if dividend_per_share.blank?
+
+    dividend_per_share / last_price.price
   end
 
   def update_dps(val, force = false)
@@ -40,7 +62,7 @@ class CashDividend < ApplicationRecord
 
     ac = ActivitiesCalculator.new(company.activities.where('date < ?', ex_date).where(user: user))
     current_shares = ac.ending_shares
-    
+
     self.dividend_per_share = amount / current_shares
     self.stocks_at_ex_date = current_shares
   end
