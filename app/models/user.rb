@@ -14,11 +14,11 @@ class User < ApplicationRecord
   end
 
   def company_dividends(company)
-    return (stock_dividends.where(company: company) + cash_dividends.where(company: company)).sort_by(&:pay_date)
+    return (stock_dividends.where(company: company) + cash_dividends.includes(:last_price_update).where(company: company)).sort_by(&:pay_date)
   end
 
   def cash_sum_dividends(company)
-    return cash_dividends.where(company: company).sum(:amount)
+    return cash_dividends.includes(:last_price_update).where(company: company).sum(:amount)
   end
 
   def company_activities(company)

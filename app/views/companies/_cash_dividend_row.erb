@@ -1,0 +1,17 @@
+<%# locals(dividend:) %>
+
+<tr>
+    <td><%= format_currency(dividend.amount) %></td>
+    <td></td>
+    <td><%= dividend.ex_date.blank? ? "-" : dividend.ex_date.to_formatted_s(:long) %></td>
+    <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
+    <td>
+        <%= dividend.stocks_at_ex_date %> × <%= format_currency(dividend.dividend_per_share, 2) rescue "-" %> per share
+        <% if dividend.last_price.present? %>
+            <br />
+            <%= format_currency(dividend.rate_of_return_based_on_nearest_price) %>% from closest price
+        <% end %>
+    </td>
+    <td><%= dividend.last_price&.to_formatted_s %></td>
+    <td><%= link_to(refresh_icon.html_safe, update_meta_cash_dividend_path(dividend), method: :put, class: "") %></td>
+</tr>

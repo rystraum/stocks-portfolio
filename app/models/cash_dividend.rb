@@ -45,7 +45,7 @@ class CashDividend < ApplicationRecord
     return if last_price.blank?
     return if dividend_per_share.blank?
 
-    dividend_per_share / last_price.price
+    dividend_per_share / last_price.price * 100
   end
 
   def update_dps(val, force = false)

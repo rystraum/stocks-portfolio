@@ -83,19 +83,7 @@
                         </thead>
                         <tbody>
                             <% current_user.company_dividends(@company).each do |dividend| %>
-                                <tr>
-                                    <td><%= dividend.is_a?(CashDividend) ? format_currency(dividend.amount) : "" %></td>
-                                    <td><%= dividend.is_a?(StockDividend) ? dividend.amount : "" %></td>
-                                    <td><%= dividend.ex_date.blank? ? "-" : dividend.ex_date.to_formatted_s(:long) %></td>
-                                    <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
-                                    <td>
-                                        <% if dividend.is_a?(CashDividend) %>
-                                            <%= dividend.stocks_at_ex_date %> × <%= format_currency(dividend.amount / dividend.stocks_at_ex_date, 4) rescue "-" %> per share
-                                        <% end %>
-                                    </td>
-                                    <td><%= dividend.is_a?(CashDividend) ? dividend.last_price&.to_formatted_s : "" %></td>
-                                    <td><%= link_to(refresh_icon.html_safe, update_meta_cash_dividend_path(dividend), method: :put, class: "") %></td>
-                                </tr>
+                                <%= render "#{dividend.class.name.underscore}_row", dividend: dividend %>                                
                             <% end %>
                         </tbody>
                     </table>
