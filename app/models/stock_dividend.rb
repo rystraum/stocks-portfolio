@@ -4,7 +4,7 @@ class StockDividend < ApplicationRecord
   belongs_to :user
   belongs_to :company
 
-  belongs_to :last_price_update, class_name: 'PriceUpdate', foreign_key: :last_price_update_id
+  belongs_to :last_price_update, class_name: 'PriceUpdate', foreign_key: :last_price_update_id, optional: true
 
   def display_date
     if ex_date.blank?
