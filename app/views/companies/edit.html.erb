@@ -1,6 +1,11 @@
-<h1>Editing Company</h1>
+<div class="flex">
+    <div class="card">
+        <h1 class="card-header">Editing <%= @company.ticker %></h1>
+        <div class="card-body">
+            <%= render 'companies/form', company: @company %>
+        </div>
+    </div>
+</div>
 
-<%= render 'form', company: @company %>
-
-<%= link_to 'Show', @company %> |
-<%= link_to 'Back', companies_path %>
+<%= link_to "#{chevron_left_icon} #{@company.ticker}".html_safe, @company, class: "btn btn-primary btn-sm ml-4" %>
+<%= link_to "#{chevron_left_icon} Company List".html_safe, companies_path, class: "btn btn-secondary btn-sm ml-4" %>
