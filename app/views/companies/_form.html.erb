@@ -1,4 +1,4 @@
-<%= form_with(model: company, local: true, class: "form") do |form| %>
+<%= form_with(model: company, local: true, class: "form mr-4") do |form| %>
     <% if company.errors.any? %>
         <div id="error_explanation">
             <h2><%= pluralize(company.errors.count, "error") %> prohibited this company from being saved:</h2>
@@ -32,6 +32,10 @@
     <div class="field form-check">
         <%= form.check_box :inactive, class: 'form-check-input'  %>
         <%= form.label :inactive, class: 'form-check-label'  %>
+    </div>
+    <div class="field">
+        <%= form.label :target_buy_price %>
+        <%= form.text_field :target_buy_price, class: 'w-full', placeholder: format_currency(@company.last_price) %>
     </div>
     <div class="flex">
         <%= form.submit (company.persisted? ? "Update" : "Add"), class: "btn btn-sm btn-primary ml-auto" %>

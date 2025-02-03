@@ -214,7 +214,7 @@ a {
     @apply flex mb-2 items-center;
 
     label {
-      @apply mr-2 items-center;
+      @apply mr-2 items-center w-2/5;
       min-width: fit-content;
     }
   }
