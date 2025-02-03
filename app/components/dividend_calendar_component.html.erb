@@ -18,14 +18,24 @@
                 <%= render(DividendMonthComponent.new(companies: @companies, year: @year, month: month, set: @set)) %>
             <% end %>
             <tr>
-                <td colspan="2" class="text-right"><%= @year %> Total</td>
+                <td colspan="2" class="text-right"><%= @year %> Dividends</td>
                 <td class="text-right"><%= total_this_year %></td>
-                <td class="text-left" colspan="5"><%= average_monthly_dividends %> monthly average</td>
+                <td class="text-left" colspan="10">
+                    <%= average_monthly_dividends %> monthly average
+                    |
+                    <%= percent_dividends_this_year %> of entire base by EOY
+                    |
+                    <%= percent_dividends_yoy_costs_change %> of Gross YoY costs
+                </td>
             </tr>
             <tr>
                 <td colspan="2" class="text-right">Total Costs Until EOY</td>
                 <td class="text-right"><%= formatted_costs_this_year %></td>
-                <td class="text-left" colspan="5"><%= percent_dividends_this_year %> dividends as of end of <%= @year %></td>
+                <td class="text-left" colspan="10">
+                    Gross YoY of <%= net_yoy_costs_change %> from last year
+                    |
+                    Net of this year's dividends at <%= yoy_costs_change_less_dividends %>
+                </td>
             </tr>
         </tbody>
     </table>
