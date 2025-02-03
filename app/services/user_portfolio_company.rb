@@ -5,6 +5,10 @@ class UserPortfolioCompany
     @company = company
   end
 
+  def target_buy_price
+    @company.target_buy_price
+  end
+
   def history
     @history ||= (activities + stock_dividends + cash_dividends).sort_by do |thing|
       if thing.is_a?(Activity)

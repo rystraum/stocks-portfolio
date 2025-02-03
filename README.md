@@ -28,6 +28,12 @@
 # Dividend Ladder
 [ ] Compute Portfolio Change Per Year
 [ ] Compute Total Dividends % Relative to Portfolio Change
+
+# Strategies
+[x] Add Target Buy Price
+[ ] Refactor Target Buy Price to be set per user, instead of global to company
+[ ] Add Target Sell Price, per user per company
+[ ] Add Target Expense Milestone, per user per company
 ```
 
 # Cron

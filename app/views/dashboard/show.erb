@@ -14,6 +14,7 @@
             <th scope="col" class="text-right">CPS</th>
             <th scope="col" class="text-right">% Cost</th>
             <th scope="col" class="text-right">Last Price</th>
+            <th scope="col" class="text-right">Target <br>Buy <br>Price</th>
             <th scope="col" class="text-right">Last Value</th>
             <th scope="col" class="text-right">% Value</th>
             <th scope="col" class="text-left" colspan="2">P/L</th>
@@ -25,6 +26,7 @@
             <th scope="col" class="text-left">#{link_to 'Sort', root_path(sort_by: "ticker")}</th>
             <th scope="col" class="text-left">&nbsp;</th>
             <th scope="col" class="text-right">#{link_to 'Sort', root_path(sort_by: "cost")}</th>
+            <th scope="col" class="text-right">&nbsp;</th>
             <th scope="col" class="text-right">&nbsp;</th>
             <th scope="col" class="text-right">&nbsp;</th>
             <th scope="col" class="text-right">&nbsp;</th>
@@ -68,6 +70,9 @@
                             <small class="smaller text-gray">
                                 <%= company.last_price_timestamp.strftime("%h %d %Y %H:%M") %>
                             </small>
+                        </td>
+                        <td class="tables-target-buy-price text-right">
+                            <%= buy_or_not portfolio.target_buy_price, company.last_price %>
                         </td>
                         <td class="tables-last-value text-right">
                             <%= format_currency portfolio.last_value %>
