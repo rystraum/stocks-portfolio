@@ -37,4 +37,10 @@ module ApplicationHelper
 
     tag.span date.to_formatted_s(:rfc822).upcase, style: 'font-family: monospace'
   end
+
+  def buy_or_not(target_buy_price, current_price)
+    return '' if target_buy_price.blank?
+
+    tag.span target_buy_price, class: (current_price < target_buy_price ? 'text-green-500' : 'text-red-500').to_s
+  end
 end
