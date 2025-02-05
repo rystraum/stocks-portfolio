@@ -69,28 +69,64 @@
                 <div class="card-header">
                     <h4 class="card-header-title">Dividends</h4>
                 </div>
-                <div class="table-responsive mb-0">
-                    <table class="table table-striped card-table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Cash</th>
-                                <th>Stock</th>
-                                <th>Ex Date</th>
-                                <th>Pay Date</th>
-                                <th>Stocks Held on Ex Date</th>
-                                <th>Closest Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% current_user.company_dividends(@company).each do |dividend| %>
-                                <%= render "#{dividend.class.name.underscore}_row", dividend: dividend %>                                
-                            <% end %>
-                        </tbody>
-                    </table>
-                    <dl class="w-1/2 my-3 pl-4">
-                        <%= render DLTableComponent.new("Total Cash Dividends:", format_currency(current_user.cash_sum_dividends(@company))) %>
-                        <%= render DLTableComponent.new("% of Cost Basis:", format_percentage(current_user.cash_sum_dividends(@company), current_user.cost_basis(@company))) %>
-                    </dl>
+                <div x-data="{ selectedTab: 'itemized' }" class="w-full">
+                    <div x-on:keydown.right.prevent="$focus.wrap().next()" x-on:keydown.left.prevent="$focus.wrap().previous()" class="flex gap-2 overflow-x-auto border-b border-outline dark:border-outline-dark" role="tablist" aria-label="tab options">
+                        <button x-on:click="selectedTab = 'itemized'" x-bind:aria-selected="selectedTab === 'itemized'" x-bind:tabindex="selectedTab === 'itemized' ? '0' : '-1'" x-bind:class="selectedTab === 'itemized' ? 'font-bold text-primary border-b-2 border-primary dark:border-primary-dark dark:text-primary-dark' : 'text-on-surface font-medium dark:text-on-surface-dark dark:hover:border-b-outline-dark-strong dark:hover:text-on-surface-dark-strong hover:border-b-2 hover:border-b-outline-strong hover:text-on-surface-strong'" class="flex h-min items-center gap-2 px-4 py-2 text-sm" type="button" role="tab" aria-controls="tabpanelItemized" >
+                            Itemized
+                        </button>
+                        <button x-on:click="selectedTab = 'annual'" x-bind:aria-selected="selectedTab === 'annual'" x-bind:tabindex="selectedTab === 'annual' ? '0' : '-1'" x-bind:class="selectedTab === 'annual' ? 'font-bold text-primary border-b-2 border-primary dark:border-primary-dark dark:text-primary-dark' : 'text-on-surface font-medium dark:text-on-surface-dark dark:hover:border-b-outline-dark-strong dark:hover:text-on-surface-dark-strong hover:border-b-2 hover:border-b-outline-strong hover:text-on-surface-strong'" class="flex h-min items-center gap-2 px-4 py-2 text-sm" type="button" role="tab" aria-controls="tabpanelAnnual" >
+                            Annual
+                        </button>
+                        <!--
+                        <button x-on:click="selectedTab = 'comments'" x-bind:aria-selected="selectedTab === 'comments'" x-bind:tabindex="selectedTab === 'comments' ? '0' : '-1'" x-bind:class="selectedTab === 'comments' ? 'font-bold text-primary border-b-2 border-primary dark:border-primary-dark dark:text-primary-dark' : 'text-on-surface font-medium dark:text-on-surface-dark dark:hover:border-b-outline-dark-strong dark:hover:text-on-surface-dark-strong hover:border-b-2 hover:border-b-outline-strong hover:text-on-surface-strong'" class="flex h-min items-center gap-2 px-4 py-2 text-sm" type="button" role="tab" aria-controls="tabpanelComments" >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="size-4">
+                                <path d="M3.505 2.365A41.369 41.369 0 0 1 9 2c1.863 0 3.697.124 5.495.365 1.247.167 2.18 1.108 2.435 2.268a4.45 4.45 0 0 0-.577-.069 43.141 43.141 0 0 0-4.706 0C9.229 4.696 7.5 6.727 7.5 8.998v2.24c0 1.413.67 2.735 1.76 3.562l-2.98 2.98A.75.75 0 0 1 5 17.25v-3.443c-.501-.048-1-.106-1.495-.172C2.033 13.438 1 12.162 1 10.72V5.28c0-1.441 1.033-2.717 2.505-2.914Z" />
+                                <path d="M14 6c-.762 0-1.52.02-2.271.062C10.157 6.148 9 7.472 9 8.998v2.24c0 1.519 1.147 2.839 2.71 2.935.214.013.428.024.642.034.2.009.385.09.518.224l2.35 2.35a.75.75 0 0 0 1.28-.531v-2.07c1.453-.195 2.5-1.463 2.5-2.915V8.998c0-1.526-1.157-2.85-2.729-2.936A41.645 41.645 0 0 0 14 6Z" />
+                            </svg>
+                            Comments
+                        </button>
+                        <button x-on:click="selectedTab = 'saved'" x-bind:aria-selected="selectedTab === 'saved'" x-bind:tabindex="selectedTab === 'saved' ? '0' : '-1'" x-bind:class="selectedTab === 'saved' ? 'font-bold text-primary border-b-2 border-primary dark:border-primary-dark dark:text-primary-dark' : 'text-on-surface font-medium dark:text-on-surface-dark dark:hover:border-b-outline-dark-strong dark:hover:text-on-surface-dark-strong hover:border-b-2 hover:border-b-outline-strong hover:text-on-surface-strong'" class="flex h-min items-center gap-2 px-4 py-2 text-sm" type="button" role="tab" aria-controls="tabpanelSaved" >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="size-4">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10 2c-1.716 0-3.408.106-5.07.31C3.806 2.45 3 3.414 3 4.517V17.25a.75.75 0 0 0 1.075.676L10 15.082l5.925 2.844A.75.75 0 0 0 17 17.25V4.517c0-1.103-.806-2.068-1.93-2.207A41.403 41.403 0 0 0 10 2Z" />
+                            </svg>
+                            Saved
+                        </button>
+                        -->
+                    </div>
+                    <div class="px-2 py-4 text-on-surface dark:text-on-surface-dark">
+                        <div x-cloak x-show="selectedTab === 'itemized'" id="tabpanelItemized" role="tabpanel" aria-label="itemized">
+                            <div class="table-responsive mb-0">
+                                <table class="table table-striped card-table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Cash</th>
+                                            <th>Stock</th>
+                                            <th>Ex Date</th>
+                                            <th>Pay Date</th>
+                                            <th>Stocks Held on Ex Date</th>
+                                            <th>Closest Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% current_user.company_dividends(@company).each do |dividend| %>
+                                            <%= render "#{dividend.class.name.underscore}_row", dividend: dividend %>
+                                        <% end %>
+                                    </tbody>
+                                </table>
+                                <dl class="w-1/2 my-3 pl-4">
+                                    <%= render DLTableComponent.new("Total Cash Dividends:", format_currency(current_user.cash_sum_dividends(@company))) %>
+                                    <%= render DLTableComponent.new("% of Cost Basis:", format_percentage(current_user.cash_sum_dividends(@company), current_user.cost_basis(@company))) %>
+                                </dl>
+                            </div>
+                        </div>
+                        <div x-cloak x-show="selectedTab === 'annual'" id="tabpanelAnnual" role="tabpanel" aria-label="Annual">
+                            <%= render CompanyAnnualDividendsComponent.new(user: current_user, company: @company) %>
+                        </div>
+                        <!--
+                        <div x-cloak x-show="selectedTab === 'comments'" id="tabpanelComments" role="tabpanel" aria-label="comments"><b><a href="#" class="underline">Comments</a></b> tab is selected</div>
+                        <div x-cloak x-show="selectedTab === 'saved'" id="tabpanelSaved" role="tabpanel" aria-label="saved"><b><a href="#" class="underline">Saved</a></b> tab is selected</div>
+                        -->
+                    </div>
                 </div>
             </div>
         </div>
