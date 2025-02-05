@@ -1,5 +1,6 @@
 class CompanyInfoComponent < ViewComponent::Base
   attr_reader :company
+
   def initialize(company)
     @company = company
   end
