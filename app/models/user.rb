@@ -14,7 +14,11 @@ class User < ApplicationRecord
   end
 
   def company_dividends(company)
-    return (stock_dividends.where(company: company) + cash_dividends.includes(:last_price_update).where(company: company)).sort_by(&:pay_date)
+    return (stock_dividends.where(company: company) + cash_dividends_with_price(company)).sort_by(&:pay_date)
+  end
+
+  def cash_dividends_with_price(company)
+    return cash_dividends.includes(:last_price_update).where(company: company)
   end
 
   def cash_sum_dividends(company)
