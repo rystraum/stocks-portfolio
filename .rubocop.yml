@@ -1,0 +1,5 @@
+convention:Style/Documentation:
+  Enabled: false
+
+convention:Style/RedundantReturn:
+  Enabled: false
