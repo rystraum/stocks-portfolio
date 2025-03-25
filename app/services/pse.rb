@@ -8,14 +8,22 @@
 
 class PSE
   attr_accessor :company
+  attr_accessor :company_id
+  attr_accessor :pse_company_id
+  attr_accessor :pse_security_id
 
   def initialize(company, force = false)
     @company = company
+    @company_id = company.id
+    @can_update = company.can_update_from_pse?
+    @pse_company_id = company.pse_company_id
+    @pse_security_id = company.pse_security_id
     @force = force
   end
 
   def price_update!
-    raise "Company can't update from PSE" if !company.can_update_from_pse?
+    raise "Company can't update from PSE" if !can_update?
+
     response = HTTParty.get("https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id.to_s}&security_id=#{pse_security_id.to_s}")
     document = Nokogiri::HTML.parse(response.body)
 
@@ -49,7 +57,7 @@ class PSE
     last_trade_value = document.css("table.view").last.children[3].children[3].children.to_s.sub("\r\n", "").sub(",","").to_d
 
     final_price = last_trade_value.zero? || last_trade_value.blank? ? company.last_price : last_trade_value
-    
+
     return company.price_updates.order("created_at desc").first if final_price.blank?
 
     price_update = company.price_updates.where(datetime: datetime).first_or_create do |update|
@@ -147,10 +155,15 @@ class PSE
     #   <td><a>C01864-2025</a></td> - Circular Number
     # </tr>
 
-    rows = document.css("table tbody tr")
+    rows = document.css('table tbody tr') || []
+    created_announcements = 0
+
     rows.each do |row|
       tds = row.children.select { |e| e.to_s.include?('td') }
       share_class = tds[0].text
+
+      next if share_class.include?('no data')
+
       dividend_type = tds[1].text
       amount = tds[2].text.gsub('P', '').to_d
       ex_date = Date.strptime(tds[3].text, '%b %d, %Y')
@@ -158,8 +171,8 @@ class PSE
       payout_date = Date.strptime(tds[5].text, '%b %d, %Y')
       circular_number = tds[6].text
 
-      DividendAnnouncement.create(
-        company_id: company.id,
+      announcement = DividendAnnouncement.create(
+        company_id: company_id,
         share_class: share_class,
         dividend_type: dividend_type,
         amount: amount,
@@ -167,9 +180,17 @@ class PSE
         record_date: record_date,
         payout_date: payout_date,
         circular_number: circular_number,
-        raw_html: tds.to_s
+        raw_html: row.to_html.to_s
       )
+
+      created_announcements += 1 if announcement.persisted?
     end
+
+    puts "Created #{ActionController::Base.helpers.pluralize(created_announcements, 'announcement')}"
+
+    return created_announcements
+  rescue StandardError => e
+    raise "#{e.message} - #{rows}"
   end
 
   def self.fetch_companies!(pages = 6)
@@ -208,14 +229,8 @@ class PSE
     end
   end
 
-  private
-
-  def pse_company_id
-    company.pse_company_id
-  end
-
-  def pse_security_id
-    company.pse_security_id
+  def can_update?
+    @can_update
   end
 end
 
