@@ -120,7 +120,7 @@ class CompaniesController < ApplicationController
   end
 
   def refetch_announcements
-    @company.dividend_announcements.delete_all
+    # @company.dividend_announcements.delete_all
 
     pse = PSE.new(@company)
     pse.dividend_announcements!
