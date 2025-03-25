@@ -105,7 +105,7 @@ class PSE
     response.body
   end
 
-  def fetch_dividends_and_rights
+  def dividend_announcements!
     headers = {}
     headers['Host'] = 'edge.pse.com.ph'
     headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:136.0) Gecko/20100101 Firefox/136.0'
