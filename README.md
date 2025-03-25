@@ -33,6 +33,7 @@
 [x] Scrape dividend announcements
 [x] Display dividend announcements
 [ ] In company view: compute expected dividends based on dividend announcements
+[x] Handle announcements for preferred shares (example: https://edge.pse.com.ph/companyPage/dividends_and_rights_form.do?cmpy_id=154)
 [ ] Also handle stock announcements
 
 # Strategies
