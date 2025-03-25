@@ -6,6 +6,7 @@ class Company < ApplicationRecord
   has_many :stock_dividends
   has_many :cash_dividends
   has_many :price_updates
+  has_many :dividend_announcements
 
   scope :alphabetical, -> { order(:ticker) }
   scope :active, -> { where(inactive: false) }

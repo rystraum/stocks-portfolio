@@ -153,13 +153,23 @@ class PSE
       share_class = tds[0].text
       dividend_type = tds[1].text
       amount = tds[2].text.gsub('P', '').to_d
-      ex_date = DateTime.strptime(tds[3].text, '%b %d, %Y')
-      record_date = DateTime.strptime(tds[4].text, '%b %d, %Y')
-      payout_date = DateTime.strptime(tds[5].text, '%b %d, %Y')
+      ex_date = Date.strptime(tds[3].text, '%b %d, %Y')
+      record_date = Date.strptime(tds[4].text, '%b %d, %Y')
+      payout_date = Date.strptime(tds[5].text, '%b %d, %Y')
       circular_number = tds[6].text
-    end
 
-    binding.pry
+      DividendAnnouncement.create(
+        company_id: company.id,
+        share_class: share_class,
+        dividend_type: dividend_type,
+        amount: amount,
+        ex_date: ex_date,
+        record_date: record_date,
+        payout_date: payout_date,
+        circular_number: circular_number,
+        raw_html: tds.to_s
+      )
+    end
   end
 
   def self.fetch_companies!(pages = 6)

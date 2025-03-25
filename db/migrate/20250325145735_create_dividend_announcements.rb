@@ -9,6 +9,7 @@ class CreateDividendAnnouncements < ActiveRecord::Migration[6.1]
       t.date :record_date
       t.date :payout_date
       t.string :circular_number
+      t.string :raw_html
       t.timestamps
     end
 
