@@ -28,4 +28,5 @@
 
 <p class="mt-4">
     <%= link_to "Past Dividends", dividend_announcements_url(ticker: company.ticker, future_only: 0, company_scope: 'all'), class: "text-blue-500 hover:text-blue-700 underline", target: "_blank" %>
+    <%= button_to 'Refetch Announcements', refetch_announcements_company_path(company), method: :delete, class: "mt-4 px-4 py-2 text-red-500 hover:text-red-700 border border-red-500 hover:border-red-700", data: { turbo_method: :delete, turbo_confirm: 'Are you sure you want to delete all dividend announcements?' } %>
 </p>
