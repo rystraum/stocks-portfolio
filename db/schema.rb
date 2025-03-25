@@ -71,6 +71,7 @@ ActiveRecord::Schema.define(version: 2025_03_25_145735) do
     t.string "circular_number"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["circular_number"], name: "index_dividend_announcements_on_circular_number", unique: true
     t.index ["company_id"], name: "index_dividend_announcements_on_company_id"
   end
 

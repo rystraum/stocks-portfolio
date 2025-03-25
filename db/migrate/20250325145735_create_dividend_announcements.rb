@@ -9,8 +9,9 @@ class CreateDividendAnnouncements < ActiveRecord::Migration[6.1]
       t.date :record_date
       t.date :payout_date
       t.string :circular_number
-
       t.timestamps
     end
+
+    add_index :dividend_announcements, :circular_number, unique: true
   end
 end
