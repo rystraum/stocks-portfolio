@@ -55,7 +55,12 @@
         <td class="px-4 py-2 text-right"><%= number_with_precision(dividend_announcement.amount, precision: 4) %></td>
         <td class="px-4 py-2 text-right"><%= dividend_announcement.ex_date %></td>
         <td class="px-4 py-2 text-right"><%= dividend_announcement.record_date %></td>
-        <td class="px-4 py-2 text-right"><%= dividend_announcement.payout_date %></td>
+        <td class="px-4 py-2 text-right">
+          <%= dividend_announcement.payout_date %>
+          <% if dividend_announcement.payout_date > Date.today %>
+          (<%= distance_of_time_in_words_to_now(dividend_announcement.payout_date) %> from now)
+          <% end %>
+        </td>
         <td class="px-4 py-2 text-right">
           <%= link_to "Edge", dividend_announcement.company.pse_dividends_url, target: :_blank %>
         </td>
