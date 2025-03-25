@@ -13,6 +13,16 @@
       All Announcements
     </label>
   </div>
+  <div class="mx-2">
+    <label class="mr-2">
+      <%= radio_button_tag :company_scope, 'all', params[:company_scope] == 'all', class: "mr-2", id: "company_scope_all" %>
+      All Companies
+    </label>
+    <label class="mr-2">
+      <%= radio_button_tag :company_scope, 'portfolio', params[:company_scope] == 'portfolio', class: "mr-2", id: "company_scope_portfolio" %>
+      Portfolio
+    </label>
+  </div>
   <%= submit_tag "Filter", class: "px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md" %>
 <% end %>
 <table class="table-auto w-full mb-4">
@@ -29,7 +39,7 @@
   <tbody>
     <% @dividend_announcements.each do |dividend_announcement| %>
       <tr class="<%= cycle('bg-white', 'bg-gray-100') %>">
-        <td class="px-4 py-2"><%= dividend_announcement.company.ticker %></td>
+        <td class="px-4 py-2"><%= link_to dividend_announcement.company.ticker, company_url(dividend_announcement.company), target: :_blank %></td>
         <td class="px-4 py-2"><%= dividend_announcement.dividend_type %></td>
         <td class="px-4 py-2 text-right"><%= number_with_precision(dividend_announcement.amount, precision: 4) %></td>
         <td class="px-4 py-2 text-right"><%= dividend_announcement.ex_date %></td>
