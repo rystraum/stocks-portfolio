@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_02_03_182135) do
+ActiveRecord::Schema.define(version: 2025_03_25_145735) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,6 +60,20 @@ ActiveRecord::Schema.define(version: 2025_02_03_182135) do
     t.index ["ticker"], name: "index_companies_on_ticker", unique: true
   end
 
+  create_table "dividend_announcements", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.string "share_class"
+    t.string "dividend_type"
+    t.decimal "amount"
+    t.date "ex_date"
+    t.date "record_date"
+    t.date "payout_date"
+    t.string "circular_number"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["company_id"], name: "index_dividend_announcements_on_company_id"
+  end
+
   create_table "price_updates", force: :cascade do |t|
     t.integer "company_id"
     t.datetime "datetime"
@@ -101,6 +115,7 @@ ActiveRecord::Schema.define(version: 2025_02_03_182135) do
   add_foreign_key "cash_dividends", "companies"
   add_foreign_key "cash_dividends", "price_updates", column: "last_price_update_id"
   add_foreign_key "cash_dividends", "users"
+  add_foreign_key "dividend_announcements", "companies"
   add_foreign_key "price_updates", "companies"
   add_foreign_key "stock_dividends", "companies"
   add_foreign_key "stock_dividends", "price_updates", column: "last_price_update_id"

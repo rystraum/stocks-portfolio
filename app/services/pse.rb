@@ -152,10 +152,10 @@ class PSE
       tds = row.children.select { |e| e.to_s.include?('td') }
       share_class = tds[0].text
       dividend_type = tds[1].text
-      amount = tds[2].text
-      ex_date = tds[3].text
-      record_date = tds[4].text
-      payout_date = tds[5].text
+      amount = tds[2].text.gsub('P', '').to_d
+      ex_date = DateTime.strptime(tds[3].text, '%b %d, %Y')
+      record_date = DateTime.strptime(tds[4].text, '%b %d, %Y')
+      payout_date = DateTime.strptime(tds[5].text, '%b %d, %Y')
       circular_number = tds[6].text
     end
 
