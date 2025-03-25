@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(version: 2025_03_25_145735) do
     t.date "record_date"
     t.date "payout_date"
     t.string "circular_number"
+    t.string "raw_html"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["circular_number"], name: "index_dividend_announcements_on_circular_number", unique: true
