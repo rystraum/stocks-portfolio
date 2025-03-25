@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CompaniesController < ApplicationController
-  before_action :set_company, only: %i[show edit update destroy last_price price_update_from_pse]
+  before_action :set_company, only: %i[show edit update destroy last_price price_update_from_pse refetch_announcements]
 
   # GET /companies
   # GET /companies.json
@@ -117,6 +117,15 @@ class CompaniesController < ApplicationController
       format.html { redirect_to companies_url, notice: 'Company was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def refetch_announcements
+    @company.dividend_announcements.delete_all
+
+    pse = PSE.new(@company)
+    pse.dividend_announcements!
+
+    return redirect_back(fallback_location: @company, notice: "Dividend Announcements Refetched!")
   end
 
   private

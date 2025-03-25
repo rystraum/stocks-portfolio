@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     member do
       get :last_price
       post :price_update_from_pse
+      delete :refetch_announcements
     end
     collection do
       post :price_update_all_from_pse
