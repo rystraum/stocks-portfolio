@@ -18,19 +18,19 @@ class PriceUpdateCompanies
   end
 
   def run_from_console
-    @companies.to_a.shuffle.each.with_index(1) do |company, index|
-      next if !company.can_update_from_pse?      
+    @companies.to_a.shuffle.each do |company|
+      next if !company.can_update_from_pse?
+
       puts "== #{company.ticker} Starting price update"
       begin
         pse = PSE.new(company)
         pse.price_update!
         pse.dividend_announcements!
-      rescue Exception => e
+      rescue StandardError => e
         puts "Failed price update for #{company.ticker} with error #{e.message}"
       end
       puts "== #{company.ticker} finished \n\n\n"
-      wait_time = index < 30 ? index : 30
-      sleep(wait_time.seconds)
+      sleep(rand(20).seconds)
     end
   end
 end
