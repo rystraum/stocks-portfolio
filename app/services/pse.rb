@@ -161,15 +161,23 @@ class PSE
     rows.each do |row|
       tds = row.children.select { |e| e.to_s.include?('td') }
       share_class = tds[0].text
-
       next if share_class.include?('no data')
 
       dividend_type = tds[1].text
-      amount = tds[2].text.gsub('P', '').to_d
+      next if dividend_type.downcase.include?('stock')
+
+      # this regex will remove all non-numeric characters except for the decimal point
+      # from the amount string. This is because the amount string may contain non-numeric
+      # characters such as commas or currency symbols.
+      amount_raw = tds[2].text.downcase
+      amount = amount_raw.gsub(/[^0-9.]/, '').to_d
+
       ex_date = Date.strptime(tds[3].text, '%b %d, %Y')
       record_date = Date.strptime(tds[4].text, '%b %d, %Y')
       payout_date = Date.strptime(tds[5].text, '%b %d, %Y')
       circular_number = tds[6].text
+
+      raise 'amount cannot be 0' if amount.zero?
 
       announcement = DividendAnnouncement.create(
         company_id: company_id,

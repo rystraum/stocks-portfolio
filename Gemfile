@@ -39,3 +39,5 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 # gem 'webpacker', git: 'https://github.com/rails/webpacker.git'
 gem "shakapacker", "= 6.5"
+
+gem "will_paginate", "~> 4.0"
