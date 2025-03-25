@@ -1,5 +1,8 @@
-convention:Style/Documentation:
+AllCops:
+  NewCops: disable
+
+Style/Documentation:
   Enabled: false
 
-convention:Style/RedundantReturn:
+Style/RedundantReturn:
   Enabled: false
