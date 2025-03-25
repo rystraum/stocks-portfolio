@@ -6,7 +6,7 @@ class DividendAnnouncementsController < ApplicationController
     params[:company_scope] ||= 'portfolio'
 
     @dividend_announcements = DividendAnnouncement.includes(:company)
-                                                  .order(payout_date: :asc)
+                                                  .order(payout_date: :asc, company_id: :asc)
 
     if params[:future_only].to_i == 1
       @dividend_announcements = @dividend_announcements.where(
