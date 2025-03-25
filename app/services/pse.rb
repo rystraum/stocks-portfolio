@@ -1,5 +1,14 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/ClassLength
+# rubocop:disable Metrics/PerceivedComplexity
+
 class PSE
   attr_accessor :company
+
   def initialize(company, force = false)
     @company = company
     @force = force
@@ -96,6 +105,63 @@ class PSE
     response.body
   end
 
+  def fetch_dividends_and_rights
+    headers = {}
+    headers['Host'] = 'edge.pse.com.ph'
+    headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:136.0) Gecko/20100101 Firefox/136.0'
+    headers['Accept'] = '*/*'
+    headers['Accept-Language'] = 'en-US,en;q=0.5'
+    headers['Accept-Encoding'] = 'gzip, deflate, br, zstd'
+    headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
+    headers['X-Requested-With'] = 'XMLHttpRequest'
+    headers['Content-Length'] = '11'
+    headers['Origin'] = 'https://edge.pse.com.ph'
+    headers['Connection'] = 'keep-alive'
+    headers['Referer'] = "https://edge.pse.com.ph/companyPage/dividends_and_rights_form.do?cmpy_id=#{pse_company_id}"
+    headers['Cookie'] = 'JSESSIONID=u4rIcBK2baU9ZFJwJPKf4ALJ.server-ep; BIGipServerPOOL_EDGE=1427584378.20480.0000'
+    headers['Sec-Fetch-Dest'] = 'empty'
+    headers['Sec-Fetch-Mode'] = 'cors'
+    headers['Sec-Fetch-Site'] = 'same-origin'
+    headers['Sec-GPC'] = '1'
+    headers['TE'] = 'trailers'
+
+    url = 'https://edge.pse.com.ph/companyPage/dividends_and_rights_list.ax?DividendsOrRights=Dividends'
+    body = {
+      cmpy_id: pse_company_id
+    }
+    options = {
+      body: body,
+      headers: headers
+    }
+    response = HTTParty.post(url, options)
+    document = Nokogiri::HTML.parse(response.body)
+
+    # expecting the following structure:
+    # <tr>
+    #   <td>COMMON</td> - Share Class
+    #   <td>Cash</td> - Dividend Type
+    #   <td>P1.25</td> - Amount
+    #   <td>Apr 07, 2025</td> - Ex-date
+    #   <td>Apr 8, 2025</td> - Record date
+    #   <td>Apr 23, 2025</td> - Payout Date
+    #   <td><a>C01864-2025</a></td> - Circular Number
+    # </tr>
+
+    rows = document.css("table tbody tr")
+    rows.each do |row|
+      tds = row.children.select { |e| e.to_s.include?('td') }
+      share_class = tds[0].text
+      dividend_type = tds[1].text
+      amount = tds[2].text
+      ex_date = tds[3].text
+      record_date = tds[4].text
+      payout_date = tds[5].text
+      circular_number = tds[6].text
+    end
+
+    binding.pry
+  end
+
   def self.fetch_companies!(pages = 6)
     pages.times do |page|
       data = { 
@@ -142,3 +208,9 @@ class PSE
     company.pse_security_id
   end
 end
+
+# rubocop:enable Metrics/AbcSize
+# rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/ClassLength
+# rubocop:enable Metrics/PerceivedComplexity
