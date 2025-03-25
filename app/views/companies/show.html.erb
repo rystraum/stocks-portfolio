@@ -77,6 +77,9 @@
                         <button x-on:click="selectedTab = 'annual'" x-bind:aria-selected="selectedTab === 'annual'" x-bind:tabindex="selectedTab === 'annual' ? '0' : '-1'" x-bind:class="selectedTab === 'annual' ? 'font-bold text-primary border-b-2 border-primary dark:border-primary-dark dark:text-primary-dark' : 'text-on-surface font-medium dark:text-on-surface-dark dark:hover:border-b-outline-dark-strong dark:hover:text-on-surface-dark-strong hover:border-b-2 hover:border-b-outline-strong hover:text-on-surface-strong'" class="flex h-min items-center gap-2 px-4 py-2 text-sm" type="button" role="tab" aria-controls="tabpanelAnnual" >
                             Annual
                         </button>
+                        <button x-on:click="selectedTab = 'announcements'" x-bind:aria-selected="selectedTab === 'announcements'" x-bind:tabindex="selectedTab === 'announcements' ? '0' : '-1'" x-bind:class="selectedTab === 'announcements' ? 'font-bold text-primary border-b-2 border-primary dark:border-primary-dark dark:text-primary-dark' : 'text-on-surface font-medium dark:text-on-surface-dark dark:hover:border-b-outline-dark-strong dark:hover:text-on-surface-dark-strong hover:border-b-2 hover:border-b-outline-strong hover:text-on-surface-strong'" class="flex h-min items-center gap-2 px-4 py-2 text-sm" type="button" role="tab" aria-controls="tabpanelAnnouncements" >
+                            Announcements
+                        </button>
                         <!--
                         <button x-on:click="selectedTab = 'comments'" x-bind:aria-selected="selectedTab === 'comments'" x-bind:tabindex="selectedTab === 'comments' ? '0' : '-1'" x-bind:class="selectedTab === 'comments' ? 'font-bold text-primary border-b-2 border-primary dark:border-primary-dark dark:text-primary-dark' : 'text-on-surface font-medium dark:text-on-surface-dark dark:hover:border-b-outline-dark-strong dark:hover:text-on-surface-dark-strong hover:border-b-2 hover:border-b-outline-strong hover:text-on-surface-strong'" class="flex h-min items-center gap-2 px-4 py-2 text-sm" type="button" role="tab" aria-controls="tabpanelComments" >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="size-4">
@@ -121,6 +124,9 @@
                         </div>
                         <div x-cloak x-show="selectedTab === 'annual'" id="tabpanelAnnual" role="tabpanel" aria-label="Annual">
                             <%= render CompanyAnnualDividendsComponent.new(user: current_user, company: @company) %>
+                        </div>
+                        <div x-cloak x-show="selectedTab === 'announcements'" id="tabpanelAnnouncements" role="tabpanel" aria-label="Announcements">
+                            <%= render CompanyDividendAnnouncementsComponent.new(user: current_user, company: @company) %>
                         </div>
                         <!--
                         <div x-cloak x-show="selectedTab === 'comments'" id="tabpanelComments" role="tabpanel" aria-label="comments"><b><a href="#" class="underline">Comments</a></b> tab is selected</div>

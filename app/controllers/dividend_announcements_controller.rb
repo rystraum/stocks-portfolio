@@ -9,15 +9,11 @@ class DividendAnnouncementsController < ApplicationController
                                                   .order(payout_date: :asc, company_id: :asc)
 
     if params[:future_only].to_i == 1
-      @dividend_announcements = @dividend_announcements.where(
-        'payout_date >= ?', Date.today
-      )
+      @dividend_announcements = @dividend_announcements.in_the_future
     end
 
     if params[:future_only].to_i == 2
-      @dividend_announcements = @dividend_announcements.where(
-        'payout_date >= ? AND payout_date < ?', Date.today.beginning_of_year, Date.today.end_of_year
-      )
+      @dividend_announcements = @dividend_announcements.within_the_year
     end
 
     if params[:company_scope] == 'portfolio'
