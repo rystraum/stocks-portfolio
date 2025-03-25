@@ -3,18 +3,27 @@
 <%= form_tag(dividend_announcements_path, method: :get, class: "flex items-center mb-4") do %>
   <%= label_tag :ticker, "Ticker", class: "mr-2" %>
   <%= text_field_tag :ticker, params[:ticker], class: "px-4 py-2 border rounded-md" %>
-  <%= submit_tag "Filter by Ticker", class: "ml-2 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md" %>
+  <div class="mx-2">
+    <label class="mr-2">
+      <%= radio_button_tag :future_only, '1', params[:future_only].to_i.nonzero?, class: "mr-2", id: "future_only_1" %>
+      Future Only
+    </label>
+    <label class="mr-2">
+      <%= radio_button_tag :future_only, '0', params[:future_only].to_i.zero?, class: "mr-2", id: "future_only_2" %>
+      All Announcements
+    </label>
+  </div>
+  <%= submit_tag "Filter", class: "px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md" %>
 <% end %>
-
 <table class="table-auto w-full mb-4">
   <thead>
     <tr class="bg-gray-200">
-      <th class="px-4 py-2">Company</th>
-      <th class="px-4 py-2">Dividend Type</th>
-      <th class="px-4 py-2">Amount</th>
-      <th class="px-4 py-2">Ex Date</th>
-      <th class="px-4 py-2">Record Date</th>
-      <th class="px-4 py-2">Payout Date</th>
+      <th class="px-4 py-2 text-left">Company</th>
+      <th class="px-4 py-2 text-left">Dividend Type</th>
+      <th class="px-4 py-2 text-right">Amount</th>
+      <th class="px-4 py-2 text-right">Ex Date</th>
+      <th class="px-4 py-2 text-right">Record Date</th>
+      <th class="px-4 py-2 text-right">Payout Date</th>
     </tr>
   </thead>
   <tbody>
@@ -22,10 +31,10 @@
       <tr class="<%= cycle('bg-white', 'bg-gray-100') %>">
         <td class="px-4 py-2"><%= dividend_announcement.company.ticker %></td>
         <td class="px-4 py-2"><%= dividend_announcement.dividend_type %></td>
-        <td class="px-4 py-2"><%= number_with_precision(dividend_announcement.amount, precision: 4) %></td>
-        <td class="px-4 py-2"><%= dividend_announcement.ex_date %></td>
-        <td class="px-4 py-2"><%= dividend_announcement.record_date %></td>
-        <td class="px-4 py-2"><%= dividend_announcement.payout_date %></td>
+        <td class="px-4 py-2 text-right"><%= number_with_precision(dividend_announcement.amount, precision: 4) %></td>
+        <td class="px-4 py-2 text-right"><%= dividend_announcement.ex_date %></td>
+        <td class="px-4 py-2 text-right"><%= dividend_announcement.record_date %></td>
+        <td class="px-4 py-2 text-right"><%= dividend_announcement.payout_date %></td>
       </tr>
     <% end %>
   </tbody>
