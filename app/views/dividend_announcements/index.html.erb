@@ -5,8 +5,12 @@
   <%= text_field_tag :ticker, params[:ticker], class: "px-4 py-2 border rounded-md" %>
   <div class="mx-2">
     <label class="mr-2">
-      <%= radio_button_tag :future_only, '1', params[:future_only].to_i.nonzero?, class: "mr-2", id: "future_only_1" %>
+      <%= radio_button_tag :future_only, '1', params[:future_only].to_i == 1, class: "mr-2", id: "future_only_1" %>
       Future Only
+    </label>
+    <label class="mr-2">
+      <%= radio_button_tag :future_only, '2', params[:future_only].to_i == 2, class: "mr-2", id: "future_only_1" %>
+      This Year
     </label>
     <label class="mr-2">
       <%= radio_button_tag :future_only, '0', params[:future_only].to_i.zero?, class: "mr-2", id: "future_only_2" %>
@@ -25,6 +29,7 @@
   </div>
   <%= submit_tag "Filter", class: "px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md" %>
 <% end %>
+<% portfolio_dividends = 0 %>
 <table class="table-auto w-full mb-4">
   <thead>
     <tr class="bg-gray-200">
@@ -34,6 +39,12 @@
       <th class="px-4 py-2 text-right">Ex Date</th>
       <th class="px-4 py-2 text-right">Record Date</th>
       <th class="px-4 py-2 text-right">Payout Date</th>
+      <th class="px-4 py-2 text-right">PSE Edge</th>
+      <% if params[:company_scope] == 'portfolio' %>
+        <th class="px-4 py-2 text-right">Shares Held</th>
+        <th class="px-4 py-2 text-right">Total Dividend</th>
+        <th class="px-4 py-2 text-right">Net WT</th>
+      <% end %>
     </tr>
   </thead>
   <tbody>
@@ -45,9 +56,28 @@
         <td class="px-4 py-2 text-right"><%= dividend_announcement.ex_date %></td>
         <td class="px-4 py-2 text-right"><%= dividend_announcement.record_date %></td>
         <td class="px-4 py-2 text-right"><%= dividend_announcement.payout_date %></td>
+        <td class="px-4 py-2 text-right">
+          <%= link_to "Edge", dividend_announcement.company.pse_dividends_url, target: :_blank %>
+        </td>
+        <% if params[:company_scope] == 'portfolio' %>
+          <% portfolio = UserPortfolioCompany.new(current_user, dividend_announcement.company) %>
+          <td class="px-4 py-2 text-right"><%= portfolio.total_shares %></td>
+          <% portfolio_dividends += total_dividends = portfolio.total_shares * dividend_announcement.amount %>
+          <td class="px-4 py-2 text-right"><%= format_currency(total_dividends) %></td>
+          <td class="px-4 py-2 text-right"><%= format_currency(total_dividends * 0.9) %></td>
+        <% end %>
+      </tr>
+    <% end %>
+    <% if params[:company_scope] == 'portfolio' %>
+      <tr>
+        <td class="px-4 py-2 text-right" colspan=8>&nbsp;</td>
+        <td class="px-4 py-2 text-right font-bold"><%= format_currency(portfolio_dividends) %></td>
+        <td class="px-4 py-2 text-right font-bold"><%= format_currency(portfolio_dividends * 0.9) %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<%= will_paginate @dividend_announcements, class: "flex items-center justify-center" %>
+<% if params[:company_scope] != 'portfolio' %>
+  <%= will_paginate @dividend_announcements, class: "flex items-center justify-center" %>
+<% end %>

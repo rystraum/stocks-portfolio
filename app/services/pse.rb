@@ -7,10 +7,7 @@
 # rubocop:disable Metrics/PerceivedComplexity
 
 class PSE
-  attr_accessor :company
-  attr_accessor :company_id
-  attr_accessor :pse_company_id
-  attr_accessor :pse_security_id
+  attr_accessor :company, :company_id, :pse_company_id, :pse_security_id
 
   def initialize(company, force = false)
     @company = company
@@ -22,9 +19,9 @@ class PSE
   end
 
   def price_update!
-    raise "Company can't update from PSE" if !can_update?
+    raise "Company can't update from PSE" unless can_update?
 
-    response = HTTParty.get("https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id.to_s}&security_id=#{pse_security_id.to_s}")
+    response = HTTParty.get("https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id}&security_id=#{pse_security_id}")
     document = Nokogiri::HTML.parse(response.body)
 
     # Expecting a structure something like:
@@ -41,28 +38,29 @@ class PSE
     #   </span>
     # </form>
     begin
-      date_string = document.css("form[name=form1]").first.children[5].children.first.to_s
-      datetime = DateTime.strptime("#{date_string.match(/As of (.*)/)[1]} +0800", "%h %d, %Y %H:%M %p %z")
+      date_string = document.css('form[name=form1]').first.children[5].children.first.to_s
+      datetime = DateTime.strptime("#{date_string.match(/As of (.*)/)[1]} +0800", '%h %d, %Y %H:%M %p %z')
     rescue NoMethodError => e
       # binding.pry if Rails.env.development?
-      raise "HTML does not match expected format: #{document.to_s}"
+      raise "HTML does not match expected format: #{document}"
     rescue Date::Error => e
       # binding.pry if Rails.env.development?
-      raise "HTML does not match expected format: #{document.to_s}"
+      raise "HTML does not match expected format: #{document}"
     end
 
-    last_trade_label = document.css("table.view").last.children[3].children[1].to_s
-    raise "HTML does not match expected format" if !last_trade_label.match? /Last Traded Price/
+    last_trade_label = document.css('table.view').last.children[3].children[1].to_s
+    raise 'HTML does not match expected format' unless last_trade_label.match?(/Last Traded Price/)
 
-    last_trade_value = document.css("table.view").last.children[3].children[3].children.to_s.sub("\r\n", "").sub(",","").to_d
+    last_trade_value = document.css('table.view').last.children[3].children[3].children.to_s.sub("\r\n", '').sub(',',
+                                                                                                                 '').to_d
 
     final_price = last_trade_value.zero? || last_trade_value.blank? ? company.last_price : last_trade_value
 
-    return company.price_updates.order("created_at desc").first if final_price.blank?
+    return company.price_updates.order('created_at desc').first if final_price.blank?
 
     price_update = company.price_updates.where(datetime: datetime).first_or_create do |update|
       update.price = final_price
-      update.notes = final_price.zero? ? response.body : ""
+      update.notes = final_price.zero? ? response.body : ''
     end
 
     price_update.update(price: final_price) if @force
@@ -88,7 +86,8 @@ class PSE
     request['Cache-Control'] = 'no-cache'
     request['Dnt'] = '1'
     request['X-Requested-With'] = 'XMLHttpRequest'
-    request['User-Agent'] = 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+    request['User-Agent'] =
+      'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
     request['Accept'] = 'Accept: application/json, text/javascript, */*; q=0.01'
     request['Origin'] = 'https://edge.pse.com.ph'
     request['Content-Type'] = 'application/json'
@@ -97,7 +96,8 @@ class PSE
     request['Sec-Fetch-Dest'] = 'empty'
     request['Referer'] = "https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id}&security=#{pse_security_id}"
     request['Accept-Language'] = 'en-US,en;q=0.9'
-    request['Cookie'] = 'Cookie: JSESSIONID=uhHyB6YqPkdIEjpEWZ9hVwrH.server-ep; BIGipServerPOOL_EDGE=1427584378.20480.0000; access=approve'
+    request['Cookie'] =
+      'Cookie: JSESSIONID=uhHyB6YqPkdIEjpEWZ9hVwrH.server-ep; BIGipServerPOOL_EDGE=1427584378.20480.0000; access=approve'
     request.content_type = 'application/octet-stream'
     request.set_form_data(data)
 
@@ -179,6 +179,12 @@ class PSE
 
       raise 'amount cannot be 0' if amount.zero?
 
+      if company.is_preferred?
+        next if share_class != company.ticker
+      elsif share_class != 'COMMON'
+        next
+      end
+
       announcement = DividendAnnouncement.create(
         company_id: company_id,
         share_class: share_class,
@@ -203,29 +209,30 @@ class PSE
 
   def self.fetch_companies!(pages = 6)
     pages.times do |page|
-      data = { 
-        pageNo: page + 1, 
-        dateSortType: "DESC", 
-        cmpySortType: "ASC",
-        symbolSortType: "ASC",
-        companyId: nil, 
-        keyword: nil, 
-        sector: "ALL", 
-        subsector: "ALL",
+      data = {
+        pageNo: page + 1,
+        dateSortType: 'DESC',
+        cmpySortType: 'ASC',
+        symbolSortType: 'ASC',
+        companyId: nil,
+        keyword: nil,
+        sector: 'ALL',
+        subsector: 'ALL'
       }
 
-      body = HTTParty.post("https://edge.pse.com.ph/companyDirectory/search.ax", body: data)
-      document = Nokogiri::HTML.parse(body.gsub("\r\n", "").gsub(/\s{2,}/, ""))
+      body = HTTParty.post('https://edge.pse.com.ph/companyDirectory/search.ax', body: data)
+      document = Nokogiri::HTML.parse(body.gsub("\r\n", '').gsub(/\s{2,}/, ''))
 
       rows = document.css('tr')
       rows.each do |row|
         next if row.css('th').count.positive?
+
         name_column, ticker_column, sector_column = row.children
-        
+
         name = name_column.text
         ticker = ticker_column.text
         sector = sector_column.text
-        
+
         _, company_id, security_id = name_column.to_s.match(/cmDetail\('(\d+)','(\d+)'\)/).to_a.collect(&:to_i)
 
         Company.where(pse_company_id: company_id, pse_security_id: security_id).first_or_create do |create|
