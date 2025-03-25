@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CompanyDividendAnnouncementsComponent < ViewComponent::Base
-  attr_accessor :announcements, :last_price
+  attr_accessor :announcements, :last_price, :company
 
   def initialize(user:, company:)
     super
