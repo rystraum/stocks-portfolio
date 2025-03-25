@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PriceUpdateCompanies
   def initialize(companies = Company.alphabetical)
     @companies = companies
@@ -20,7 +22,9 @@ class PriceUpdateCompanies
       next if !company.can_update_from_pse?      
       puts "== #{company.ticker} Starting price update"
       begin
-        PSE.new(company).price_update!
+        pse = PSE.new(company)
+        pse.price_update!
+        pse.dividend_announcements!
       rescue Exception => e
         puts "Failed price update for #{company.ticker} with error #{e.message}"
       end
