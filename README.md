@@ -29,6 +29,12 @@
 [ ] Compute Portfolio Change Per Year
 [ ] Compute Total Dividends % Relative to Portfolio Change
 
+# Dividend Announcements
+[x] Scrape dividend announcements
+[x] Display dividend announcements
+[ ] In company view: compute expected dividends based on dividend announcements
+[ ] Also handle stock announcements
+
 # Strategies
 [x] Add Target Buy Price
 [ ] Refactor Target Buy Price to be set per user, instead of global to company
@@ -41,4 +47,10 @@
 ```
 # every 8pm
 0 20 * * * bash -lc 'cd /Users/rystraum/Code/personal/stocks-portfolio; rails runner "PriceUpdateCompanies.new.run_from_console"'
+```
+
+# Disable Backup
+
+```
+STOCKS_BACKUP=false rails c
 ```

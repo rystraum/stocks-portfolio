@@ -47,6 +47,7 @@
                                     <% if @permissions.can? :price_update, Company %>
                                         <%= header_link_to "Price Update", new_price_update_path, class: "block text-gray-700", id: "history-menu-item-2" %>
                                     <% end %>
+                                    <%= header_link_to "Dividend Announcements", dividend_announcements_path, class: "block text-gray-700", id: "history-menu-item-3" %>
                                 </div>
                             </div>
                         </div>
