@@ -12,8 +12,8 @@
         <% announcements.each do |announcement| %>
             <% sum += announcement.amount %>
             <tr class="<%= cycle('bg-white', 'bg-gray-50 dark:bg-gray-800') %>">
-                <td class="px-4 py-2 border-t text-left"><%= announcement.payout_date %></td>
                 <td class="px-4 py-2 border-t text-left"><%= announcement.ex_date %></td>
+                <td class="px-4 py-2 border-t text-left"><%= announcement.payout_date %></td>
                 <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(announcement.amount) %></td>
                 <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage announcement.amount, last_price %></td>
             </tr>
