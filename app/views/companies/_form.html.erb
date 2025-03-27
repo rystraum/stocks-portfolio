@@ -38,6 +38,11 @@
         <%= form.label :target_buy_price %>
         <%= form.text_field :target_buy_price, class: 'w-full', placeholder: format_currency(@company.last_price) %>
     </div>
+    <div class="field">
+        <%= form.label :target_price_note %>
+        <%= form.text_field :target_price_note, class: 'w-full' %>
+        <p class="w-full text-muted text-sm">Generally: 7% target dividend rate based on previous year total dividends</p>
+    </div>
     <div class="flex">
         <%= form.submit (company.persisted? ? "Update" : "Add"), class: "btn btn-sm btn-primary ml-auto" %>
     </div>
