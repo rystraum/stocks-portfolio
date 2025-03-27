@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 class ActivitiesCalculator
   attr_accessor :activities
+
   def initialize(activities)
     @activities = activities
   end

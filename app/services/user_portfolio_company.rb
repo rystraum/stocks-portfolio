@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 class UserPortfolioCompany
   attr_reader :user, :company
+
   def initialize(user, company)
     @user = user
     @company = company
@@ -24,13 +27,13 @@ class UserPortfolioCompany
   end
 
   def total_costs
-    return 0 if total_shares == 0
+    return 0 if total_shares.zero?
 
     actual_total_costs
   end
 
   def actual_total_costs
-    @actual_total_costs ||= buy_costs - sell_gains
+    @actual_total_costs ||= activities_calculator.buy_costs - activities_calculator.sell_gains
   end
 
   def last_value
@@ -42,11 +45,12 @@ class UserPortfolioCompany
   end
 
   def total_shares
-    @total_shares ||= bought_shares - sold_shares + stock_dividend_shares || 0
+    @total_shares ||= activities_calculator.bought_shares + stock_dividend_shares - activities_calculator.sold_shares
   end
 
   def cps
     return 0 if total_costs.zero?
+
     total_costs / total_shares
   end
 
@@ -85,7 +89,7 @@ class UserPortfolioCompany
   def last_price
     @last_price ||= company.last_price
   end
-  
+
   def activities
     @activities ||= company.activities.where(user_id: user.id)
   end
@@ -102,35 +106,19 @@ class UserPortfolioCompany
     @activities_calculator ||= ActivitiesCalculator.new(activities)
   end
 
-  def bought_shares
-    activities_calculator.bought_shares
-  end
-
-  def sold_shares
-    activities_calculator.sold_shares
-  end
-
   def stock_dividend_shares
     stock_dividends.pluck(:amount).sum
   end
 
-  def buy_costs
-    activities_calculator.buy_costs
-  end
-
-  def sell_gains
-    activities_calculator.sell_gains
-  end
-
   def cash_dividends_average_dps
-    return 0 if cash_dividends.length.zero?
+    return 0 if cash_dividends.empty?
 
     dividends = cash_dividends.collect(&:dividend_per_share).collect(&:to_f).reject(&:zero?)
     @cash_dividends_average_dps ||= (dividends.sum / dividends.length)
   end
 
   def cash_dividends_count_in_a_year
-    return 0 if cash_dividends.length.zero?
+    return 0 if cash_dividends.empty?
 
     count = cash_dividends.collect(&:pay_date).group_by(&:year).collect { |_year, arr| arr.count }
     @cash_dividends_count_in_a_year ||= (count.sum.to_f / count.length).round(0)

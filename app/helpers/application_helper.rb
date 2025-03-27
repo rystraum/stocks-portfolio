@@ -18,7 +18,8 @@ module ApplicationHelper
       'Telecom',
       'Media',
       'Capital Goods',
-      'Materials'
+      'Materials',
+      'Utilities'
     ]
   end
 
