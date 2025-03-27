@@ -17,4 +17,8 @@ class CompanyInfoComponent < ViewComponent::Base
   def marketwatch_url
     "https://www.marketwatch.com/investing/stock/#{@company.ticker}?countrycode=ph"
   end
+
+  def pesobility_url
+    "https://www.pesobility.com/dividends/#{@company.ticker}"
+  end
 end
