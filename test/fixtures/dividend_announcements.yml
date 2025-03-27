@@ -2,7 +2,6 @@
 
 one:
   company: one
-  announcement_date: 2025-03-25
   dividend_type: MyString
   amount: 9.99
   ex_date: 2025-03-25
@@ -11,7 +10,6 @@ one:
 
 two:
   company: two
-  announcement_date: 2025-03-25
   dividend_type: MyString
   amount: 9.99
   ex_date: 2025-03-25

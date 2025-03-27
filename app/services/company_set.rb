@@ -9,7 +9,7 @@ class CompanySet
     @user = user
     @portfolio = {}
     @sort_by = "default"
-    
+
     @companies.each do |company|
       @portfolio[company.id] = UserPortfolioCompany.new(user, company)
     end

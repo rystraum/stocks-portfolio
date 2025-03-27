@@ -5,7 +5,8 @@ class CompanyAnnualDividendsComponent < ViewComponent::Base
     super
     @user = user
     @dividends = user.cash_dividends_with_price(company)
-    @dividend_years = @dividends.group_by { |d| d.pay_date.year }
+    @portfolio = UserPortfolioCompany.new(user, company)
+    @dividend_years = @dividends.group_by { |d| d.pay_date.year }.sort
   end
 
   # rubocop:disable Metrics/MethodLength
@@ -19,6 +20,7 @@ class CompanyAnnualDividendsComponent < ViewComponent::Base
         dividends: dividends,
         total: total,
         per_share: per_share,
+        cps: @portfolio.cps, # FIXME: This should be the CPS during that year, and not overall CPS
         last_price: last_price
       }
     end

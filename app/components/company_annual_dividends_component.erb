@@ -5,7 +5,8 @@
             <th class="px-4 py-2 text-right">Amount</th>
             <th class="px-4 py-2 text-right">Per Share</th>
             <th class="px-4 py-2 text-right">Last Price</th>
-            <th class="px-4 py-2 text-right">Yield (%)</th>
+            <th class="px-4 py-2 text-right">Yield from Last Price (%)</th>
+            <th class="px-4 py-2 text-right">Yield from CPS (%)</th>
         </tr>
     </thead>
     <tbody>
@@ -16,6 +17,7 @@
                 <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency year_object[:per_share] %></td>
                 <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency year_object[:last_price] %></td>
                 <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage year_object[:per_share], year_object[:last_price] %></td>
+                <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage year_object[:per_share], year_object[:cps] %></td>
             </tr>
         <% end %>
     </tbody>
