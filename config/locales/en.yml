@@ -36,3 +36,5 @@ en:
       company:
         pse_company_id: "PSE Company ID"
         pse_security_id: "PSE Security ID"
+        target_buy_price: "Target Buy Price"
+        target_price_note: "Target Price Notes"

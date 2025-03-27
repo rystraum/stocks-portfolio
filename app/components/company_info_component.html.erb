@@ -1,11 +1,13 @@
 <div class="card">
     <div class="card-header">        
-        <h1><%= company.name %> (<%= company.ticker %>)</h1>
+        <h1 class="border-b w-fit"><%= company.name %> (<%= company.ticker %>)</h1>
     </div>
     <div class="card-body">
-        <dl>
+        <dl class="w-3/4">
             <%= render DLTableComponent.new("Industry", company.industry) %>
             <%= render DLTableComponent.new("Status", company.inactive? ? "Inactive" : "Active") %>
+            <%= render DLTableComponent.new("Target Buy Price", company.target_buy_price) %>
+            <%= render DLTableComponent.new("Target Notes", company.target_price_note) %>
         </dl>
         <h2 class="text-lg mt-2">Links</h2>
         <ul class="ml-4">
