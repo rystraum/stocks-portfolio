@@ -36,6 +36,13 @@ a {
 }
 
 .company-table {
+  position: relative;
+
+  thead tr {
+    position: sticky;
+    top: 0;
+  }
+
   th {
     @apply px-4 py-3 text-xs font-medium text-white tracking-wider border border-gray-400;
   }
