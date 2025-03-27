@@ -6,3 +6,10 @@ Style/Documentation:
 
 Style/RedundantReturn:
   Enabled: false
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: consistent_comma
+
+
+Style/NegatedIf:
+  EnforcedStyle: postfix
