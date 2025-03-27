@@ -3,11 +3,23 @@
 module ApplicationHelper
   def active_tab?(path)
     return 'active' if request.path == path
+
     ''
   end
 
   def company_industry_options
-    ["Real Estate", "Finance", "Holding", "Preferred", "Services", "Industrial", "Telecom", "Media", "Capital Goods"]
+    [
+      'Real Estate',
+      'Finance',
+      'Holding',
+      'Preferred',
+      'Services',
+      'Industrial',
+      'Telecom',
+      'Media',
+      'Capital Goods',
+      'Materials'
+    ]
   end
 
   def format_currency(amount, places = 2)
@@ -29,7 +41,8 @@ module ApplicationHelper
   end
 
   def green_red_percent_badge(amount, denominator)
-    tag.span format_percentage(amount, denominator), class: (amount.negative? ? 'badge badge-soft-danger' : 'badge badge-soft-success').to_s
+    tag.span format_percentage(amount, denominator),
+             class: (amount.negative? ? 'badge badge-soft-danger' : 'badge badge-soft-success').to_s
   end
 
   def format_date(date)
