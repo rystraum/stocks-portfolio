@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+
 <%= render "shared/header", text: "All Time Portfolio" do %>
     <%= link_to update_prices_path, method: :put, class: "btn btn-secondary ml-auto" do %>
         <span class="mr-2 inline-block"><%= save_as_icon %></span>
@@ -72,7 +74,9 @@
                             </small>
                         </td>
                         <td class="tables-target-buy-price text-right">
-                            <%= buy_or_not portfolio.target_buy_price, company.last_price %>
+                            <div x-data x-tooltip.raw="<%= company.target_price_note %>">
+                                <%= buy_or_not portfolio.target_buy_price, company.last_price %>
+                            </div>
                         </td>
                         <td class="tables-last-value text-right">
                             <%= format_currency portfolio.last_value %>

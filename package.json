@@ -11,6 +11,7 @@
         "@rails/activestorage": "^6.0.0",
         "@rails/ujs": "^6.0.0",
         "@rails/webpacker": "^6.0.0-beta.7",
+        "@ryangjchandler/alpine-tooltip": "^2.0.1",
         "@tailwindcss/aspect-ratio": "^0.2.0",
         "@tailwindcss/forms": "^0.2.1",
         "@tailwindcss/line-clamp": "^0.2.0",
