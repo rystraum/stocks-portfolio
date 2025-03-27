@@ -20,6 +20,7 @@
     <div class="field">
         <%= form.label :industry %>
         <%= form.select :industry, options_for_select(company_industry_options, company.industry), {include_blank: "Industry"}, required: :required, class: 'w-full' %>
+        <p class="w-full text-muted text-sm">Use the industry classification in https://simplywall.st</p>
     </div>
     <div class="field">
         <%= form.label :pse_company_id %>
