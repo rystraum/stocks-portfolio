@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_03_31_160904) do
+ActiveRecord::Schema.define(version: 2025_03_31_190643) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 2025_03_31_160904) do
     t.string "name"
     t.decimal "target_buy_price", precision: 15, scale: 2
     t.string "target_price_note"
+    t.integer "dividend_frequency_months"
     t.index ["industry"], name: "index_companies_on_industry"
     t.index ["ticker"], name: "index_companies_on_ticker", unique: true
   end

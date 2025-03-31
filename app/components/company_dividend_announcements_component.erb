@@ -10,8 +10,10 @@
     </thead>
     <tbody>
         <% sum = 0 %>
+        <% months = Set.new %>
         <% announcements.each do |announcement| %>
             <% sum += announcement.amount %>
+            <% months << announcement.ex_date.month %>
             <tr class="<%= cycle('bg-white', 'bg-gray-50 dark:bg-gray-800') %>">
                 <td class="px-4 py-2 border-t text-left"><%= announcement.ex_date %></td>
                 <td class="px-4 py-2 border-t text-left"><%= announcement.payout_date %></td>
@@ -26,8 +28,18 @@
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage sum, last_price %></td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage sum, cps %></td>
         </tr>
+        <% projection = sum + ((@expected_number_of_months_with_dividends - months.length) * sum) %>
+        <tr class="<%= cycle('bg-white', 'bg-gray-50 dark:bg-gray-800') %>">
+            <td class="px-4 py-2 border-t text-right font-bold" colspan="2">Projected*</td>
+            <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency projection %></td>
+            <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage projection, last_price %></td>
+            <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage projection, cps %></td>
+        </tr>
     </tbody>
 </table>
+
+<p>* assuming dividend release every <%= @dividend_frequency_months %> months</p>
+<p>* TODO: Double check projections computation</p>
 
 <p class="mt-4">
     <%= link_to "Past Dividends", dividend_announcements_url(ticker: company.ticker, future_only: 0, company_scope: 'all'), class: "text-blue-500 hover:text-blue-700 underline", target: "_blank" %>

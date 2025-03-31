@@ -146,6 +146,7 @@ class CompaniesController < ApplicationController
       :name,
       :target_buy_price,
       :target_price_note,
+      :dividend_frequency_months,
     )
   end
 end

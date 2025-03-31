@@ -8,6 +8,9 @@
             <%= render DLTableComponent.new("Status", company.inactive? ? "Inactive" : "Active") %>
             <%= render DLTableComponent.new("Target Buy Price", company.target_buy_price) %>
             <%= render DLTableComponent.new("Target Notes", company.target_price_note) %>
+            <% if company.dividend_frequency_months %>
+                <%= render DLTableComponent.new("Dividend Frequency", "Every #{company.dividend_frequency_months} months") %>
+            <% end %>
         </dl>
         <h2 class="text-lg mt-2">Links</h2>
         <ul class="ml-4">
