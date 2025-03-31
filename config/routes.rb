@@ -25,7 +25,12 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :dividend_announcements, only: :index
+  resources :dividend_announcements, only: :index do
+    member do
+      post :create_transaction
+      get :converted_announcement
+    end
+  end
 
   put :update_prices, to: "dashboard#update_prices"
   root to: 'dashboard#show'
