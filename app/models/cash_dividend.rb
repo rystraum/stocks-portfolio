@@ -7,6 +7,7 @@ class CashDividend < ApplicationRecord
 
   belongs_to :user
   belongs_to :company
+  has_one :converted_announcement, dependent: :destroy
 
   serialize :meta, Hash
   store_accessor :meta, :dividend_per_share
