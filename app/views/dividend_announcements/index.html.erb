@@ -58,6 +58,7 @@
           <th class="px-4 py-2 text-right">Shares Held</th>
           <th class="px-4 py-2 text-right">Total Dividend</th>
           <th class="px-4 py-2 text-right">Net WT</th>
+          <th class="px-4 py-2 text-right">Actions</th>
         <% end %>
       </tr>
     </thead>
@@ -93,6 +94,15 @@
             <% portfolio_dividends += total_dividends = portfolio.total_shares * dividend_announcement.amount %>
             <td class="px-4 py-2 text-right"><%= format_currency(total_dividends) %></td>
             <td class="px-4 py-2 text-right"><%= format_currency(total_dividends * 0.9) %></td>
+            <td class="px-4 py-2 text-right">
+              <% converted_announcement = @converted_announcements.find { |ann| ann.dividend_announcement_id == dividend_announcement.id } %>
+              <% if dividend_announcement.payout_date > Date.today %>
+              <% elsif converted_announcement.present? && converted_announcement.cash_dividend.present? %>
+                <%= link_to "View", cash_dividend_path(converted_announcement.cash_dividend), target: :_blank %>
+              <% else %>
+                <%= button_to "Convert", create_transaction_dividend_announcement_path(dividend_announcement), class: "p-2 rounded", data: { confirm: "This will link an existing dividend or create a new one. Confirm?" } %>
+              <% end %>
+            </td>
           <% end %>
         </tr>
       <% end %>
