@@ -40,7 +40,7 @@ class CompanySet
   end
 
   def total_profit_loss
-    total_value - actual_total_costs
+    @total_profit_loss ||= companies.collect { |company| get_portfolio(company).profit_loss }.sum
   end
 
   def total_dividends
