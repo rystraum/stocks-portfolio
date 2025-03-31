@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_03_27_034542) do
+ActiveRecord::Schema.define(version: 2025_03_31_160904) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,18 @@ ActiveRecord::Schema.define(version: 2025_03_27_034542) do
     t.string "target_price_note"
     t.index ["industry"], name: "index_companies_on_industry"
     t.index ["ticker"], name: "index_companies_on_ticker", unique: true
+  end
+
+  create_table "converted_announcements", force: :cascade do |t|
+    t.bigint "dividend_announcement_id"
+    t.bigint "user_id"
+    t.bigint "cash_dividend_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["cash_dividend_id"], name: "index_converted_announcements_on_cash_dividend_id"
+    t.index ["dividend_announcement_id", "user_id"], name: "index_converted_dx_user_id", unique: true
+    t.index ["dividend_announcement_id"], name: "index_converted_announcements_on_dividend_announcement_id"
+    t.index ["user_id"], name: "index_converted_announcements_on_user_id"
   end
 
   create_table "dividend_announcements", force: :cascade do |t|
