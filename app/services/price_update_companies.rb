@@ -21,16 +21,18 @@ class PriceUpdateCompanies
     @companies.to_a.shuffle.each do |company|
       next if !company.can_update_from_pse?
 
-      puts "== #{company.ticker} Starting price update"
+      puts "[#{DateTime.now}] == #{company.ticker} Starting update"
       begin
         pse = PSE.new(company)
+        puts "[#{DateTime.now}] == #{company.ticker} Updating price.."
         pse.price_update!
+        puts "[#{DateTime.now}] == #{company.ticker} Checking dividend announcements.."
         pse.dividend_announcements!
       rescue StandardError => e
-        puts "Failed price update for #{company.ticker} with error #{e.message}"
+        puts "[#{DateTime.now}] == Failed price update for #{company.ticker} with error #{e.message}"
       end
-      puts "== #{company.ticker} finished \n\n\n"
-      sleep(rand(20).seconds)
+      puts "[#{DateTime.now}] == #{company.ticker} finished \n\n\n"
+      sleep(rand(60).seconds + 60.seconds)
     end
   end
 end
