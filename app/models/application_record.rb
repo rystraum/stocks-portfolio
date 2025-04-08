@@ -49,17 +49,33 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def backup
-    return if Rails.env.production?
-    return if ENV.fetch('STOCKS_BACKUP', 'true') == 'false'
+    return true if Rails.env.production?
+    return true if ENV.fetch('STOCKS_BACKUP', 'true') == 'false'
 
     base = "#{Dir.home}/Dropbox/Finances/Stocks/DB"
-    return unless File.directory?(base)
+    return true unless File.directory?(base)
 
     adapter = Rails.configuration.database_configuration[Rails.env]["adapter"]
     db = Rails.configuration.database_configuration[Rails.env]["database"]
 
     timestamp = DateTime.now
-    
+    timestamp_seconds = timestamp.to_i
+
+    last_backup_timestamp = begin
+      File.read("#{Rails.root.join('tmp')}/last_backup_timestamp.txt")
+    rescue Errno::ENOENT
+      0
+    end
+
+    # only backup once every 30 minutes
+    time_diff = timestamp_seconds - last_backup_timestamp.to_i
+    if time_diff < 30.minutes.to_i
+      puts "skipping backup for #{(30.minutes.to_i - time_diff) / 60} minutes"
+      return true
+    end
+
+    File.write("#{Rails.root.join('tmp')}/last_backup_timestamp.txt", timestamp_seconds)
+
     dest = "#{base}/#{timestamp.year}/#{format('%02d', timestamp.month)}/#{format('%02d', timestamp.day)}"
     FileUtils.mkdir_p("#{dest}")
 
