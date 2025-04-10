@@ -6,6 +6,7 @@
             <th class="px-4 py-2 text-right">Amount</th>
             <th class="px-4 py-2 text-right">% from Last Price</th>
             <th class="px-4 py-2 text-right">% from CPS</th>
+            <th class="px-4 py-2 text-right">Projected*</th>
         </tr>
     </thead>
     <tbody>
@@ -20,6 +21,7 @@
                 <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(announcement.amount) %></td>
                 <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage announcement.amount, last_price %></td>
                 <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage announcement.amount, cps %></td>
+                <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(announcement.amount * @shares_today) %></td>
             </tr>
         <% end %>
         <tr class="<%= cycle('bg-white', 'bg-gray-50 dark:bg-gray-800') %>">
@@ -27,19 +29,22 @@
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency sum %></td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage sum, last_price %></td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage sum, cps %></td>
+            <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(sum * @shares_today) %></td>
         </tr>
         <% projection = sum + ((@expected_number_of_months_with_dividends - months.length) * sum) %>
         <tr class="<%= cycle('bg-white', 'bg-gray-50 dark:bg-gray-800') %>">
-            <td class="px-4 py-2 border-t text-right font-bold" colspan="2">Projected*</td>
+            <td class="px-4 py-2 border-t text-right font-bold" colspan="2">Annual Projection**</td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency projection %></td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage projection, last_price %></td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage projection, cps %></td>
+            <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(projection * @shares_today) %></td>
         </tr>
     </tbody>
 </table>
 
-<p>* assuming dividend release every <%= @dividend_frequency_months %> months</p>
-<p>* TODO: Double check projections computation</p>
+<p>* based on currently held <%= @shares_today %> shares as of today</p>
+<p>** assuming dividend release every <%= @dividend_frequency_months %> months</p>
+<p>** TODO: Double check projections computation</p>
 
 <p class="mt-4">
     <%= link_to "Past Dividends", dividend_announcements_url(ticker: company.ticker, future_only: 0, company_scope: 'all'), class: "text-blue-500 hover:text-blue-700 underline", target: "_blank" %>
