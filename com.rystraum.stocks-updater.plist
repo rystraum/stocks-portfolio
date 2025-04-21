@@ -3,7 +3,10 @@ Copy or symlink to /Library/LaunchDaemons
 Load using `sudo launchctl load /Library/LaunchDaemons/com.rystraum.stocks-updater.plist`
 Unload using `sudo launchctl unload /Library/LaunchDaemons/com.rystraum.stocks-updater.plist`
 See status using either `sudo launchctl list | grep rystraum` or `sudo launchctl print system/com.rystraum.stocks-updater`
+You will need to give /bin/zsh full disk permission if this repo is mounted in an external drive.
+Settings > Privacy & Security > Full Disk Access > + (at the bottom) > /bin, then select zsh
 -->
+
 
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -11,6 +14,9 @@ See status using either `sudo launchctl list | grep rystraum` or `sudo launchctl
 <dict>
   <key>Label</key>
   <string>com.rystraum.stocks-updater</string>
+
+  <key>UserName</key>
+  <string>rystraum</string>
 
   <key>WorkingDirectory</key>
   <string>/Users/rystraum/Code/personal/stocks-portfolio</string>
@@ -22,10 +28,11 @@ See status using either `sudo launchctl list | grep rystraum` or `sudo launchctl
     <string>echo ${HOME}; source $HOME/.zshrc; echo ${PATH}; date; cd /Users/rystraum/Code/personal/stocks-portfolio; rbenv rehash; type -a ruby; which ruby; rbenv version; which bundler; which gem; bundle exec rails runner "PriceUpdateCompanies.new.run_from_console" >> /Users/rystraum/Code/personal/stocks-portfolio/log/launchd.log</string>
   </array>
 
-    <key>RunAtLoad</key>
-    <true/>
-    <key>KeepAlive</key>
-    <true/>
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>KeepAlive</key>
+  <true/>
 
   <key>Nice</key>
   <integer>1</integer>
@@ -33,15 +40,21 @@ See status using either `sudo launchctl list | grep rystraum` or `sudo launchctl
   <key>StartCalendarInterval</key>
   <dict>
     <key>Hour</key>
-    <integer>0</integer>
+    <integer>22</integer>
     <key>Minute</key>
-    <integer>0</integer>
+    <integer>31</integer>
   </dict>
 
   <key>StandardErrorPath</key>
-  <string>/Users/rystraum/Code/personal/stocks-portfolio/log/launchd.error.log</string>
+  <string>/Library/Logs/StocksPortfolio/launchd.error.log</string>
 
   <key>StandardOutPath</key>
-  <string>/Users/rystraum/Code/personal/stocks-portfolio/log/launchd.out.log</string>
+  <string>/Library/Logs/StocksPortfolio/launchd.out.log</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>DISABLE_SPRING</key>
+    <string>true</string>
+  </dict>
 </dict>
 </plist>
