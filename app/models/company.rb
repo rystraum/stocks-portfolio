@@ -12,7 +12,7 @@ class Company < ApplicationRecord
   scope :active, -> { where(inactive: false) }
 
   def to_s
-    "#{ticker} [#{id}]"
+    "#{ticker}"
   end
 
   def last_price
