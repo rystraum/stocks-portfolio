@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_22_041600) do
+ActiveRecord::Schema.define(version: 2025_04_22_104000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -32,8 +32,9 @@ ActiveRecord::Schema.define(version: 2025_04_22_041600) do
     t.index ["user_id"], name: "index_activities_on_user_id"
   end
 
-  create_table "cash_dividends", force: :cascade do |t|
-    t.integer "company_id"
+  create_table "cash_dividends", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "old_id"
+    t.bigint "company_id"
     t.decimal "amount", precision: 15, scale: 2
     t.date "pay_date"
     t.date "ex_date"
@@ -66,9 +67,10 @@ ActiveRecord::Schema.define(version: 2025_04_22_041600) do
   create_table "converted_announcements", force: :cascade do |t|
     t.bigint "dividend_announcement_id"
     t.bigint "user_id"
-    t.bigint "cash_dividend_id"
+    t.bigint "old_cash_dividend_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.uuid "cash_dividend_id"
     t.index ["cash_dividend_id"], name: "index_converted_announcements_on_cash_dividend_id"
     t.index ["dividend_announcement_id", "user_id"], name: "index_converted_dx_user_id", unique: true
     t.index ["dividend_announcement_id"], name: "index_converted_announcements_on_dividend_announcement_id"
@@ -143,6 +145,7 @@ ActiveRecord::Schema.define(version: 2025_04_22_041600) do
   add_foreign_key "cash_dividends", "companies"
   add_foreign_key "cash_dividends", "price_updates", column: "last_price_update_id"
   add_foreign_key "cash_dividends", "users"
+  add_foreign_key "converted_announcements", "cash_dividends"
   add_foreign_key "dividend_announcements", "companies"
   add_foreign_key "price_updates", "companies"
   add_foreign_key "stock_dividends", "companies"
