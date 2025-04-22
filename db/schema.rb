@@ -10,18 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_22_112000) do
+ActiveRecord::Schema.define(version: 2025_04_22_115000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
-  create_table "activities", force: :cascade do |t|
-    t.date "date"
-    t.integer "company_id"
+  create_table "activities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "old_id"
+    t.bigint "company_id"
     t.string "activity_type"
     t.integer "number_of_shares"
     t.decimal "total_price", precision: 15, scale: 2
+    t.date "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "charges", precision: 15, scale: 4
