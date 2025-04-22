@@ -33,7 +33,8 @@ class CryptoCurrenciesController < ApplicationController
     @net_crypto = CryptoActivity.net_crypto_amount(current_user.id, @crypto_currency.id)
     @total_fiat = CryptoActivity.total_fiat_spent(current_user.id, @crypto_currency.id)
     @total_proceeds = CryptoActivity.where(crypto_currency_id: @crypto_currency.id, user_id: current_user.id, activity_type: :sell).sum('fiat_amount - COALESCE(fee_fiat, 0)')
-    @current_value = @net_crypto * @crypto_currency.last_price
+    @current_value = @crypto_currency.last_price.blank? ? 0 : @net_crypto * @crypto_currency.last_price
+    @current_value = 0 if @current_value.negative?
     @pnl = @current_value + @total_proceeds - @total_fiat
   end
 
