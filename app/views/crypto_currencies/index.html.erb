@@ -10,9 +10,7 @@
     <tr>
       <th class="w-1/5">Ticker</th>
       <th class="w-1/5">Name</th>
-      <th class="w-1/5">Last Price</th>
-      <th class="w-1/5">Last Price At</th>
-      <th class="w-1/5">Decimal Places</th>
+      <th class="w-1/5">Cost Basis (PHP)</th>
       <th class="action-column">Actions</th>
     </tr>
   </thead>
@@ -21,9 +19,7 @@
       <tr class="company-row <%= cycle('odd', 'even') %>">
         <td><%= link_to crypto.ticker, crypto_currency_path(crypto) %></td>
         <td><%= crypto.name %></td>
-        <td><%= crypto.last_price %></td>
-        <td><%= crypto.last_price_at %></td>
-        <td><%= crypto.decimal_places %></td>
+        <td><%= format_currency @cost_bases[crypto.id] %></td>
         <td class="text-right" style="width: 6%;">
           <div class="flex">
             <%= link_to eye_icon, crypto_currency_path(crypto) %>

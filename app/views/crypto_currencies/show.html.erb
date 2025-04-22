@@ -74,10 +74,16 @@
       <div class="card-header">
         <h4 class="card-header-title">Activities</h4>
       </div>
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto" data-controller="crypto-activity-selection">
+        <div class="p-2 bg-gray-100 flex gap-4">
+          <span><strong>Selected Crypto Sum:</strong> <span data-crypto-activity-selection-target="cryptoSum">0</span> <%= @crypto_currency.ticker %></span>
+          <span><strong>Selected Fiat Sum (PHP):</strong> <span data-crypto-activity-selection-target="fiatSum">0.00</span></span>
+          <span><strong>Selected Forex Average:</strong> <span data-crypto-activity-selection-target="forexAverage">0.00</span></span>
+        </div>
         <table class="table table-striped card-table table-hover w-full">
           <thead>
             <tr>
+              <th></th>
               <th class="text-right">Date</th>
               <th>Type</th>
               <th class="text-right">Amount</th>
@@ -88,14 +94,25 @@
             </tr>
           </thead>
           <tbody>
-            <% @activities.each do |activity| %>
+            <% @activities.each_with_index do |activity, idx| %>
               <tr>
+                <td>
+                  <input type="checkbox"
+                         data-action="crypto-activity-selection#updateSums"
+                         data-crypto-activity-selection-target="checkbox"
+                         data-crypto-amount="<%= activity.crypto_amount %>"
+                         data-fiat-amount="<%= activity.fiat_amount %>"
+                         data-fee-crypto="<%= activity.fee_crypto || 0 %>"
+                         data-fee-fiat="<%= activity.fee_fiat || 0 %>"
+                         data-activity-type="<%= activity.activity_type %>"
+                         <%= 'checked' if idx == 0 %>>
+                </td>
                 <td class="text-right"><%= activity.activity_date %></td>
                 <td><%= activity.activity_type.titleize %></td>
                 <td class="text-right"><%= activity.crypto_amount %></td>
                 <td class="text-right"><%= format_currency activity.fiat_amount %></td>
-                <td class="text-right"><%= activity.fee_crypto %></td>
-                <td class="text-right"><%= format_currency activity.fee_fiat %></td>
+                <td class="text-right"><%= activity.fee_crypto %>(<%= format_percentage activity.fee_crypto, activity.crypto_amount %>)</td>
+                <td class="text-right"><%= format_currency activity.fee_fiat %>(<%= format_percentage activity.fee_fiat, activity.fiat_amount %>)</td>
                 <td class="text-right"><%= format_currency activity.fiat_forex %></td>
               </tr>
             <% end %>

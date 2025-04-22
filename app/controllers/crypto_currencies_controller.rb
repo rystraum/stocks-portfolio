@@ -5,6 +5,10 @@ class CryptoCurrenciesController < ApplicationController
   def index
     @crypto_currencies = CryptoCurrency.alphabetical
     @crypto_currency = CryptoCurrency.new
+    @cost_bases = {}
+    @crypto_currencies.each do |crypto|
+      @cost_bases[crypto.id] = CryptoActivity.cost_basis(current_user.id, crypto.id)
+    end
   end
 
   # GET /crypto_currencies/new
@@ -24,7 +28,7 @@ class CryptoCurrenciesController < ApplicationController
 
   # GET /crypto_currencies/:id
   def show
-    @activities = CryptoActivity.where(crypto_currency_id: @crypto_currency.id, user_id: current_user.id).order(:activity_date, :created_at)
+    @activities = CryptoActivity.where(crypto_currency_id: @crypto_currency.id, user_id: current_user.id).order(activity_date: :desc, created_at: :desc)
     @cost_basis = CryptoActivity.cost_basis(current_user.id, @crypto_currency.id)
     @net_crypto = CryptoActivity.net_crypto_amount(current_user.id, @crypto_currency.id)
     @total_fiat = CryptoActivity.total_fiat_spent(current_user.id, @crypto_currency.id)
