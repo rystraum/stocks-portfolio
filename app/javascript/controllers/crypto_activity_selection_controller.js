@@ -1,9 +1,15 @@
 import { Controller } from "stimulus";
 
 export default class extends Controller {
-  static targets = ["checkbox", "cryptoSum", "fiatSum", "forexAverage"];
+  static targets = ["tableRow", "checkbox", "cryptoSum", "fiatSum", "forexAverage"];
 
   connect() {
+    this.updateSums();
+  }
+
+  tableRowClick(event) {
+    const checkbox = event.target.closest("tr").querySelector("[data-crypto-activity-selection-target='checkbox']");
+    if (checkbox) checkbox.checked = !checkbox.checked;
     this.updateSums();
   }
 
