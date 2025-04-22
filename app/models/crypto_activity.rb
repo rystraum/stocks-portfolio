@@ -25,4 +25,12 @@ class CryptoActivity < ApplicationRecord
     total_fiat = total_fiat_spent(user_id, crypto_currency_id)
     total_fiat / net_crypto
   end
+
+  # Computes the fiat conversion rate (fiat per 1 crypto) based on net crypto and net fiat spent (after fees)
+  def fiat_forex
+    net_crypto = crypto_amount - (fee_crypto || 0)
+    net_fiat = fiat_amount - (fee_fiat || 0)
+    return 0 if net_crypto.to_d.zero?
+    net_fiat.to_d / net_crypto.to_d
+  end
 end
