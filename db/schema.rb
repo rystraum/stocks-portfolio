@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_22_040700) do
+ActiveRecord::Schema.define(version: 2025_04_22_041600) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "activities", force: :cascade do |t|
@@ -74,7 +75,7 @@ ActiveRecord::Schema.define(version: 2025_04_22_040700) do
     t.index ["user_id"], name: "index_converted_announcements_on_user_id"
   end
 
-  create_table "crypto_currencies", force: :cascade do |t|
+  create_table "crypto_currencies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.string "ticker", null: false
     t.integer "last_price"
