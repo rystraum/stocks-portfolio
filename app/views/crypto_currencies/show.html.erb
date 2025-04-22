@@ -1,0 +1,10 @@
+<h1><%= @crypto_currency.name %> (<%= @crypto_currency.ticker %>)</h1>
+<p>
+  <strong>Last Price:</strong>
+  <%= @crypto_currency.last_price %><br>
+  <strong>Last Price At:</strong>
+  <%= @crypto_currency.last_price_at %><br>
+  <strong>Decimal Places:</strong>
+  <%= @crypto_currency.decimal_places %>
+</p>
+<%= link_to 'Back', crypto_currencies_path %>
