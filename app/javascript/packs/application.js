@@ -1,4 +1,5 @@
 import 'styles/application.scss';
+import '../controllers';
 
 import Rails from '@rails/ujs';
 import * as ActiveStorage from '@rails/activestorage';
