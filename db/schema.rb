@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_22_133000) do
+ActiveRecord::Schema.define(version: 2025_04_22_136000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -72,16 +72,17 @@ ActiveRecord::Schema.define(version: 2025_04_22_133000) do
   end
 
   create_table "converted_announcements", force: :cascade do |t|
-    t.bigint "dividend_announcement_id"
+    t.bigint "old_dividend_announcement_id"
     t.bigint "old_user_id"
     t.bigint "old_cash_dividend_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "cash_dividend_id"
     t.uuid "user_id"
+    t.uuid "dividend_announcement_id"
     t.index ["cash_dividend_id"], name: "index_converted_announcements_on_cash_dividend_id"
-    t.index ["dividend_announcement_id", "old_user_id"], name: "index_converted_dx_user_id", unique: true
-    t.index ["dividend_announcement_id"], name: "index_converted_announcements_on_dividend_announcement_id"
+    t.index ["old_dividend_announcement_id", "old_user_id"], name: "index_converted_dx_user_id", unique: true
+    t.index ["old_dividend_announcement_id"], name: "index_converted_announcements_on_old_dividend_announcement_id"
   end
 
   create_table "crypto_currencies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -95,8 +96,9 @@ ActiveRecord::Schema.define(version: 2025_04_22_133000) do
     t.index ["ticker"], name: "index_crypto_currencies_on_ticker", unique: true
   end
 
-  create_table "dividend_announcements", force: :cascade do |t|
-    t.bigint "old_company_id", null: false
+  create_table "dividend_announcements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "old_id"
+    t.uuid "company_id", null: false
     t.string "share_class"
     t.string "dividend_type"
     t.decimal "amount"
@@ -105,11 +107,10 @@ ActiveRecord::Schema.define(version: 2025_04_22_133000) do
     t.date "payout_date"
     t.string "circular_number"
     t.string "raw_html"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.uuid "company_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["circular_number"], name: "index_dividend_announcements_on_circular_number", unique: true
-    t.index ["old_company_id"], name: "index_dividend_announcements_on_old_company_id"
+    t.index ["company_id"], name: "index_dividend_announcements_on_company_id"
   end
 
   create_table "price_updates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -161,6 +162,7 @@ ActiveRecord::Schema.define(version: 2025_04_22_133000) do
   add_foreign_key "cash_dividends", "price_updates", column: "last_price_update_id"
   add_foreign_key "cash_dividends", "users"
   add_foreign_key "converted_announcements", "cash_dividends"
+  add_foreign_key "converted_announcements", "dividend_announcements"
   add_foreign_key "dividend_announcements", "companies"
   add_foreign_key "price_updates", "companies"
   add_foreign_key "stock_dividends", "companies"
