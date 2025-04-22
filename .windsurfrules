@@ -1,0 +1,1 @@
+1. pg_dump command should read config from config/database.yml
