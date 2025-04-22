@@ -2,6 +2,7 @@
 2. UUID migration should be done in multiple migration files:
     - Step 1: Create SQL backup of old table
     - Step 2: Create new table using UUID as primary key, retaining all columns from old table including an old_id column
+    - Step 2 Note: Check that foreign key types match (ie. use t.uuid if foreign key references UUID, otherwise retain whatever is in the old table)
     - Step 3: Copy data from original table and assign new UUIDs
     - Step 4: Drop dependent foreign keys
     - Step 5: Rename new table to old table name
@@ -11,3 +12,4 @@
     - Step 9: Rename temporary columns in other referencing tables to old column names
     - Step 10: Re-add foreign keys
     - Step 11: Drop old table
+    - Step 12: Check that all foreign keys were added again (check the diff on db/schema.rb after all the migrations have been run)
