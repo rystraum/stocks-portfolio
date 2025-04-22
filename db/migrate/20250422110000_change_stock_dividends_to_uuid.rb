@@ -1,0 +1,49 @@
+class ChangeStockDividendsToUuid < ActiveRecord::Migration[6.0]
+  def up
+    enable_extension 'pgcrypto' unless extension_enabled?('pgcrypto')
+
+    # Step 2: Create new table with UUID primary key, retaining all columns and old_id
+    create_table :stock_dividends_new, id: :uuid do |t|
+      t.bigint :old_id
+      t.bigint :company_id  # companies is still bigint
+      t.integer :amount
+      t.date :pay_date
+      t.date :ex_date
+      t.datetime :created_at, null: false
+      t.datetime :updated_at, null: false
+      t.bigint :user_id     # users is still bigint
+      t.bigint :last_price_update_id # price_updates is still bigint
+    end
+    add_index :stock_dividends_new, :company_id
+    add_index :stock_dividends_new, :user_id
+    add_index :stock_dividends_new, :last_price_update_id
+
+    # Step 3: Copy data from original table and assign new UUIDs
+    execute <<-SQL
+      INSERT INTO stock_dividends_new (id, old_id, company_id, amount, pay_date, ex_date, created_at, updated_at, user_id, last_price_update_id)
+      SELECT gen_random_uuid(), id, company_id, amount, pay_date, ex_date, created_at, updated_at, user_id, last_price_update_id FROM stock_dividends;
+    SQL
+  end
+
+  def down
+    create_table :stock_dividends_old do |t|
+      t.integer :amount
+      t.date :pay_date
+      t.date :ex_date
+      t.datetime :created_at, null: false
+      t.datetime :updated_at, null: false
+      t.bigint :company_id
+      t.bigint :user_id
+      t.bigint :last_price_update_id
+    end
+    add_index :stock_dividends_old, :company_id
+    add_index :stock_dividends_old, :user_id
+    add_index :stock_dividends_old, :last_price_update_id
+
+    # Copy data (UUIDs will be lost)
+    execute <<-SQL
+      INSERT INTO stock_dividends_old (amount, pay_date, ex_date, created_at, updated_at, company_id, user_id, last_price_update_id)
+      SELECT amount, pay_date, ex_date, created_at, updated_at, company_id, user_id, last_price_update_id FROM stock_dividends;
+    SQL
+  end
+end

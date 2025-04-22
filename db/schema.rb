@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_22_104000) do
+ActiveRecord::Schema.define(version: 2025_04_22_112000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -114,8 +114,9 @@ ActiveRecord::Schema.define(version: 2025_04_22_104000) do
     t.index ["company_id"], name: "index_price_updates_on_company_id"
   end
 
-  create_table "stock_dividends", force: :cascade do |t|
-    t.integer "company_id"
+  create_table "stock_dividends", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "old_id"
+    t.bigint "company_id"
     t.integer "amount"
     t.date "pay_date"
     t.date "ex_date"
