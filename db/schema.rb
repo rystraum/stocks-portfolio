@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_22_139000) do
+ActiveRecord::Schema.define(version: 2025_04_22_143000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -80,6 +80,23 @@ ActiveRecord::Schema.define(version: 2025_04_22_139000) do
     t.bigint "old_cash_dividend_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "crypto_activities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "crypto_currency_id", null: false
+    t.integer "activity_type", null: false
+    t.decimal "crypto_amount", precision: 30, scale: 20, null: false
+    t.decimal "fiat_amount", precision: 18, scale: 2, null: false
+    t.string "fiat_currency", null: false
+    t.decimal "fee_crypto", precision: 30, scale: 20, default: "0.0"
+    t.date "activity_date", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.decimal "fee_fiat", precision: 18, scale: 2, default: "0.0"
+    t.index ["activity_type"], name: "index_crypto_activities_on_activity_type"
+    t.index ["crypto_currency_id"], name: "index_crypto_activities_on_crypto_currency_id"
+    t.index ["user_id"], name: "index_crypto_activities_on_user_id"
   end
 
   create_table "crypto_currencies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -161,6 +178,8 @@ ActiveRecord::Schema.define(version: 2025_04_22_139000) do
   add_foreign_key "converted_announcements", "cash_dividends"
   add_foreign_key "converted_announcements", "dividend_announcements"
   add_foreign_key "converted_announcements", "users"
+  add_foreign_key "crypto_activities", "crypto_currencies"
+  add_foreign_key "crypto_activities", "users"
   add_foreign_key "dividend_announcements", "companies"
   add_foreign_key "price_updates", "companies"
   add_foreign_key "stock_dividends", "companies"

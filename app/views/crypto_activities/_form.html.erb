@@ -1,0 +1,47 @@
+<%= form_with(model: crypto_activity, local: true) do |f| %>
+  <% if crypto_activity.errors.any? %>
+    <div class="alert alert-danger">
+      <ul>
+        <% crypto_activity.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :activity_type %>
+    <%= f.select :activity_type, CryptoActivity.activity_types.keys.map { |k| [k.titleize, k] }, {}, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :crypto_currency_id, 'Crypto Currency' %>
+    <%= f.collection_select :crypto_currency_id, CryptoCurrency.alphabetical, :id, :ticker, {}, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :crypto_amount %>
+    <%= f.number_field :crypto_amount, step: 0.00000001, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :fiat_amount, 'Fiat Amount (PHP)' %>
+    <%= f.number_field :fiat_amount, step: 0.01, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :fiat_currency %>
+    <%= f.text_field :fiat_currency, value: 'PHP', class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :fee_crypto, 'Fee (Crypto)' %>
+    <%= f.number_field :fee_crypto, step: 0.00000000001, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :fee_fiat, 'Fee (PHP)' %>
+    <%= f.number_field :fee_fiat, step: 0.01, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :activity_date %>
+    <%= f.date_field :activity_date, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>
