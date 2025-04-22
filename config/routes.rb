@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   end
 
   resources :crypto_currencies, only: [:index, :new, :create, :show]
+  resources :crypto_activities
 
   put :update_prices, to: "dashboard#update_prices"
   root to: 'dashboard#show'

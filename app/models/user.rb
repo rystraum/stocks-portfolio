@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :activities
   has_many :companies, -> { distinct }, through: :activities
   has_many :converted_announcements
+  has_many :crypto_activities
 
   def gravatar_hash
     Digest::MD5.hexdigest email.downcase

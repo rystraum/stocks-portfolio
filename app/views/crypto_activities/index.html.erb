@@ -1,0 +1,35 @@
+<h1>Crypto Activities</h1>
+
+<%= link_to 'Add Crypto Activity', new_crypto_activity_path, class: 'btn btn-success mb-3' %>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Type</th>
+      <th>Crypto</th>
+      <th>Amount</th>
+      <th>Fiat (PHP)</th>
+      <th>Fee (Crypto)</th>
+      <th>Fee (PHP)</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @crypto_activities.each do |activity| %>
+      <tr>
+        <td><%= activity.activity_date %></td>
+        <td><%= activity.activity_type.titleize %></td>
+        <td><%= activity.crypto_currency.ticker %></td>
+        <td><%= activity.crypto_amount %></td>
+        <td><%= activity.fiat_amount %> <%= activity.fiat_currency %></td>
+        <td><%= activity.fee_crypto %></td>
+        <td><%= activity.fee_fiat %></td>
+        <td>
+          <%= link_to 'Edit', edit_crypto_activity_path(activity), class: 'btn btn-sm btn-primary' %>
+          <%= link_to 'Delete', crypto_activity_path(activity), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-sm btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
