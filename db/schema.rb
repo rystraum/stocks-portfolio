@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_03_31_190643) do
+ActiveRecord::Schema.define(version: 2025_04_22_040700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,6 +72,17 @@ ActiveRecord::Schema.define(version: 2025_03_31_190643) do
     t.index ["dividend_announcement_id", "user_id"], name: "index_converted_dx_user_id", unique: true
     t.index ["dividend_announcement_id"], name: "index_converted_announcements_on_dividend_announcement_id"
     t.index ["user_id"], name: "index_converted_announcements_on_user_id"
+  end
+
+  create_table "crypto_currencies", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "ticker", null: false
+    t.integer "last_price"
+    t.datetime "last_price_at"
+    t.integer "decimal_places", default: 8, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["ticker"], name: "index_crypto_currencies_on_ticker", unique: true
   end
 
   create_table "dividend_announcements", force: :cascade do |t|

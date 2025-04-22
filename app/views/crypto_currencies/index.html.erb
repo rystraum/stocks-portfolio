@@ -1,0 +1,28 @@
+<h1>Crypto Currencies</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Ticker</th>
+      <th>Last Price</th>
+      <th>Last Price At</th>
+      <th>Decimal Places</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @crypto_currencies.each do |crypto| %>
+      <tr>
+        <td><%= crypto.name %></td>
+        <td><%= crypto.ticker %></td>
+        <td><%= crypto.last_price %></td>
+        <td><%= crypto.last_price_at %></td>
+        <td><%= crypto.decimal_places %></td>
+        <td><%= link_to 'Show', crypto_currency_path(crypto) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h2>New Crypto Currency</h2>
+<%= render 'form', crypto_currency: @crypto_currency %>

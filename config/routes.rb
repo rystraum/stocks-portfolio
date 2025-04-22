@@ -32,6 +32,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :crypto_currencies, only: [:index, :new, :create, :show]
+
   put :update_prices, to: "dashboard#update_prices"
   root to: 'dashboard#show'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
