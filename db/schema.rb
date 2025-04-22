@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_22_115000) do
+ActiveRecord::Schema.define(version: 2025_04_22_126000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -26,8 +26,9 @@ ActiveRecord::Schema.define(version: 2025_04_22_115000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "charges", precision: 15, scale: 4
-    t.bigint "user_id"
+    t.bigint "old_user_id"
     t.text "notes"
+    t.uuid "user_id"
     t.index ["activity_type"], name: "index_activities_on_activity_type"
     t.index ["company_id"], name: "index_activities_on_company_id"
     t.index ["user_id"], name: "index_activities_on_user_id"
@@ -42,8 +43,9 @@ ActiveRecord::Schema.define(version: 2025_04_22_115000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "meta"
-    t.bigint "user_id"
+    t.bigint "old_user_id"
     t.bigint "last_price_update_id"
+    t.uuid "user_id"
     t.index ["company_id"], name: "index_cash_dividends_on_company_id"
     t.index ["last_price_update_id"], name: "index_cash_dividends_on_last_price_update_id"
     t.index ["user_id"], name: "index_cash_dividends_on_user_id"
@@ -67,15 +69,15 @@ ActiveRecord::Schema.define(version: 2025_04_22_115000) do
 
   create_table "converted_announcements", force: :cascade do |t|
     t.bigint "dividend_announcement_id"
-    t.bigint "user_id"
+    t.bigint "old_user_id"
     t.bigint "old_cash_dividend_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "cash_dividend_id"
+    t.uuid "user_id"
     t.index ["cash_dividend_id"], name: "index_converted_announcements_on_cash_dividend_id"
-    t.index ["dividend_announcement_id", "user_id"], name: "index_converted_dx_user_id", unique: true
+    t.index ["dividend_announcement_id", "old_user_id"], name: "index_converted_dx_user_id", unique: true
     t.index ["dividend_announcement_id"], name: "index_converted_announcements_on_dividend_announcement_id"
-    t.index ["user_id"], name: "index_converted_announcements_on_user_id"
   end
 
   create_table "crypto_currencies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -123,14 +125,16 @@ ActiveRecord::Schema.define(version: 2025_04_22_115000) do
     t.date "ex_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.bigint "old_user_id"
     t.bigint "last_price_update_id"
+    t.uuid "user_id"
     t.index ["company_id"], name: "index_stock_dividends_on_company_id"
     t.index ["last_price_update_id"], name: "index_stock_dividends_on_last_price_update_id"
     t.index ["user_id"], name: "index_stock_dividends_on_user_id"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "old_id"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
