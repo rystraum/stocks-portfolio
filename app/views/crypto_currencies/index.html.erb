@@ -1,28 +1,35 @@
-<h1>Crypto Currencies</h1>
-<table>
-  <thead>
+<%= render "shared/header", text: "Crypto Currencies" %>
+
+<div class="card company-new w-1/4">
+  <h2 class="card-header">Add new crypto currency</h2>
+  <div class="card-body"><%= render 'form', crypto_currency: @crypto_currency %></div>
+</div>
+
+<table class="table table-striped m-6">
+  <thead class="thead-dark">
     <tr>
-      <th>Name</th>
-      <th>Ticker</th>
-      <th>Last Price</th>
-      <th>Last Price At</th>
-      <th>Decimal Places</th>
-      <th></th>
+      <th class="w-1/5">Ticker</th>
+      <th class="w-1/5">Name</th>
+      <th class="w-1/5">Last Price</th>
+      <th class="w-1/5">Last Price At</th>
+      <th class="w-1/5">Decimal Places</th>
+      <th class="action-column">Actions</th>
     </tr>
   </thead>
   <tbody>
     <% @crypto_currencies.each do |crypto| %>
-      <tr>
+      <tr class="company-row <%= cycle('odd', 'even') %>">
+        <td><%= link_to crypto.ticker, crypto_currency_path(crypto) %></td>
         <td><%= crypto.name %></td>
-        <td><%= crypto.ticker %></td>
         <td><%= crypto.last_price %></td>
         <td><%= crypto.last_price_at %></td>
         <td><%= crypto.decimal_places %></td>
-        <td><%= link_to 'Show', crypto_currency_path(crypto) %></td>
+        <td class="text-right" style="width: 6%;">
+          <div class="flex">
+            <%= link_to eye_icon, crypto_currency_path(crypto) %>
+          </div>
+        </td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<h2>New Crypto Currency</h2>
-<%= render 'form', crypto_currency: @crypto_currency %>

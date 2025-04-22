@@ -1,7 +1,7 @@
-<%= form_with(model: crypto_currency, local: true) do |form| %>
+<%= form_with(model: crypto_currency, local: true, class: "form mr-4") do |form| %>
   <% if crypto_currency.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(crypto_currency.errors.count, "error") %> prohibited this crypto_currency from being saved:</h2>
+      <h2><%= pluralize(crypto_currency.errors.count, "error") %> prohibited this crypto currency from being saved:</h2>
       <ul>
         <% crypto_currency.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -10,26 +10,26 @@
     </div>
   <% end %>
   <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
+    <%= form.label :ticker %>
+    <%= form.text_field :ticker, class: 'w-full', placeholder: "Ticker" %>
   </div>
   <div class="field">
-    <%= form.label :ticker %>
-    <%= form.text_field :ticker %>
+    <%= form.label :name %>
+    <%= form.text_field :name, class: 'w-full', placeholder: "Crypto Name" %>
   </div>
   <div class="field">
     <%= form.label :last_price %>
-    <%= form.number_field :last_price %>
+    <%= form.number_field :last_price, class: 'w-full', placeholder: "Last Price" %>
   </div>
   <div class="field">
     <%= form.label :last_price_at %>
-    <%= form.datetime_select :last_price_at %>
+    <%= form.datetime_select :last_price_at, class: 'w-full' %>
   </div>
   <div class="field">
     <%= form.label :decimal_places %>
-    <%= form.number_field :decimal_places %>
+    <%= form.number_field :decimal_places, class: 'w-full', placeholder: "Decimal Places" %>
   </div>
-  <div class="actions">
-    <%= form.submit %>
+  <div class="flex">
+    <%= form.submit (crypto_currency.persisted? ? "Update" : "Add"), class: "btn btn-sm btn-primary ml-auto" %>
   </div>
 <% end %>
