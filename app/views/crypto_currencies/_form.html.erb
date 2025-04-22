@@ -19,11 +19,8 @@
   </div>
   <div class="field">
     <%= form.label :last_price %>
-    <%= form.number_field :last_price, class: 'w-full', placeholder: "Last Price" %>
-  </div>
-  <div class="field">
-    <%= form.label :last_price_at %>
-    <%= form.datetime_select :last_price_at, class: 'w-full' %>
+    <%= form.number_field :last_price, step: "0.01", class: 'w-full', placeholder: "Last Price" %>
+    <p class="text-xs text-gray-600">In PHP</p>
   </div>
   <div class="flex">
     <%= form.submit (crypto_currency.persisted? ? "Update" : "Add"), class: "btn btn-sm btn-primary ml-auto" %>

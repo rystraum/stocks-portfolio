@@ -1,5 +1,5 @@
 class CryptoCurrenciesController < ApplicationController
-  before_action :set_crypto_currency, only: [:show]
+  before_action :set_crypto_currency, only: [:show, :edit, :update]
 
   # GET /crypto_currencies
   def index
@@ -33,7 +33,26 @@ class CryptoCurrenciesController < ApplicationController
     @net_crypto = CryptoActivity.net_crypto_amount(current_user.id, @crypto_currency.id)
     @total_fiat = CryptoActivity.total_fiat_spent(current_user.id, @crypto_currency.id)
     @total_proceeds = CryptoActivity.where(crypto_currency_id: @crypto_currency.id, user_id: current_user.id, activity_type: :sell).sum('fiat_amount - COALESCE(fee_fiat, 0)')
-    @pnl = @total_proceeds - (@cost_basis * (@net_crypto < 0 ? -@net_crypto : 0))
+    @current_value = @net_crypto * @crypto_currency.last_price
+    @pnl = @current_value + @total_proceeds - @total_fiat
+  end
+
+  # GET /crypto_currencies/:id/edit
+  def edit
+    # Uses @crypto_currency from before_action
+  end
+
+  # PATCH/PUT /crypto_currencies/:id
+  def update
+    last_price_before = @crypto_currency.last_price
+    if @crypto_currency.update(crypto_currency_params)
+      if crypto_currency_params[:last_price] && crypto_currency_params[:last_price] != last_price_before.to_s
+        @crypto_currency.update_column(:last_price_at, Time.current)
+      end
+      redirect_to @crypto_currency, notice: 'Crypto currency was successfully updated.'
+    else
+      render :edit
+    end
   end
 
   private
@@ -43,6 +62,6 @@ class CryptoCurrenciesController < ApplicationController
   end
 
   def crypto_currency_params
-    params.require(:crypto_currency).permit(:name, :ticker, :last_price, :last_price_at)
+    params.require(:crypto_currency).permit(:name, :ticker, :last_price)
   end
 end
