@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_22_130000) do
+ActiveRecord::Schema.define(version: 2025_04_22_133000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 2025_04_22_130000) do
 
   create_table "activities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "old_id"
-    t.bigint "company_id"
+    t.bigint "old_company_id"
     t.string "activity_type"
     t.integer "number_of_shares"
     t.decimal "total_price", precision: 15, scale: 2
@@ -29,14 +29,15 @@ ActiveRecord::Schema.define(version: 2025_04_22_130000) do
     t.bigint "old_user_id"
     t.text "notes"
     t.uuid "user_id"
+    t.uuid "company_id"
     t.index ["activity_type"], name: "index_activities_on_activity_type"
-    t.index ["company_id"], name: "index_activities_on_company_id"
+    t.index ["old_company_id"], name: "index_activities_on_old_company_id"
     t.index ["user_id"], name: "index_activities_on_user_id"
   end
 
   create_table "cash_dividends", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "old_id"
-    t.bigint "company_id"
+    t.bigint "old_company_id"
     t.decimal "amount", precision: 15, scale: 2
     t.date "pay_date"
     t.date "ex_date"
@@ -47,12 +48,14 @@ ActiveRecord::Schema.define(version: 2025_04_22_130000) do
     t.bigint "old_last_price_update_id"
     t.uuid "user_id"
     t.uuid "last_price_update_id"
-    t.index ["company_id"], name: "index_cash_dividends_on_company_id"
+    t.uuid "company_id"
+    t.index ["old_company_id"], name: "index_cash_dividends_on_old_company_id"
     t.index ["old_last_price_update_id"], name: "index_cash_dividends_on_old_last_price_update_id"
     t.index ["user_id"], name: "index_cash_dividends_on_user_id"
   end
 
-  create_table "companies", force: :cascade do |t|
+  create_table "companies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "old_id"
     t.string "ticker"
     t.string "industry"
     t.datetime "created_at", null: false
@@ -93,7 +96,7 @@ ActiveRecord::Schema.define(version: 2025_04_22_130000) do
   end
 
   create_table "dividend_announcements", force: :cascade do |t|
-    t.bigint "company_id", null: false
+    t.bigint "old_company_id", null: false
     t.string "share_class"
     t.string "dividend_type"
     t.decimal "amount"
@@ -104,24 +107,26 @@ ActiveRecord::Schema.define(version: 2025_04_22_130000) do
     t.string "raw_html"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.uuid "company_id"
     t.index ["circular_number"], name: "index_dividend_announcements_on_circular_number", unique: true
-    t.index ["company_id"], name: "index_dividend_announcements_on_company_id"
+    t.index ["old_company_id"], name: "index_dividend_announcements_on_old_company_id"
   end
 
   create_table "price_updates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "old_id"
-    t.bigint "company_id"
+    t.bigint "old_company_id"
     t.datetime "datetime"
     t.decimal "price", precision: 15, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "notes"
-    t.index ["company_id"], name: "index_price_updates_on_company_id"
+    t.uuid "company_id"
+    t.index ["old_company_id"], name: "index_price_updates_on_old_company_id"
   end
 
   create_table "stock_dividends", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "old_id"
-    t.bigint "company_id"
+    t.bigint "old_company_id"
     t.integer "amount"
     t.date "pay_date"
     t.date "ex_date"
@@ -131,7 +136,8 @@ ActiveRecord::Schema.define(version: 2025_04_22_130000) do
     t.bigint "old_last_price_update_id"
     t.uuid "user_id"
     t.uuid "last_price_update_id"
-    t.index ["company_id"], name: "index_stock_dividends_on_company_id"
+    t.uuid "company_id"
+    t.index ["old_company_id"], name: "index_stock_dividends_on_old_company_id"
     t.index ["old_last_price_update_id"], name: "index_stock_dividends_on_old_last_price_update_id"
     t.index ["user_id"], name: "index_stock_dividends_on_user_id"
   end
@@ -156,6 +162,7 @@ ActiveRecord::Schema.define(version: 2025_04_22_130000) do
   add_foreign_key "cash_dividends", "users"
   add_foreign_key "converted_announcements", "cash_dividends"
   add_foreign_key "dividend_announcements", "companies"
+  add_foreign_key "price_updates", "companies"
   add_foreign_key "stock_dividends", "companies"
   add_foreign_key "stock_dividends", "price_updates", column: "last_price_update_id"
   add_foreign_key "stock_dividends", "users"
