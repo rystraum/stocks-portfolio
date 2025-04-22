@@ -16,6 +16,11 @@ module StocksPortfolio
 
     config.active_record.yaml_column_permitted_classes = [ActiveSupport::HashWithIndifferentAccess, BigDecimal]
 
+    # Use UUIDs for primary keys by default
+    config.generators do |g|
+      g.orm :active_record, primary_key_type: :uuid
+    end
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
