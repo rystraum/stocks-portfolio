@@ -84,14 +84,13 @@
               <th>Type</th>
               <th class="text-right">Amount</th>
               <th class="text-right">Fiat (PHP)</th>
-              <th class="text-right">Fee (Crypto)</th>
-              <th class="text-right">Fee (PHP)</th>
+              <th class="text-right">Fee</th>
               <th class="text-right">Fiat Forex</th>
             </tr>
           </thead>
           <tbody>
             <% @activities.each_with_index do |activity, idx| %>
-              <tr>
+              <tr data-action="click->crypto-activity-selection#tableRowClick" data-crypto-activity-selection-target="tableRow">
                 <td>
                   <input type="checkbox"
                          data-action="crypto-activity-selection#updateSums"
@@ -101,14 +100,25 @@
                          data-fee-crypto="<%= activity.fee_crypto || 0 %>"
                          data-fee-fiat="<%= activity.fee_fiat || 0 %>"
                          data-activity-type="<%= activity.activity_type %>"
+                         onclick="event.stopPropagation()"
                          <%= 'checked' if idx == 0 %>>
                 </td>
                 <td class="text-right"><%= activity.activity_date %></td>
                 <td><%= activity.activity_type.titleize %></td>
                 <td class="text-right"><%= activity.crypto_amount %></td>
                 <td class="text-right"><%= format_currency activity.fiat_amount %></td>
-                <td class="text-right"><%= activity.fee_crypto %>(<%= format_percentage activity.fee_crypto, activity.crypto_amount %>)</td>
-                <td class="text-right"><%= format_currency activity.fee_fiat %>(<%= format_percentage activity.fee_fiat, activity.fiat_amount %>)</td>
+                <td class="text-right">
+                  <% if activity.fee_crypto.zero? %>
+                    &nbsp;
+                  <% else %>
+                    <%= @crypto_currency.ticker %>: <%= activity.fee_crypto %> (<%= format_percentage activity.fee_crypto, activity.crypto_amount, 2 %>)
+                  <% end %>
+                  <% if activity.fee_fiat.zero? %>
+                    &nbsp;
+                  <% else %>
+                    PHP: <%= format_currency activity.fee_fiat %> (<%= format_percentage activity.fee_fiat, activity.fiat_amount, 2 %>)
+                  <% end %>
+                </td>
                 <td class="text-right"><%= format_currency activity.fiat_forex %></td>
               </tr>
             <% end %>

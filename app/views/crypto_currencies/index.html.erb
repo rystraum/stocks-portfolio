@@ -1,32 +1,46 @@
 <%= render "shared/header", text: "Crypto Currencies" %>
 
-<div class="card company-new w-1/4">
-  <h2 class="card-header">Add new crypto currency</h2>
-  <div class="card-body"><%= render 'form', crypto_currency: @crypto_currency %></div>
-</div>
+<div class="flex flex-col lg:flex-row">
+  <div class="w-full lg:w-3/4 p-6">
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th class="w-1/8">Ticker</th>
+          <th class="w-1/8">Name</th>
+          <th class="w-1/8 text-right">Cost Basis (PHP)</th>
+          <th class="w-1/8 text-right">Last Price</th>
+          <th class="action-column">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @crypto_currencies.each do |crypto| %>
+          <tr class="company-row <%= cycle('odd', 'even') %>">
+            <td><%= link_to crypto.ticker, crypto_currency_path(crypto) %></td>
+            <td><%= crypto.name %></td>
+            <td class="text-right"><%= format_currency @cost_bases[crypto.id] %></td>
+            <td class="text-right">
+              <% if crypto.last_price_at && crypto.last_price %>
+                <%= format_currency crypto.last_price %> as of <%= distance_of_time_in_words_to_now(crypto.last_price_at) %> ago
+              <% else %>
+                -
+              <% end %>
+            </td>
+            <td class="text-right">
+              <div class="flex">
+                <%= link_to eye_icon, crypto_currency_path(crypto) %>
+                <%= link_to edit_icon, edit_crypto_currency_path(crypto), class: "ml-2", title: "Edit" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 
-<table class="table table-striped m-6">
-  <thead class="thead-dark">
-    <tr>
-      <th class="w-1/5">Ticker</th>
-      <th class="w-1/5">Name</th>
-      <th class="w-1/5">Cost Basis (PHP)</th>
-      <th class="action-column">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @crypto_currencies.each do |crypto| %>
-      <tr class="company-row <%= cycle('odd', 'even') %>">
-        <td><%= link_to crypto.ticker, crypto_currency_path(crypto) %></td>
-        <td><%= crypto.name %></td>
-        <td><%= format_currency @cost_bases[crypto.id] %></td>
-        <td class="text-right" style="width: 6%;">
-          <div class="flex">
-            <%= link_to eye_icon, crypto_currency_path(crypto) %>
-            <%= link_to edit_icon, edit_crypto_currency_path(crypto), class: "ml-2", title: "Edit" %>
-          </div>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <div class="w-full lg:w-1/4">
+    <div class="card company-new">
+      <h2 class="card-header">Add new crypto currency</h2>
+      <div class="card-body"><%= render 'form', crypto_currency: @crypto_currency %></div>
+    </div>
+  </div>
+</div>

@@ -4,4 +4,12 @@ class CryptoCurrency < ApplicationRecord
   validates :ticker, presence: true, uniqueness: true
 
   scope :alphabetical, -> { order(:ticker) }
+
+  def to_s
+    ticker
+  end
+
+  def to_param
+    ticker
+  end
 end
