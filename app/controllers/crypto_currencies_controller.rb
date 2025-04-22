@@ -43,6 +43,6 @@ class CryptoCurrenciesController < ApplicationController
   end
 
   def crypto_currency_params
-    params.require(:crypto_currency).permit(:name, :ticker, :last_price, :last_price_at, :decimal_places)
+    params.require(:crypto_currency).permit(:name, :ticker, :last_price, :last_price_at)
   end
 end

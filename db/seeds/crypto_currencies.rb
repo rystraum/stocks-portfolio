@@ -5,7 +5,6 @@ CryptoCurrency.upsert_all([
     ticker: 'BTC',
     last_price: 0,
     last_price_at: nil,
-    decimal_places: 8,
     created_at: Time.current,
     updated_at: Time.current
   },
@@ -14,7 +13,6 @@ CryptoCurrency.upsert_all([
     ticker: 'ETH',
     last_price: 0,
     last_price_at: nil,
-    decimal_places: 8,
     created_at: Time.current,
     updated_at: Time.current
   },
@@ -23,7 +21,6 @@ CryptoCurrency.upsert_all([
     ticker: 'POL',
     last_price: 0,
     last_price_at: nil,
-    decimal_places: 8,
     created_at: Time.current,
     updated_at: Time.current
   }

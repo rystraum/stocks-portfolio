@@ -25,10 +25,6 @@
     <%= form.label :last_price_at %>
     <%= form.datetime_select :last_price_at, class: 'w-full' %>
   </div>
-  <div class="field">
-    <%= form.label :decimal_places %>
-    <%= form.number_field :decimal_places, class: 'w-full', placeholder: "Decimal Places" %>
-  </div>
   <div class="flex">
     <%= form.submit (crypto_currency.persisted? ? "Update" : "Add"), class: "btn btn-sm btn-primary ml-auto" %>
   </div>
