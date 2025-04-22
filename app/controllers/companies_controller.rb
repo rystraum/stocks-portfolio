@@ -12,7 +12,13 @@ class CompaniesController < ApplicationController
 
   # GET /companies/1
   # GET /companies/1.json
-  def show; end
+  def show
+    if @company.nil?
+      redirect_to companies_path, alert: "Company not found."
+    elsif @company.id.to_s == params[:id]
+      redirect_to company_path(@company.ticker), status: :moved_permanently
+    end
+  end
 
   def price_update_all_from_pse
     if !@permissions.can?(:price_update, Company)
