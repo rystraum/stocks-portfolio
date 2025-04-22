@@ -1,9 +1,9 @@
-<h1>Crypto Activities</h1>
+<%= render "shared/header", text: "Crypto Activities" do %>
+  <%= link_to 'Add Crypto Activity', new_crypto_activity_path, class: 'btn btn-success' %>
+<% end %>
 
-<%= link_to 'Add Crypto Activity', new_crypto_activity_path, class: 'btn btn-success mb-3' %>
-
-<table class="table table-striped">
-  <thead>
+<table class="table table-striped m-6">
+  <thead class="thead-dark">
     <tr>
       <th>Date</th>
       <th>Type</th>
@@ -13,12 +13,12 @@
       <th>Fee (Crypto)</th>
       <th>Fee (PHP)</th>
       <th>Fiat Forex</th>
-      <th>&nbsp;</th>
+      <th class="action-column">Actions</th>
     </tr>
   </thead>
   <tbody>
     <% @crypto_activities.each do |activity| %>
-      <tr>
+      <tr class="crypto-activity-row <%= cycle('odd', 'even') %>">
         <td><%= activity.activity_date %></td>
         <td><%= activity.activity_type.titleize %></td>
         <td><%= activity.crypto_currency.ticker %></td>
@@ -27,9 +27,12 @@
         <td><%= activity.fee_crypto %></td>
         <td><%= activity.fee_fiat %></td>
         <td><%= format_currency activity.fiat_forex %></td>
-        <td>
-          <%= link_to 'Edit', edit_crypto_activity_path(activity), class: 'btn btn-sm btn-primary' %>
-          <%= link_to 'Delete', crypto_activity_path(activity), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-sm btn-danger' %>
+        <td class="text-right" style="width: 6%;">
+          <div class="flex">
+            <%= link_to eye_icon, crypto_currency_path(activity.crypto_currency) %>
+            <%= link_to edit_icon, edit_crypto_activity_path(activity) %>
+            <%= link_to trash_icon, crypto_activity_path(activity), method: :delete, data: { confirm: 'Are you sure?' } %>
+          </div>
         </td>
       </tr>
     <% end %>
