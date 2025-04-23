@@ -33,6 +33,8 @@ export default class extends Controller {
     this.forexAverageTarget.textContent = cryptoSum !== 0 ? (fiatSum / cryptoSum).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: true }) : 0;
 
     // hardcoded 0.3% fee
-    this.pnlTarget.textContent = ((cryptoSum * lastPrice * 0.997) - fiatSum).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: true });
+    const pnlAmount = (cryptoSum * lastPrice * 0.997) - fiatSum;
+    const pnlPercentage = pnlAmount / fiatSum * 100;
+    this.pnlTarget.textContent = `${pnlAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: true })} (${pnlPercentage.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: true })}%)`;
   }
 }

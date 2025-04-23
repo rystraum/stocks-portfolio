@@ -72,12 +72,24 @@
         <h4 class="card-header-title">Activities</h4>
       </div>
       <div class="overflow-x-auto" data-controller="crypto-activity-selection">
-        <div class="p-2 bg-gray-100 flex gap-4">
-          <span><strong>Selected Crypto Sum:</strong> <span data-crypto-activity-selection-target="cryptoSum">0</span> <%= @crypto_currency.ticker %></span>
-          <span><strong>Selected Fiat Sum (PHP):</strong> <span data-crypto-activity-selection-target="fiatSum">0.00</span></span>
-          <span><strong>Selected Forex Average:</strong> <span data-crypto-activity-selection-target="forexAverage">0.00</span></span>
-          <span><strong>P&amp;L less 0.3% fees:</strong> <span data-crypto-activity-selection-target="pnl">0.00</span></span>
-        </div>
+        <dl class="kv-pair p-2 flex gap-4">
+          <div>
+            <dt>Selected Crypto Sum:</dt>
+            <dd><span data-crypto-activity-selection-target="cryptoSum">0</span> <%= @crypto_currency.ticker %></dd>
+          </div>
+          <div>
+            <dt>Selected Fiat Sum (PHP):</dt>
+            <dd><span data-crypto-activity-selection-target="fiatSum">0.00</span></dd>
+          </div>
+          <div>
+            <dt>Selected Forex Average:</dt>
+            <dd><span data-crypto-activity-selection-target="forexAverage">0.00</span></dd>
+          </div>
+          <div>
+            <dt>P&amp;L less 0.3% fees:</dt>
+            <dd><span data-crypto-activity-selection-target="pnl">0.00</span></dd>
+          </div>
+        </dl>
         <table class="table table-striped card-table table-hover w-full">
           <thead>
             <tr>
