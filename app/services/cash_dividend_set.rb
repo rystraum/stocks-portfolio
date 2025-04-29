@@ -27,7 +27,8 @@ class CashDividendSet
 
       @breakdown[year] ||= {}
       @breakdown[year][month] ||= {}
-      @breakdown[year][month][ticker] = amount
+      @breakdown[year][month][ticker] ||= 0
+      @breakdown[year][month][ticker] += amount
 
       @amounts[year] ||= {}
       @amounts[year][month] ||= 0
