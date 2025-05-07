@@ -48,10 +48,19 @@
 ```
 # every 8pm
 0 20 * * * bash -lc 'cd /Users/rystraum/Code/personal/stocks-portfolio; rails runner "PriceUpdateCompanies.new.run_from_console"'
+0 20 * * * bash -lc 'cd /Users/rystraum/Code/personal/stocks-portfolio; rails runner "Coinsph.update_all!"'
 ```
 
 # Disable Backup
 
 ```
 STOCKS_BACKUP=false rails c
+```
+
+# credentials.yml
+
+Edit with `EDITOR=vim bin/rails credentials:edit`
+
+```
+coinsph_apikey:
 ```
