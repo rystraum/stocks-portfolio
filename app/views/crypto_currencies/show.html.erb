@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+
 <div class="flex flex-row p-4 mt-4">
   <%= link_to "#{chevron_left_icon} Back".html_safe, crypto_currencies_path, class: "btn btn-primary" %>
   <%= link_to "Edit #{@crypto_currency.ticker}", edit_crypto_currency_path(@crypto_currency), class: "btn btn-info ml-auto" %>
@@ -120,7 +122,11 @@
                          <%= 'checked' if idx == 0 %>>
                 </td>
                 <td class="text-right"><%= activity.activity_date %></td>
-                <td><%= activity.activity_type.titleize %></td>
+                <td>
+                  <div x-data x-tooltip.raw="<%= activity.notes %>">
+                    <%= activity.activity_type.titleize %> <%= activity.notes.blank? ? "" : "[?]" %>
+                  </div>
+                </td>
                 <td class="text-right"><%= activity.crypto_amount %></td>
                 <td class="text-right"><%= format_currency activity.fiat_amount %></td>
                 <td class="text-right">

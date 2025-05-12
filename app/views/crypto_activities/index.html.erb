@@ -13,6 +13,7 @@
       <th>Fee (Crypto)</th>
       <th>Fee (PHP)</th>
       <th>Fiat Forex</th>
+      <th>Notes</th>
       <th class="action-column">Actions</th>
     </tr>
   </thead>
@@ -27,6 +28,7 @@
         <td><%= activity.fee_crypto %></td>
         <td><%= activity.fee_fiat %></td>
         <td><%= format_currency activity.fiat_forex %></td>
+        <td><%= activity.notes %></td>
         <td class="text-right" style="width: 6%;">
           <div class="flex">
             <%= link_to eye_icon, crypto_currency_path(activity.crypto_currency) %>
