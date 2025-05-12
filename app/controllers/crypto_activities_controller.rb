@@ -41,6 +41,6 @@ class CryptoActivitiesController < ApplicationController
     end
 
     def crypto_activity_params
-      params.require(:crypto_activity).permit(:crypto_currency_id, :activity_type, :crypto_amount, :fiat_amount, :fiat_currency, :fee_crypto, :fee_fiat, :activity_date)
+      params.require(:crypto_activity).permit(:crypto_currency_id, :activity_type, :crypto_amount, :fiat_amount, :fiat_currency, :fee_crypto, :fee_fiat, :activity_date, :notes)
     end
 end

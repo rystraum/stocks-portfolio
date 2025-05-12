@@ -100,6 +100,7 @@
               <th class="text-right">Fiat (PHP)</th>
               <th class="text-right">Fee</th>
               <th class="text-right">Fiat Forex</th>
+              <th class="text-right">&nbsp;</th>
             </tr>
           </thead>
           <tbody>
@@ -135,6 +136,7 @@
                   <% end %>
                 </td>
                 <td class="text-right"><%= format_currency activity.fiat_forex %></td>
+                <td class="text-right"><%= link_to "Edit", [:edit, activity] %></td>
               </tr>
             <% end %>
           </tbody>

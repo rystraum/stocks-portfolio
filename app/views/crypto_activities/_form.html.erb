@@ -42,6 +42,10 @@
     <%= f.date_field :activity_date, class: "form-control" %>
   </div>
   <div class="form-group">
+    <%= f.label :notes %>
+    <%= f.text_area :notes, class: "form-control" %>
+  </div>
+  <div class="form-group">
     <%= f.submit class: "btn btn-primary" %>
   </div>
 <% end %>

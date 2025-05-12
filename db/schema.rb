@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_04_22_144500) do
+ActiveRecord::Schema.define(version: 2025_05_12_140523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(version: 2025_04_22_144500) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.decimal "fee_fiat", precision: 18, scale: 2, default: "0.0"
+    t.text "notes"
     t.index ["activity_type"], name: "index_crypto_activities_on_activity_type"
     t.index ["crypto_currency_id"], name: "index_crypto_activities_on_crypto_currency_id"
     t.index ["user_id"], name: "index_crypto_activities_on_user_id"
