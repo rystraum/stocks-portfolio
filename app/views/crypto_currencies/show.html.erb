@@ -15,7 +15,7 @@
         <dl class="kv-pair">
           <div>
             <dt>Last Price</dt>
-            <dd><%= format_currency @crypto_currency.last_price %> PHP</dd>
+            <dd><%= format_currency @crypto_currency.last_price %> PHP (<%= format_percentage(@crypto_currency.last_price -  @cost_basis, @cost_basis) %>)</dd>
           </div>
           <div>
             <dt>Last Price At</dt>
