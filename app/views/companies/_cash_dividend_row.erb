@@ -7,6 +7,10 @@
     <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
     <td>
         <%= dividend.stocks_at_ex_date %> × <%= format_currency(dividend.dividend_per_share, 2) rescue "-" %> per share
+        <% if defined?(:cost_basis) %>
+            <br />
+            <%= format_percentage(dividend.dividend_per_share, cost_basis) %> of cost basis
+        <% end %>
     </td>
     <td>
         <%= dividend.last_price&.to_formatted_s %>

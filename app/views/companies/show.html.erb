@@ -112,7 +112,8 @@
                                     </thead>
                                     <tbody>
                                         <% current_user.company_dividends(@company).each do |dividend| %>
-                                            <%= render "#{dividend.class.name.underscore}_row", dividend: dividend %>
+                                            <%# TODO: Change cost_basis to be the cost_basis at that point in time, instead of based on current cost basis %>
+                                            <%= render "#{dividend.class.name.underscore}_row", dividend: dividend, cost_basis: current_user.cps_on_buy(@company) %>
                                         <% end %>
                                     </tbody>
                                 </table>
