@@ -7,7 +7,7 @@ class CryptoActivitiesController < ApplicationController
   end
 
   def new
-    @crypto_activity = current_user.crypto_activities.build
+    @crypto_activity = current_user.crypto_activities.build(activity_date: Date.today)
   end
 
   def create
