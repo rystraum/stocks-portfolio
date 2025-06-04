@@ -91,11 +91,16 @@
             <dt>P&amp;L less 0.3% fees:</dt>
             <dd><span data-crypto-activity-selection-target="pnl">0.00</span></dd>
           </div>
+          <div>
+            <dt>Test Price</dt>
+            <dd><input type="number" value="<%= @crypto_currency.last_price %>" placeholder="0,000.00" step="0.01" data-action="crypto-activity-selection#inputChange" data-crypto-activity-selection-target="testPrice" /></dd>
+            <dd><span data-crypto-activity-selection-target="testPnl">0.00</span></dd>
+          </div>
         </dl>
         <table class="table table-striped card-table table-hover w-full">
           <thead>
             <tr>
-              <th></th>
+              <th class="text-center"><input type="checkbox" data-action="change->crypto-activity-selection#toggleAll"/></th>
               <th class="text-right">Date</th>
               <th>Type</th>
               <th class="text-right">Amount</th>
@@ -108,7 +113,7 @@
           <tbody>
             <% @activities.each_with_index do |activity, idx| %>
               <tr data-action="click->crypto-activity-selection#tableRowClick" data-crypto-activity-selection-target="tableRow">
-                <td>
+                <td class="text-center">
                   <input type="checkbox"
                          data-action="crypto-activity-selection#updateSums"
                          data-crypto-activity-selection-target="checkbox"
