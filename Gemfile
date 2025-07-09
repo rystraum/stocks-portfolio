@@ -41,3 +41,5 @@ gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 gem "shakapacker", "= 6.5"
 
 gem "will_paginate", "~> 4.0"
+
+gem "fast-mcp", "~> 1.2"
