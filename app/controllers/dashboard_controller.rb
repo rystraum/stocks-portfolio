@@ -9,7 +9,11 @@ class DashboardController < ApplicationController
     if params[:sort_by]
       company_set.sort_by = params[:sort_by]
     end
-    render "show", locals: { company_set: company_set }
+
+    respond_to do |format|
+      format.html { render "show", locals: { company_set: company_set } }
+      format.json { render json: company_set.to_json }
+    end
   end
 
   def update_prices
