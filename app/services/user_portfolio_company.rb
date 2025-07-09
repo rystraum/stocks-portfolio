@@ -84,11 +84,11 @@ class UserPortfolioCompany
     final_profit_loss / total_costs.to_f
   end
 
-  private
-
   def last_price
     @last_price ||= company.last_price
   end
+
+  private
 
   def activities
     @activities ||= company.activities.where(user_id: user.id)

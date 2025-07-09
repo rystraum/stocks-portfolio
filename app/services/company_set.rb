@@ -54,4 +54,20 @@ class CompanySet
   def get_portfolio(company)
     portfolio[company.id]
   end
+
+  def to_json
+    {
+      totals: {
+        total_costs: total_costs,
+        actual_total_costs: actual_total_costs,
+        total_value: total_value,
+        total_profit_loss: total_profit_loss,
+        total_dividends: total_dividends,
+        final_profit_loss: final_profit_loss,
+      },
+      companies: companies,
+      last_prices: companies.each_with_object({}) { |company, last_prices| last_prices[company.id.to_s] = get_portfolio(company).last_price },
+      history: companies.each_with_object({}) { |company, history| history[company.id.to_s] = get_portfolio(company).history },
+    }
+  end
 end
