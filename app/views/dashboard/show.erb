@@ -6,7 +6,19 @@
         <span>Update Prices</span>
     <% end %>
 <% end %>
-<div class="container-fluid main-body">
+<div class="container-fluid main-body" data-controller="dashboard-controller">
+    <div class="flex p-8">
+        <div class="flex">
+            <div class="form-check form-switch mr-4">
+                <input class="form-check-input" type="checkbox" role="switch" id="inactiveCompaniesSwitch">
+                <label class="form-check-label" for="inactiveCompaniesSwitch" data-dashboard-controller-target="inactiveCompaniesSwitch" data-action="change->dashboard-controller#toggleInactiveCompanies">Inactive Companies</label>
+            </div>
+            <div class="form-check form-switch mr-4">
+                <input class="form-check-input" type="checkbox" role="switch" id="liquidatedCompaniesSwitch">
+                <label class="form-check-label" for="liquidatedCompaniesSwitch" data-dashboard-controller-target="liquidatedCompaniesSwitch" data-action="change->dashboard-controller#toggleLiquidatedCompanies">Liquidated Companies</label>
+            </div>
+        </div>
+    </div>
     <%
       portfolio_headers = <<~HEREDOC
         <tr class="portfolio-header bg-blue-800 text-white">
@@ -50,7 +62,10 @@
             <tbody class="list divide-x divide-y divide-gray-400">
                 <% company_set.companies.each do |company| %>
                     <% portfolio = company_set.get_portfolio(company) %>
-                    <tr class="<%= company.inactive? ? "bg-gray-700 bg-gray-700 text-white" : cycle('bg-white', 'bg-blue-50') %>">
+                    <tr
+                        data-dashboard-controller-target="companyRow"
+                        data-company-status="<%= company.inactive? ? "inactive" : portfolio.total_shares.zero? ? "liquidated" : "active" %>"
+                        class="<%= company.inactive? ? "bg-gray-700 bg-gray-700 text-white" : cycle('bg-white', 'bg-blue-50') %>">
                         <td scope="row" class="tables-company">
                             <%= link_to company, company %><%= "*" if company.inactive? %>
                         </td>
