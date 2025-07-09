@@ -24,6 +24,7 @@
                                 <td class="text-right"><%= format_currency cash_dividend.dividend_per_share %></td>
                                 <td class="text-right"><%= format_currency cash_dividend.amount %></td>
                                 <td class="text-right actions">
+                                    <%= link_to refresh_icon.html_safe, update_meta_cash_dividend_path(cash_dividend), method: :put, class: "mr-2 border rounded-md px-2 py-1" %>
                                     <%= link_to eye_icon, cash_dividend %>
                                     <%= link_to edit_icon, edit_cash_dividend_path(cash_dividend) %>
                                     <%= link_to trash_icon, cash_dividend, method: :delete, data: { confirm: 'Are you sure?' } %>
