@@ -18,6 +18,15 @@ class CompaniesController < ApplicationController
     elsif @company.id.to_s == params[:id]
       redirect_to company_path(@company.ticker), status: :moved_permanently
     end
+
+    current_user.company_dividends(@company).each do |dividend|
+      next if !dividend.is_a?(CashDividend)
+      next if !dividend.dividend_per_share.blank?
+
+      puts "Setting meta for #{dividend.id}"
+
+      dividend.set_meta!(true)
+    end
   end
 
   def price_update_all_from_pse

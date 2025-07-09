@@ -67,4 +67,9 @@ class CashDividend < ApplicationRecord
     self.dividend_per_share = amount / current_shares
     self.stocks_at_ex_date = current_shares
   end
+
+  def set_meta!(force = false)
+    set_meta(force)
+    save
+  end
 end
