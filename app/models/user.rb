@@ -28,7 +28,7 @@ class User < ApplicationRecord
   end
 
   def company_activities(company)
-    return activities.where(company: company).order("created_at asc")
+    return activities.where(company: company).order("date asc")
   end
 
   def bought_shares(company)
