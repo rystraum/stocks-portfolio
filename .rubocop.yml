@@ -10,6 +10,8 @@ Style/RedundantReturn:
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: consistent_comma
 
+Metrics/AbcSize:
+  Max: 50
 
 Style/NegatedIf:
   EnforcedStyle: postfix
