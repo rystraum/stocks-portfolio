@@ -4,6 +4,23 @@ require 'test_helper'
 
 # rubocop:disable Metrics/MethodLength
 class CoinsphMock
+  def self.prices(_tickers)
+    [
+      {
+        "symbol": 'BTCPHP',
+        "price": '5382856.9'
+      },
+      {
+        "symbol": 'ETHPHP',
+        "price": '101906.4'
+      },
+      {
+        "symbol": 'SUIPHP',
+        "price": '189'
+      }
+    ]
+  end
+
   def self.account
     {
       'canTrade' => true,
