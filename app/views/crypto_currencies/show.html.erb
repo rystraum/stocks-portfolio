@@ -15,7 +15,7 @@
         <dl class="kv-pair">
           <div>
             <dt>Last Price</dt>
-            <dd><%= format_currency @crypto_currency.last_price %> PHP (<%= format_percentage(@crypto_currency.last_price -  @cost_basis, @cost_basis) %>)</dd>
+            <dd><%= format_currency @crypto_currency.last_price %> <%= @crypto_currency.fiat %> (<%= format_percentage(@crypto_currency.last_price -  @cost_basis, @cost_basis) %>)</dd>
           </div>
           <div>
             <dt>Last Price At</dt>
@@ -34,15 +34,16 @@
             <dl class="kv-pair">
               <div>
                 <dt>Total Crypto Held:</dt>
-                <dd><%= @net_crypto %> <%= @crypto_currency.ticker %> (<%= format_currency @current_value %> PHP)</dd>
+                <dd><%= @net_crypto %> <%= @crypto_currency.pretty_ticker %></dd>
+                <dd>(<%= format_currency @current_value %> <%= @crypto_currency.fiat %>)</dd>
               </div>
               <div>
                 <dt>Total Fiat Invested:</dt>
-                <dd><%= format_currency @total_fiat %> PHP</dd>
+                <dd><%= format_currency @total_fiat %> <%= @crypto_currency.fiat %></dd>
               </div>
               <div>
                 <dt>Total Proceeds from Sales:</dt>
-                <dd><%= format_currency @total_proceeds %> PHP</dd>
+                <dd><%= format_currency @total_proceeds %> <%= @crypto_currency.fiat %></dd>
               </div>
             </dl>
           </div>
@@ -50,19 +51,21 @@
             <dl class="kv-pair">
               <div>
                 <dt>Cost Basis:</dt>
-                <dd><%= format_currency @cost_basis %> PHP/<%= @crypto_currency.ticker %></dd>
+                <dd><%= format_currency @cost_basis %> <%= @crypto_currency.fiat %>/<%= @crypto_currency.pretty_ticker %></dd>
               </div>
-              <div>
-                <dt>Cost Basis (USD @ 57PHP):</dt>
-                <dd><%= format_currency @cost_basis / 57 %> USD/<%= @crypto_currency.ticker %></dd>
-              </div>
+              <% if @crypto_currency.is_php? %>
+                <div>
+                  <dt>Cost Basis (USD @ 57PHP):</dt>
+                  <dd><%= format_currency @cost_basis / 57 %> USD/<%= @crypto_currency.pretty_ticker %></dd>
+                </div>
+              <% end %>
             </dl>
           </div>
         </div>
         <dl class="kv-pair">
           <div>
             <dt>Total P&amp;L:</dt>
-            <dd><%= format_currency @pnl %> PHP</dd>
+            <dd><%= format_currency @pnl %> <%= @crypto_currency.fiat %> (<%= format_percentage @pnl, @total_fiat %>)</dd>
           </div>
         </dl>
       </div>
@@ -77,10 +80,10 @@
         <dl class="kv-pair p-2 flex gap-4">
           <div>
             <dt>Selected Crypto Sum:</dt>
-            <dd><span data-crypto-activity-selection-target="cryptoSum">0</span> <%= @crypto_currency.ticker %></dd>
+            <dd><span data-crypto-activity-selection-target="cryptoSum">0</span> <%= @crypto_currency.pretty_ticker %></dd>
           </div>
           <div>
-            <dt>Selected Fiat Sum (PHP):</dt>
+            <dt>Selected Fiat Sum (<%= @crypto_currency.fiat %>):</dt>
             <dd><span data-crypto-activity-selection-target="fiatSum">0.00</span></dd>
           </div>
           <div>
@@ -104,7 +107,7 @@
               <th class="text-right">Date</th>
               <th>Type</th>
               <th class="text-right">Amount</th>
-              <th class="text-right">Fiat (PHP)</th>
+              <th class="text-right">Fiat (<%= @crypto_currency.fiat %>)</th>
               <th class="text-right">Fee</th>
               <th class="text-right">Fiat Forex</th>
               <th class="text-right">&nbsp;</th>
@@ -138,12 +141,12 @@
                   <% if activity.fee_crypto.zero? %>
                     &nbsp;
                   <% else %>
-                    <%= @crypto_currency.ticker %>: <%= activity.fee_crypto %> (<%= format_percentage activity.fee_crypto, activity.crypto_amount, 2 %>)
+                    <%= @crypto_currency.pretty_ticker %>: <%= activity.fee_crypto %> (<%= format_percentage activity.fee_crypto, activity.crypto_amount, 2 %>)
                   <% end %>
                   <% if activity.fee_fiat.zero? %>
                     &nbsp;
                   <% else %>
-                    PHP: <%= format_currency activity.fee_fiat %> (<%= format_percentage activity.fee_fiat, activity.fiat_amount, 2 %>)
+                    <%= @crypto_currency.fiat %>: <%= format_currency activity.fee_fiat %> (<%= format_percentage activity.fee_fiat, activity.fiat_amount, 2 %>)
                   <% end %>
                 </td>
                 <td class="text-right"><%= format_currency activity.fiat_forex %></td>

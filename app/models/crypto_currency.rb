@@ -20,6 +20,22 @@ class CryptoCurrency < ApplicationRecord
 
   scope :alphabetical, -> { order(:ticker) }
 
+  def fiat
+    return 'USDT' if ticker.end_with?('USDT') && ticker != 'USDT'
+
+    return 'PHP'
+  end
+
+  def pretty_ticker
+    return ticker if ticker == 'USDT'
+
+    return ticker.gsub('USDT', '')
+  end
+
+  def is_php?
+    fiat == 'PHP'
+  end
+
   def to_s
     ticker
   end
