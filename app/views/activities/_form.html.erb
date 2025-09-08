@@ -18,9 +18,6 @@
         <div class="d-flex">
             <% companies = Company.pluck(:ticker, :id) %>
             <%= form.select :company_id, companies, {}, { class: "js-activity-company w-full" } %>
-            <div class="js-company-link ml-2">
-                <%= link_to "LINK", company_path(activity.company || companies.first.second), target: :_blank %>
-            </div>
         </div>
     </div>
     <div class="field">
