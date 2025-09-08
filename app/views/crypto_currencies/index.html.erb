@@ -28,7 +28,9 @@
             <td class="text-right">
               <div class="flex">
                 <%= link_to eye_icon, crypto_currency_path(crypto) %>
-                <%= link_to edit_icon, edit_crypto_currency_path(crypto), class: "ml-2", title: "Edit" %>
+                <% if @permissions.can?(:update, @crypto_currency) %>
+                  <%= link_to edit_icon, edit_crypto_currency_path(crypto), class: "ml-2", title: "Edit" %>
+                <% end %>
               </div>
             </td>
           </tr>
@@ -37,10 +39,12 @@
     </table>
   </div>
 
+  <% if @permissions.can? :add, CryptoCurrency %>
   <div class="w-full lg:w-1/4">
     <div class="card company-new">
       <h2 class="card-header">Add new crypto currency</h2>
       <div class="card-body"><%= render 'form', crypto_currency: @crypto_currency %></div>
     </div>
   </div>
+  <% end %>
 </div>
