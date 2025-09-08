@@ -13,11 +13,13 @@ class CryptoCurrenciesController < ApplicationController
 
   # GET /crypto_currencies/new
   def new
+    return redirect_to(root_path, status: :forbidden) if !@permissions.can?(:create, CryptoCurrency)
     @crypto_currency = CryptoCurrency.new
   end
 
   # POST /crypto_currencies
   def create
+    return redirect_to(root_path, status: :forbidden) if !@permissions.can?(:create, CryptoCurrency)
     @crypto_currency = CryptoCurrency.new(crypto_currency_params)
     if @crypto_currency.save
       redirect_to @crypto_currency, notice: 'Crypto currency was successfully created.'
@@ -41,10 +43,14 @@ class CryptoCurrenciesController < ApplicationController
   # GET /crypto_currencies/:id/edit
   def edit
     # Uses @crypto_currency from before_action
+
+    return redirect_to(root_path, status: :forbidden) if !@permissions.can?(:update, @crypto_currency)
   end
 
   # PATCH/PUT /crypto_currencies/:id
   def update
+    return redirect_to(root_path, status: :forbidden) if !@permissions.can?(:update, @crypto_currency)
+
     last_price_before = @crypto_currency.last_price
     if @crypto_currency.update(crypto_currency_params)
       if crypto_currency_params[:last_price] && crypto_currency_params[:last_price] != last_price_before.to_s
