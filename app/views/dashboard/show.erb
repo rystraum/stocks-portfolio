@@ -1,9 +1,11 @@
 <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
 
 <%= render "shared/header", text: "All Time Portfolio" do %>
-    <%= link_to update_prices_path, method: :put, class: "btn btn-secondary ml-auto" do %>
-        <span class="mr-2 inline-block"><%= save_as_icon %></span>
-        <span>Update Prices</span>
+    <% if @permissions.can?(:price_update, Company) %>
+        <%= link_to update_prices_path, method: :put, class: "btn btn-secondary ml-auto" do %>
+            <span class="mr-2 inline-block"><%= save_as_icon %></span>
+            <span>Update Prices</span>
+        <% end %>
     <% end %>
 <% end %>
 <div class="container-fluid main-body" data-controller="dashboard-controller">
