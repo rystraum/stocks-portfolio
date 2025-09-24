@@ -10,12 +10,11 @@ class Coinsph
   end
 
   def self.update_all!
-    tickers = CryptoCurrency.pluck(:ticker).collect do |ticker|
-      ticker.include?('USDT') && ticker != 'USDT' ? ticker : "#{ticker.upcase}PHP"
-    end
+    currencies = CryptoCurrency.coinsph
+    tickers = currencies.collect(&:datasource_ticker)
 
     prices(tickers).parsed_response.each do |coin|
-      crypto_currency = CryptoCurrency.find_by(ticker: coin['symbol'].gsub('PHP', ''))
+      crypto_currency = currencies.select { |c| c.datasource_ticker == coin['symbol'] }.first
       next if crypto_currency.nil?
 
       crypto_currency.update(last_price: coin['price'].to_d, last_price_at: Time.now)

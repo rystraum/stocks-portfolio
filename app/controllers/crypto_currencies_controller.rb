@@ -4,7 +4,7 @@ class CryptoCurrenciesController < ApplicationController
   # GET /crypto_currencies
   def index
     @crypto_currencies = CryptoCurrency.alphabetical
-    @crypto_currency = CryptoCurrency.new
+    @crypto_currency = CryptoCurrency.new(datasource: 'https://api.pro.coins.ph/')
     @cost_bases = {}
     @crypto_currencies.each do |crypto|
       @cost_bases[crypto.id] = CryptoActivity.cost_basis(current_user.id, crypto.id)
@@ -14,7 +14,7 @@ class CryptoCurrenciesController < ApplicationController
   # GET /crypto_currencies/new
   def new
     return redirect_to(root_path, status: :forbidden) if !@permissions.can?(:create, CryptoCurrency)
-    @crypto_currency = CryptoCurrency.new
+    @crypto_currency = CryptoCurrency.new(datasource: 'https://api.pro.coins.ph/')
   end
 
   # POST /crypto_currencies
@@ -69,6 +69,6 @@ class CryptoCurrenciesController < ApplicationController
   end
 
   def crypto_currency_params
-    params.require(:crypto_currency).permit(:name, :ticker, :last_price)
+    params.require(:crypto_currency).permit(:name, :ticker, :last_price, :datasource, :datasource_ticker)
   end
 end
