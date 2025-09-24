@@ -19,6 +19,7 @@ class CryptoCurrency < ApplicationRecord
   validates :ticker, presence: true, uniqueness: true
 
   scope :alphabetical, -> { order(:ticker) }
+  scope :coinsph, -> { where(datasource: "https://api.pro.coins.ph/") }
 
   def fiat
     return 'USDT' if ticker.end_with?('USDT') && ticker != 'USDT'
