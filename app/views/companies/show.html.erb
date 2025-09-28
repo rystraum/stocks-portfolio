@@ -10,7 +10,7 @@
         <% end %>
     <% end %>
 </div>
-<div class="flex">
+<div class="block lg:flex">
     <div class="row mb-4">
         <div class="col-4">
             <%= render CompanyInfoComponent.new(@company) %>
@@ -20,46 +20,51 @@
                 <div class="card-header">
                     <h4 class="card-header-title">Activities</h4>
                 </div>
-                <div class="table-responsive mb-0">
-                    <table class="table table-striped card-table table-hover">
-                        <thead>
+                <table class="table table-striped w-full">
+                    <thead>
+                        <tr>
+                            <th class="table-cell lg:hidden">Activity</th>
+                            <th class="hidden lg:table-cell">Date</th>
+                            <th class="hidden lg:table-cell">BUY</th>
+                            <th class="hidden lg:table-cell">SELL</th>
+                            <th class="hidden lg:table-cell">Cost Per Share</th>
+                            <th class="hidden lg:table-cell text-right">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% current_user.company_activities(@company).each do |activity| %>
                             <tr>
-                                <th>Date</th>
-                                <th>BUY</th>
-                                <th>SELL</th>
-                                <th>Cost Per Share</th>
-                                <th class="text-right">Amount</th>
+                                <td class="w-full table-cell text-right lg:hidden">
+                                    <small class="block"><%= activity.date.to_formatted_s(:long) %></small>
+                                    <strong><%= activity.activity_type.capitalize %></strong> <strong><%= activity.number_of_shares %></strong> shares <br />
+                                    at <strong><%= format_currency activity.cost_per_share %></strong> per share <br />
+                                    for a total of <strong><%= format_currency activity.total_price %></strong>
+                                </td>
+                                <td class="hidden lg:table-cell"><%= activity.date.to_formatted_s(:long) %></td>
+                                <td class="hidden lg:table-cell"><%= activity.is_buy? ? activity.number_of_shares : "-"  %></td>
+                                <td class="hidden lg:table-cell"><%= activity.is_sell? ? activity.number_of_shares : "-" %></td>
+                                <td class="hidden lg:table-cell"><%= format_currency activity.cost_per_share %></td>
+                                <td class="hidden lg:table-cell text-right"><%= format_currency activity.total_price %></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <% current_user.company_activities(@company).each do |activity| %>
-                                <tr>
-                                    <td><%= activity.date.to_formatted_s(:long) %></td>
-                                    <td><%= activity.is_buy? ? activity.number_of_shares : "-"  %></td>
-                                    <td><%= activity.is_sell? ? activity.number_of_shares : "-" %></td>
-                                    <td><%= format_currency activity.cost_per_share %></td>
-                                    <td class="text-right"><%= format_currency activity.total_price %></td>
-                                </tr>
-                            <% end %>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Buy Summary</th>
-                                <th colspan="2"><%= current_user.bought_shares(@company) %></th>
-                                <th><%= format_currency current_user.cps_on_buy(@company) %></th>
-                                <th class="text-right"><%= format_currency current_user.cost_basis(@company) %></th>
-                            </tr>
-                            <tr>
-                                <th>Sell Summary</th>
-                                <th colspan="2"><%= current_user.sold_shares(@company) %></th>
-                                <th>Profit/Loss</th>
-                                <th class="text-right">
-                                    <%= format_currency current_user.total_amount(@company) %>
-                                </th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                        <% end %>
+                    </tbody>
+                    <tfoot>
+                        <tr class="hidden lg:table-row">
+                            <th>Buy Summary</th>
+                            <th colspan="2"><%= current_user.bought_shares(@company) %></th>
+                            <th><%= format_currency current_user.cps_on_buy(@company) %></th>
+                            <th class="text-right"><%= format_currency current_user.cost_basis(@company) %></th>
+                        </tr>
+                        <tr class="hidden lg:table-row">
+                            <th>Sell Summary</th>
+                            <th colspan="2"><%= current_user.sold_shares(@company) %></th>
+                            <th>Profit/Loss</th>
+                            <th class="text-right">
+                                <%= format_currency current_user.total_amount(@company) %>
+                            </th>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
         <div class="col-4">
@@ -178,8 +183,8 @@
         <div class="card">
             <h1 class="card-header">Expected Next Dividend</h1>
             <dl class="card-body">
-                <%= render DLTableComponent.new("Shares on hand", "#{format_currency(number_of_shares * last_dividend_rate)} (#{format_currency(number_of_shares, 0)} @ #{last_dividend_rate} DPS)") rescue "" %>
-                <%= render DLTableComponent.new("Planned", "#{format_currency(planned_number_of_shares * last_dividend_rate)} (#{format_currency(planned_number_of_shares, 0)} @ #{last_dividend_rate} DPS)") rescue "" %>
+                <%= render DLTableComponent.new("Shares on hand", "#{format_currency(number_of_shares * last_dividend_rate)} (#{format_currency(number_of_shares, 0)} shares @ #{last_dividend_rate} DPS)") rescue "" %>
+                <%= render DLTableComponent.new("Planned", "#{format_currency(planned_number_of_shares * last_dividend_rate)} (#{format_currency(planned_number_of_shares, 0)} shares @ #{last_dividend_rate} DPS)") rescue "" %>
             </dl>
         </div>
     </div>
