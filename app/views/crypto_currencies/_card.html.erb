@@ -1,0 +1,17 @@
+<%# locals: (crypto:, permissions:, cost_bases:) %>
+<div class="card <%= cycle('odd', 'even') %>">
+    <%= link_to crypto do %>
+        <h3><%= crypto.name %> (<%= crypto.ticker %>)</h3>
+        <p>Cost Basis: <%= format_currency cost_bases[crypto.id] %></p>
+        <% if crypto.last_price_at && crypto.last_price %>
+            <p>Last Price: <%= format_currency crypto.last_price %> <small> as of <%= distance_of_time_in_words_to_now(crypto.last_price_at) %> ago</small></p>
+        <% else %>
+            <p>No Price Recorded</p>
+        <% end %>
+    <% end %>
+    <div class="text-right mt-2">
+    <% if permissions.can?(:update, crypto) %>
+        <%= link_to edit_icon, edit_crypto_currency_path(crypto), class: "inline-block ml-2", title: "Edit" %>
+    <% end %>
+    </div>
+</div>
