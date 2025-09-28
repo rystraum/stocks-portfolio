@@ -7,7 +7,7 @@
   <% end %>
   <%= link_to "Add Crypto Activity", new_crypto_activity_path, class: "btn btn-success ml-2" %>
 </div>
-<div class="flex">
+<div class="block lg:flex">
   <div class="w-full lg:w-1/3">
     <div class="card">
       <div class="card-header">
@@ -79,7 +79,7 @@
         <h4 class="card-header-title">Activities</h4>
       </div>
       <div class="overflow-x-auto" data-controller="crypto-activity-selection">
-        <dl class="kv-pair p-2 flex gap-4">
+        <dl class="kv-pair p-2 gap-4 lg:flex">
           <div>
             <dt>Selected Crypto Sum:</dt>
             <dd><span data-crypto-activity-selection-target="cryptoSum">0</span> <%= @crypto_currency.pretty_ticker %></dd>
@@ -106,13 +106,14 @@
           <thead>
             <tr>
               <th class="text-center"><input type="checkbox" data-action="change->crypto-activity-selection#toggleAll"/></th>
-              <th class="text-right">Date</th>
-              <th>Type</th>
-              <th class="text-right">Amount</th>
-              <th class="text-right">Fiat (<%= @crypto_currency.fiat %>)</th>
-              <th class="text-right">Fee</th>
-              <th class="text-right">Fiat Forex</th>
-              <th class="text-right">&nbsp;</th>
+              <th class="table-cell lg:hidden">Activities</th>
+              <th class="hidden lg:table-cell text-right">Date</th>
+              <th class="hidden lg:table-cell ">Type</th>
+              <th class="hidden lg:table-cell text-right">Amount</th>
+              <th class="hidden lg:table-cell text-right">Fiat (<%= @crypto_currency.fiat %>)</th>
+              <th class="hidden lg:table-cell text-right">Fee</th>
+              <th class="hidden lg:table-cell text-right">Fiat Forex</th>
+              <th class="hidden lg:table-cell text-right">&nbsp;</th>
             </tr>
           </thead>
           <tbody>
@@ -131,15 +132,28 @@
                          onclick="event.stopPropagation()"
                          <%= 'checked' if idx == 0 %>>
                 </td>
-                <td class="text-right"><%= activity.activity_date %></td>
-                <td>
+                <td class="table-cell lg:hidden">
+                  <small><%= activity.activity_date %></small>
+                  <p><%= activity.activity_type.titleize %> <%= activity.crypto_amount %> <%= @crypto_currency.pretty_ticker %></p>
+                  <p>for <%= format_currency(activity.fiat_amount) %> <%= @crypto_currency.fiat %></p>
+                  <small>
+                    <% if activity.fee_crypto.positive? %>
+                      <%= @crypto_currency.pretty_ticker %> fee: <%= activity.fee_crypto %> (<%= format_percentage activity.fee_crypto, activity.crypto_amount, 2 %>)
+                    <% end %>
+                    <% if activity.fee_fiat.positive? %>
+                      <%= @crypto_currency.fiat %> fee: <%= format_currency activity.fee_fiat %> (<%= format_percentage activity.fee_fiat, activity.fiat_amount, 2 %>)
+                    <% end %>
+                  </small>
+                </td>
+                <td class="hidden lg:table-cell text-right"><%= activity.activity_date %></td>
+                <td class="hidden lg:table-cell">
                   <div x-data x-tooltip.raw="<%= activity.notes %>">
                     <%= activity.activity_type.titleize %> <%= activity.notes.blank? ? "" : "[?]" %>
                   </div>
                 </td>
-                <td class="text-right"><%= activity.crypto_amount %></td>
-                <td class="text-right"><%= format_currency activity.fiat_amount %></td>
-                <td class="text-right">
+                <td class="hidden lg:table-cell text-right"><%= activity.crypto_amount %></td>
+                <td class="hidden lg:table-cell text-right"><%= format_currency activity.fiat_amount %></td>
+                <td class="hidden lg:table-cell text-right">
                   <% if activity.fee_crypto.zero? %>
                     &nbsp;
                   <% else %>
@@ -151,8 +165,8 @@
                     <%= @crypto_currency.fiat %>: <%= format_currency activity.fee_fiat %> (<%= format_percentage activity.fee_fiat, activity.fiat_amount, 2 %>)
                   <% end %>
                 </td>
-                <td class="text-right"><%= format_currency activity.fiat_forex %></td>
-                <td class="text-right"><%= link_to "Edit", [:edit, activity] %></td>
+                <td class="hidden lg:table-cell text-right"><%= format_currency activity.fiat_forex %></td>
+                <td class="hidden lg:table-cell text-right"><%= link_to "Edit", [:edit, activity] %></td>
               </tr>
             <% end %>
           </tbody>

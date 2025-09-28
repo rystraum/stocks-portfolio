@@ -5,18 +5,17 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.2.0'
 
-gem 'rails', '~> 6.0'
-gem 'sqlite3'
+gem 'coffee-rails', '~> 4.2'
+gem 'devise'
+gem 'jbuilder', '~> 2.5'
 gem 'pg'
 gem 'puma'
+gem 'rails', '~> 6.0'
 gem 'sass-rails', '~> 5.0'
-gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.2'
+gem 'sqlite3'
 gem 'turbolinks', '~> 5'
-gem 'jbuilder', '~> 2.5'
-gem 'devise'
-gem "view_component"
-
+gem 'uglifier', '>= 1.3.0'
+gem 'view_component'
 
 gem 'httparty'
 
@@ -30,16 +29,16 @@ end
 
 group :development do
   gem 'listen', '~> 3.3'
-  gem 'web-console', '>= 3.3.0'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'web-console', '>= 3.3.0'
 end
 
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 # gem 'webpacker', git: 'https://github.com/rails/webpacker.git'
-gem "shakapacker", "= 6.5"
+gem 'shakapacker', '= 6.5'
 
-gem "will_paginate", "~> 4.0"
+gem 'will_paginate', '~> 4.0'
 
-gem "fast-mcp", "~> 1.2"
+gem 'fast-mcp', '~> 1.2'
