@@ -133,10 +133,12 @@
                          <%= 'checked' if idx == 0 %>>
                 </td>
                 <td class="table-cell lg:hidden">
-                  <small><%= activity.activity_date %></small>
+                  <small class="block mb-2"><%= activity.activity_date %></small>
                   <p><%= activity.activity_type.titleize %> <%= activity.crypto_amount %> <%= @crypto_currency.pretty_ticker %></p>
                   <p>for <%= format_currency(activity.fiat_amount) %> <%= @crypto_currency.fiat %></p>
-                  <small>
+                  <small class="block mt-2">
+                    1 <%= @crypto_currency.pretty_ticker %>: <%= format_currency activity.fiat_forex %> <%= @crypto_currency.fiat %>
+                    <br />
                     <% if activity.fee_crypto.positive? %>
                       <%= @crypto_currency.pretty_ticker %> fee: <%= activity.fee_crypto %> (<%= format_percentage activity.fee_crypto, activity.crypto_amount, 2 %>)
                     <% end %>
