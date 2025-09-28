@@ -245,3 +245,15 @@ dl.kv-pair {
     @apply self-end text-right;
   }
 }
+
+.badge {
+  @apply inline-block px-2 py-1 text-xxs text-gray-700 bg-gray-200 rounded;
+}
+
+.badge-danger {
+  @apply bg-red-500 text-white;
+}
+
+.badge-info {
+  @apply bg-blue-500 text-white;
+}
