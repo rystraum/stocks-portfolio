@@ -1,14 +1,25 @@
 <%# locals: (crypto:, permissions:, cost_bases:) %>
 <div class="card <%= cycle('odd', 'even') %>">
-    <%= link_to crypto do %>
-        <h3><%= crypto.name %> (<%= crypto.ticker %>)</h3>
-        <p>Cost Basis: <%= format_currency cost_bases[crypto.id] %></p>
-        <% if crypto.last_price_at && crypto.last_price %>
-            <p>Last Price: <%= format_currency crypto.last_price %> <small> as of <%= distance_of_time_in_words_to_now(crypto.last_price_at) %> ago</small></p>
-        <% else %>
-            <p>No Price Recorded</p>
+    <div class="card-header">
+        <h4 class="card-header-title">
+        <%= link_to crypto do %>
+            <%= crypto.name %> (<%= crypto.ticker %>)
         <% end %>
-    <% end %>
+        </h4>
+    </div>
+    <div class="card-body">
+        <dl class="kv-pair">
+          <div>
+            <dt>Cost Basis</dt>
+            <dd><%= format_currency cost_bases[crypto.id] %></dd>
+
+            <dt>Last Price</dt>
+            <dd><%= crypto.last_price ? format_currency(crypto.last_price) : "-" %></dd>
+            <% if crypto.last_price_at %>
+            <dd><small> as of <%= distance_of_time_in_words_to_now(crypto.last_price_at) %> ago</small></dd>
+            <% end %>
+        </dl>
+    </div>
     <div class="text-right mt-2">
     <% if permissions.can?(:update, crypto) %>
         <%= link_to edit_icon, edit_crypto_currency_path(crypto), class: "inline-block ml-2", title: "Edit" %>
