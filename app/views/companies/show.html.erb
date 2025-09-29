@@ -9,6 +9,7 @@
             <span>Update from PSE</span>
         <% end %>
     <% end %>
+    <% price_updates = @company.price_updates.latest_first.first(5) %>
 </div>
 <div class="block lg:flex">
     <div class="row mb-4">
@@ -16,6 +17,30 @@
             <%= render CompanyInfoComponent.new(@company) %>
         </div>
         <div class="col-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-header-title">Summary</h4>
+                </div>
+                <div class="card-body">
+                    <dl class="w-full">
+                        <%# TODO: Move to component %>
+                        <% total_dividends = current_user.cash_sum_dividends(@company) %>
+                        <% cost_basis = current_user.cost_basis(@company) %>
+                        <% shares_held = current_user.total_shares(@company) %>
+                        <% last_price = price_updates.first.price %>
+                        <% current_value = last_price * shares_held %>
+
+                        <%= render DLTableComponent.new("Shares Held", shares_held) %>
+                        <%= render DLTableComponent.new("Cost Basis", format_currency(cost_basis)) %>
+                        <%= render DLTableComponent.new("Price Per Share", format_currency(current_user.cps_on_buy(@company))) %>
+                        <%= render DLTableComponent.new("Last Price", format_currency(last_price)) %>
+                        <%= render DLTableComponent.new("Current Value", format_currency(current_value)) %>
+                        <%= render DLTableComponent.new("Cash Dividends Received", format_currency(total_dividends)) %>
+                        <%= render DLTableComponent.new("Current Value + Dividends", format_currency(current_value + total_dividends)) %>
+                        <%= render DLTableComponent.new("PnL including Divs", format_percentage(current_value + total_dividends - cost_basis, current_value + total_dividends)) %>
+                    </dl>
+                </div>
+            </div>
             <div class="card">
                 <div class="card-header">
                     <h4 class="card-header-title">Activities</h4>
@@ -80,7 +105,7 @@
                                 <th>Price</th>
                             </tr>
                         </thead>
-                        <% @company.price_updates.latest_first.first(5).each do |price| %>
+                        <% price_updates.each do |price| %>
                             <tr>
                                 <td><%= price.datetime.to_formatted_s(:long) %></td>
                                 <td><%= format_currency(price.price) %></td>
