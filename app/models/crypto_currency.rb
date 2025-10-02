@@ -20,6 +20,7 @@ class CryptoCurrency < ApplicationRecord
 
   scope :alphabetical, -> { order(:ticker) }
   scope :coinsph, -> { where(datasource: "https://api.pro.coins.ph/") }
+  scope :coinmarketcap, -> { where(datasource: "https://pro-api.coinmarketcap.com/") }
 
   def fiat
     return 'USDT' if ticker.end_with?('USDT') && ticker != 'USDT'
