@@ -1,2 +1,11 @@
-<h1>Edit Crypto Currency</h1>
-<%= render 'form', crypto_currency: @crypto_currency %>
+<div class="flex">
+    <div class="card">
+        <h1 class="card-header">Editing <%= @crypto_currency.ticker %></h1>
+        <div class="card-body">
+            <%= render 'crypto_currencies/form', crypto_currency: @crypto_currency %>
+        </div>
+    </div>
+</div>
+
+<%= link_to "#{chevron_left_icon} #{@crypto_currency.ticker}".html_safe, @crypto_currency, class: "btn btn-primary btn-sm ml-4" %>
+<%= link_to "#{chevron_left_icon} Crypto List".html_safe, crypto_currencies_path, class: "btn btn-secondary btn-sm ml-4" %>
