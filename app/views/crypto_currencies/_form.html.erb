@@ -24,7 +24,7 @@
   </div>
   <div class="field">
     <%= form.label :datasource %>
-    <%= form.text_field :datasource, class: 'w-full' %>
+    <%= form.select :datasource, options_for_select([["CoinsPH", CryptoCurrency::COINSPH_DATASOURCE], [ "CoinMarketCap", CryptoCurrency::COINMARKETCAP_DATASOURCE]], crypto_currency.datasource), { class: "w-full" } %>
   </div>
   <div class="field">
     <%= form.label :datasource_ticker %>
