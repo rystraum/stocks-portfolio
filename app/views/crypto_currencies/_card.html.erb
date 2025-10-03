@@ -1,5 +1,5 @@
-<%# locals: (crypto:, permissions:, cost_bases:) %>
-<div class="card <%= cycle('odd', 'even') %>">
+<%# locals: (crypto:, permissions:, cost_basis:, css_class: '') %>
+<div class="card <%= cycle('odd', 'even') %> <%= css_class %>">
     <div class="card-header">
         <h4 class="card-header-title">
         <%= link_to crypto do %>
@@ -11,12 +11,28 @@
         <dl class="kv-pair">
           <div>
             <dt>Cost Basis</dt>
-            <dd><%= format_currency cost_bases[crypto.id] %></dd>
+            <dd>
+                <% if crypto.last_price && cost_basis.positive? %>
+                    <% last_price_color = crypto.last_price < cost_basis ? 'text-red-500' : 'text-green-500' %>
+                    <p class="<%= last_price_color %>">
+                        <span><%= format_currency cost_basis %> <%= crypto.fiat %></span>
+                        <span>(<%= format_percentage crypto.last_price - cost_basis, cost_basis %>)</span>
+                    </p>
+                <% else %>
+                    <%= format_currency cost_basis %> <%= crypto.fiat %>
+                <% end %>
+            </dd>
 
             <dt>Last Price</dt>
-            <dd><%= crypto.last_price ? format_currency(crypto.last_price) : "-" %></dd>
+            <dd>
+                <% if crypto.last_price_at && crypto.last_price %>
+                    <%= format_currency crypto.last_price, 3 %>
+                <% else %>
+                    -
+                <% end %>
+            </dd>
             <% if crypto.last_price_at %>
-            <dd><small> as of <%= distance_of_time_in_words_to_now(crypto.last_price_at) %> ago</small></dd>
+            <dd><small class="text-gray-300"> as of <%= distance_of_time_in_words_to_now(crypto.last_price_at) %> ago</small></dd>
             <% end %>
         </dl>
     </div>

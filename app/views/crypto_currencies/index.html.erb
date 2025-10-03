@@ -1,60 +1,20 @@
 <%= render "shared/header", text: "Crypto Currencies" %>
 
+<p class="p-2"><span class="inline-block"><%= info_icon %></span> Cost Basis: Average price paid for holdings</p>
 <div class="flex flex-col lg:flex-row">
   <div class="w-full lg:w-3/4 p-6">
-    <table class="table table-striped m-6 hidden lg:block">
-      <thead class="thead-dark">
-        <tr>
-          <th class="w-1/8">Ticker</th>
-          <th class="w-1/8">Name</th>
-          <th class="w-1/8 text-right">
-            <div x-data x-tooltip.raw="Average price paid for this crypto, excluding fees.">
-                Cost Basis [?]
-            </div>
-          </th>
-          <th class="w-1/8 text-right">Last Price</th>
-          <th class="action-column">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @crypto_currencies.each do |crypto| %>
-          <% cost_basis = @cost_bases[crypto.id] %>
-          <tr class="company-row <%= cycle('odd', 'even') %>">
-            <td><%= link_to crypto.ticker, crypto_currency_path(crypto) %></td>
-            <td><%= crypto.name %></td>
-            <td class="text-right">
-                <% if crypto.last_price && cost_basis.positive? %>
-                  <% last_price_color = crypto.last_price < cost_basis ? 'text-red-500' : 'text-green-500' %>
-                  <%= format_currency cost_basis %> <%= crypto.fiat %>
-                  <small class="block <%= last_price_color %>"><%= format_percentage crypto.last_price - cost_basis, cost_basis %></small>
-                <% else %>
-                  <%= format_currency cost_basis %> <%= crypto.fiat %>
-                <% end %>
-            </td>
-            <td class="text-right">
-              <% if crypto.last_price_at && crypto.last_price %>
-                  <%= format_currency crypto.last_price, 3 %>
-                  <small class="block text-gray-300">as of <%= distance_of_time_in_words_to_now(crypto.last_price_at) %> ago</small>
-              <% else %>
-                -
-              <% end %>
-            </td>
-            <td class="text-right">
-              <div class="flex">
-                <%= link_to eye_icon, crypto_currency_path(crypto) %>
-                <% if @permissions.can?(:update, crypto) %>
-                  <%= link_to edit_icon, edit_crypto_currency_path(crypto), class: "ml-2", title: "Edit" %>
-                <% end %>
-              </div>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-
-    <div class="block lg:hidden">
+    <div class="block lg:grid grid-cols-4 gap-4">
       <% @crypto_currencies.each do |crypto| %>
-        <%= render partial: "card", locals: { crypto: crypto, permissions: @permissions, cost_bases: @cost_bases } %>
+        <%= render(
+              partial: "card",
+              locals: {
+                crypto: crypto,
+                permissions: @permissions,
+                cost_basis: @cost_bases[crypto.id],
+                css_class: 'w-full m-0 mb-2 lg:mb-0'
+              }
+            )
+          %>
       <% end %>
     </div>
   </div>
