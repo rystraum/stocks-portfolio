@@ -19,6 +19,12 @@ class Company < ApplicationRecord
     ticker
   end
 
+  def dividend_releases_in_a_year
+    return nil if dividend_frequency_months.blank?
+
+    return 12 / dividend_frequency_months
+  end
+
   def last_price
     @last_price ||= price_updates.order('datetime desc').first&.price || 0
   end

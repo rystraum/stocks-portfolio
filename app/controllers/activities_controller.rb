@@ -20,7 +20,7 @@ class ActivitiesController < ApplicationController
 
   # GET /activities/new
   def new
-    @activity = Activity.new
+    @activity = Activity.new(company: Company.find_by(ticker: params[:ticker]), date: Date.today)
   end
 
   # GET /activities/1/edit

@@ -1,7 +1,8 @@
 <div class="p-4 mt-4 flex flex-row">
-    <%= link_to "#{chevron_left_icon} Back".html_safe, companies_path, class: "btn btn-primary" %>
+    <%= link_to "#{chevron_left_icon} Back to Dashboard".html_safe, dashboard_path, class: "btn btn-secondary" %>
+    <%= link_to "#{add_icon} Buy/Sell".html_safe, new_activity_path(ticker: @company.ticker), class: "btn btn-primary ml-auto" %>
     <% if @permissions.can? :update, @company %>
-        <%= link_to "#{edit_icon} Edit".html_safe, edit_company_path(@company), class: "btn btn-secondary ml-auto" %>
+        <%= link_to "#{edit_icon} Edit".html_safe, edit_company_path(@company), class: "btn btn-secondary ml-2" %>
     <% end %>
     <% if @company.can_update_from_pse? && @permissions.can?(:price_update, @company) %>
         <%= link_to [:price_update_from_pse, @company], method: :post, class: "btn btn-secondary ml-2" do %>
@@ -10,11 +11,12 @@
         <% end %>
     <% end %>
     <% price_updates = @company.price_updates.latest_first.first(5) %>
+    <% last_price = price_updates.first.price %>
 </div>
 <div class="block lg:flex">
     <div class="row mb-4">
         <div class="col-4">
-            <%= render CompanyInfoComponent.new(@company) %>
+            <%= render CompanyInfoComponent.new(@company, last_price) %>
         </div>
         <div class="col-8">
             <div class="card">
@@ -27,7 +29,6 @@
                         <% total_dividends = current_user.cash_sum_dividends(@company) %>
                         <% cost_basis = current_user.cost_basis(@company) %>
                         <% shares_held = current_user.total_shares(@company) %>
-                        <% last_price = price_updates.first.price %>
                         <% current_value = last_price * shares_held %>
 
                         <%= render DLTableComponent.new("Shares Held", shares_held) %>
@@ -122,13 +123,13 @@
                 <div class="card-header">
                     <h4 class="card-header-title">Dividends</h4>
                 </div>
-                <div x-data="{ selectedTab: 'itemized' }" class="w-full">
+                <div x-data="{ selectedTab: 'annual' }" class="w-full">
                     <div x-on:keydown.right.prevent="$focus.wrap().next()" x-on:keydown.left.prevent="$focus.wrap().previous()" class="flex gap-2 overflow-x-auto border-b border-outline dark:border-outline-dark" role="tablist" aria-label="tab options">
-                        <button x-on:click="selectedTab = 'itemized'" x-bind:aria-selected="selectedTab === 'itemized'" x-bind:tabindex="selectedTab === 'itemized' ? '0' : '-1'" x-bind:class="selectedTab === 'itemized' ? 'font-bold text-primary border-b-2 border-primary dark:border-primary-dark dark:text-primary-dark' : 'text-on-surface font-medium dark:text-on-surface-dark dark:hover:border-b-outline-dark-strong dark:hover:text-on-surface-dark-strong hover:border-b-2 hover:border-b-outline-strong hover:text-on-surface-strong'" class="flex h-min items-center gap-2 px-4 py-2 text-sm" type="button" role="tab" aria-controls="tabpanelItemized" >
-                            Itemized
-                        </button>
                         <button x-on:click="selectedTab = 'annual'" x-bind:aria-selected="selectedTab === 'annual'" x-bind:tabindex="selectedTab === 'annual' ? '0' : '-1'" x-bind:class="selectedTab === 'annual' ? 'font-bold text-primary border-b-2 border-primary dark:border-primary-dark dark:text-primary-dark' : 'text-on-surface font-medium dark:text-on-surface-dark dark:hover:border-b-outline-dark-strong dark:hover:text-on-surface-dark-strong hover:border-b-2 hover:border-b-outline-strong hover:text-on-surface-strong'" class="flex h-min items-center gap-2 px-4 py-2 text-sm" type="button" role="tab" aria-controls="tabpanelAnnual" >
                             Annual
+                        </button>
+                        <button x-on:click="selectedTab = 'itemized'" x-bind:aria-selected="selectedTab === 'itemized'" x-bind:tabindex="selectedTab === 'itemized' ? '0' : '-1'" x-bind:class="selectedTab === 'itemized' ? 'font-bold text-primary border-b-2 border-primary dark:border-primary-dark dark:text-primary-dark' : 'text-on-surface font-medium dark:text-on-surface-dark dark:hover:border-b-outline-dark-strong dark:hover:text-on-surface-dark-strong hover:border-b-2 hover:border-b-outline-strong hover:text-on-surface-strong'" class="flex h-min items-center gap-2 px-4 py-2 text-sm" type="button" role="tab" aria-controls="tabpanelItemized" >
+                            Itemized
                         </button>
                         <button x-on:click="selectedTab = 'announcements'" x-bind:aria-selected="selectedTab === 'announcements'" x-bind:tabindex="selectedTab === 'announcements' ? '0' : '-1'" x-bind:class="selectedTab === 'announcements' ? 'font-bold text-primary border-b-2 border-primary dark:border-primary-dark dark:text-primary-dark' : 'text-on-surface font-medium dark:text-on-surface-dark dark:hover:border-b-outline-dark-strong dark:hover:text-on-surface-dark-strong hover:border-b-2 hover:border-b-outline-strong hover:text-on-surface-strong'" class="flex h-min items-center gap-2 px-4 py-2 text-sm" type="button" role="tab" aria-controls="tabpanelAnnouncements" >
                             Announcements
@@ -208,8 +209,21 @@
         <div class="card">
             <h1 class="card-header">Expected Next Dividend</h1>
             <dl class="card-body">
-                <%= render DLTableComponent.new("Shares on hand", "#{format_currency(number_of_shares * last_dividend_rate)} (#{format_currency(number_of_shares, 0)} shares @ #{last_dividend_rate} DPS)") rescue "" %>
-                <%= render DLTableComponent.new("Planned", "#{format_currency(planned_number_of_shares * last_dividend_rate)} (#{format_currency(planned_number_of_shares, 0)} shares @ #{last_dividend_rate} DPS)") rescue "" %>
+                <% if number_of_shares.positive? %>
+                    <h2 class="mb-2 mt-4 text-xl font-bold tracking-tight text-gray-900 dark:text-white;">Shares on Hand</h2>
+                    <%= render DLTableComponent.new("Expected Dividend", format_currency(number_of_shares * last_dividend_rate)) %>
+                    <%= render DLTableComponent.new("Shares on Hand", format_currency(number_of_shares, 0)) %>
+                    <%= render DLTableComponent.new("Yield", format_percentage(last_dividend_rate, last_price)) %>
+                    <%= render DLTableComponent.new("Annualized", format_percentage(last_dividend_rate * @company.dividend_releases_in_a_year, last_price)) %>
+                <% end %>
+
+                <% if planned_number_of_shares.positive? %>
+                    <h2 class="mb-2 mt-4 text-xl font-bold tracking-tight text-gray-900 dark:text-white;">Planned Shares</h2>
+                    <%= render DLTableComponent.new("Expected Dividend", format_currency(planned_number_of_shares * last_dividend_rate)) %>
+                    <%= render DLTableComponent.new("Shares on Hand", format_currency(planned_number_of_shares, 0)) %>
+                    <%= render DLTableComponent.new("Yield", format_percentage(last_dividend_rate, last_price)) %>
+                    <%= render DLTableComponent.new("Annualized", format_percentage(last_dividend_rate * @company.dividend_releases_in_a_year, last_price)) %>
+                <% end %>
             </dl>
         </div>
     </div>
