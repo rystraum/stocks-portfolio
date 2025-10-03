@@ -23,18 +23,20 @@ class CoinMarketCap
       end
     end
 
-    response = prices_by_id(ids, convert_symbols).parsed_response['data']
-    ids.each do |id|
-      coin_data = response[id]
-      next if coin_data.blank?
+    convert_symbols.each do |convert_symbol|
+      response = prices_by_id(ids, [convert_symbol]).parsed_response['data']
+      ids.each do |id|
+        coin_data = response[id]
+        next if coin_data.blank?
 
-      crypto_currency = currencies.select { |c| c.datasource_ticker == id.to_s && c.fiat == coin_data['quote'].keys.first }.first
-      next if crypto_currency.nil?
+        crypto_currency = currencies.select { |c| c.datasource_ticker == id.to_s && c.fiat == coin_data['quote'].keys.first }.first
+        next if crypto_currency.nil?
 
-      crypto_currency.update(
-        last_price: coin_data['quote'][crypto_currency.fiat]['price'].to_d,
-        last_price_at: Time.now
-      )
+        crypto_currency.update(
+          last_price: coin_data['quote'][crypto_currency.fiat]['price'].to_d,
+          last_price_at: Time.now
+        )
+      end
     end
   end
 
