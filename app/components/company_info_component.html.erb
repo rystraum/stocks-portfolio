@@ -6,7 +6,12 @@
         <dl class="w-3/4">
             <%= render DLTableComponent.new("Industry", company.industry) %>
             <%= render DLTableComponent.new("Status", company.inactive? ? "Inactive" : "Active") %>
-            <%= render DLTableComponent.new("Target Buy Price", company.target_buy_price) %>
+            <%= render DLTableComponent.new("Target Buy Price") do %>
+                <%= helpers.buy_or_not company.target_buy_price, last_price %>
+                <% if last_price %>
+                    (<%= helpers.format_percentage(company.target_buy_price - last_price, company.target_buy_price) %>)
+                <% end %>
+            <% end %>
             <%= render DLTableComponent.new("Target Notes", company.target_price_note) %>
             <% if company.dividend_frequency_months %>
                 <%= render DLTableComponent.new("Dividend Frequency", "Every #{company.dividend_frequency_months} months") %>

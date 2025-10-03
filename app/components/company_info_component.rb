@@ -1,8 +1,9 @@
 class CompanyInfoComponent < ViewComponent::Base
-  attr_reader :company
+  attr_reader :company, :last_price
 
-  def initialize(company)
+  def initialize(company, last_price)
     @company = company
+    @last_price = last_price
   end
 
   def with_company_name?
