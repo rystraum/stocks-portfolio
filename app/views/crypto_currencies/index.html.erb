@@ -7,20 +7,34 @@
         <tr>
           <th class="w-1/8">Ticker</th>
           <th class="w-1/8">Name</th>
-          <th class="w-1/8 text-right">Cost Basis (PHP)</th>
+          <th class="w-1/8 text-right">
+            <div x-data x-tooltip.raw="Average price paid for this crypto, excluding fees.">
+                Cost Basis [?]
+            </div>
+          </th>
           <th class="w-1/8 text-right">Last Price</th>
           <th class="action-column">Actions</th>
         </tr>
       </thead>
       <tbody>
         <% @crypto_currencies.each do |crypto| %>
+          <% cost_basis = @cost_bases[crypto.id] %>
           <tr class="company-row <%= cycle('odd', 'even') %>">
             <td><%= link_to crypto.ticker, crypto_currency_path(crypto) %></td>
             <td><%= crypto.name %></td>
-            <td class="text-right"><%= format_currency @cost_bases[crypto.id] %></td>
+            <td class="text-right">
+                <% if crypto.last_price && cost_basis.positive? %>
+                  <% last_price_color = crypto.last_price < cost_basis ? 'text-red-500' : 'text-green-500' %>
+                  <%= format_currency cost_basis %> <%= crypto.fiat %>
+                  <small class="block <%= last_price_color %>"><%= format_percentage crypto.last_price - cost_basis, cost_basis %></small>
+                <% else %>
+                  <%= format_currency cost_basis %> <%= crypto.fiat %>
+                <% end %>
+            </td>
             <td class="text-right">
               <% if crypto.last_price_at && crypto.last_price %>
-                <%= format_currency crypto.last_price %> as of <%= distance_of_time_in_words_to_now(crypto.last_price_at) %> ago
+                  <%= format_currency crypto.last_price, 3 %>
+                  <small class="block text-gray-300">as of <%= distance_of_time_in_words_to_now(crypto.last_price_at) %> ago</small>
               <% else %>
                 -
               <% end %>

@@ -36,8 +36,11 @@ class CryptoCurrency < ApplicationRecord
 
   def datasource_ticker_validation
     return true if datasource.nil?
-    
-    errors.add(:datasource_ticker, "is required & must be an ID") if coinmarketcap? && (datasource_ticker.blank? || Float(datasource_ticker, exception: false).nil?)
+
+    if coinmarketcap? && (datasource_ticker.blank? || Float(datasource_ticker, exception: false).nil?)
+      errors.add(:datasource_ticker, "is required & must be an ID")
+    end
+
     errors.add(:datasource_ticker, "is required") if coinsph? && datasource_ticker.blank?
   end
 
