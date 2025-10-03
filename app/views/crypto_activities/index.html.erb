@@ -27,7 +27,7 @@
         <td><%= activity.fiat_amount %> <%= activity.fiat_currency %></td>
         <td><%= activity.fee_crypto %></td>
         <td><%= activity.fee_fiat %></td>
-        <td><%= format_currency activity.fiat_forex %></td>
+        <td><%= format_currency activity.fiat_forex, 3 %></td>
         <td><%= activity.notes %></td>
         <td class="text-right" style="width: 6%;">
           <div class="flex">

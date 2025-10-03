@@ -17,7 +17,7 @@
         <dl class="kv-pair">
           <div>
             <dt>Last Price</dt>
-            <dd><%= format_currency @crypto_currency.last_price %> <%= @crypto_currency.fiat %> (<%= format_percentage((@crypto_currency.last_price || 0) -  @cost_basis, @cost_basis) %>)</dd>
+            <dd><%= format_currency @crypto_currency.last_price, 3 %> <%= @crypto_currency.fiat %> (<%= format_percentage((@crypto_currency.last_price || 0) -  @cost_basis, @cost_basis) %>)</dd>
           </div>
           <div>
             <dt>Last Price At</dt>
@@ -53,7 +53,7 @@
             <dl class="kv-pair">
               <div>
                 <dt>Cost Basis:</dt>
-                <dd><%= format_currency @cost_basis %> <%= @crypto_currency.fiat %>/<%= @crypto_currency.pretty_ticker %></dd>
+                <dd><%= format_currency @cost_basis, 3 %> <%= @crypto_currency.fiat %>/<%= @crypto_currency.pretty_ticker %></dd>
               </div>
               <% if @crypto_currency.is_php? %>
                 <div>
@@ -167,7 +167,7 @@
                     <%= @crypto_currency.fiat %>: <%= format_currency activity.fee_fiat %> (<%= format_percentage activity.fee_fiat, activity.fiat_amount, 2 %>)
                   <% end %>
                 </td>
-                <td class="hidden lg:table-cell text-right"><%= format_currency activity.fiat_forex %></td>
+                <td class="hidden lg:table-cell text-right"><%= format_currency activity.fiat_forex, 3 %></td>
                 <td class="hidden lg:table-cell text-right"><%= link_to "Edit", [:edit, activity] %></td>
               </tr>
             <% end %>

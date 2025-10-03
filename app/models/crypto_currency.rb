@@ -46,14 +46,15 @@ class CryptoCurrency < ApplicationRecord
 
   def fiat
     return 'USDT' if ticker.end_with?('USDT') && ticker != 'USDT'
+    return 'USDC' if ticker.end_with?('USDC') && ticker != 'USDC'
 
     return 'PHP'
   end
 
   def pretty_ticker
-    return ticker if ticker == 'USDT'
+    return ticker if ticker == 'USDT' || ticker == 'USDC'
 
-    return ticker.gsub('USDT', '')
+    return ticker.gsub('USDT', '').gsub('USDC', '')
   end
 
   def is_php?
