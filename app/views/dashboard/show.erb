@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
-
 <%= render "shared/header", text: "All Time Portfolio" do %>
     <% if @permissions.can?(:price_update, Company) %>
         <%= link_to update_prices_path, method: :put, class: "btn btn-secondary ml-auto" do %>
