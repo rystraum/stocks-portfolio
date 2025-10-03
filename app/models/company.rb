@@ -20,7 +20,7 @@ class Company < ApplicationRecord
   end
 
   def dividend_releases_in_a_year
-    return nil if dividend_frequency_months.blank?
+    return 0 if dividend_frequency_months.blank?
 
     return 12 / dividend_frequency_months
   end
