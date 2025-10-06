@@ -15,11 +15,11 @@
                 <% if crypto.last_price && cost_basis.positive? %>
                     <% last_price_color = crypto.last_price < cost_basis ? 'text-red-500' : 'text-green-500' %>
                     <p class="<%= last_price_color %>">
-                        <span><%= format_currency cost_basis %> <%= crypto.fiat %></span>
+                        <span><%= format_currency(cost_basis, 3) %> <%= crypto.fiat %></span>
                         <span>(<%= format_percentage crypto.last_price - cost_basis, cost_basis %>)</span>
                     </p>
                 <% else %>
-                    <%= format_currency cost_basis %> <%= crypto.fiat %>
+                    <%= format_currency(cost_basis, 3) %> <%= crypto.fiat %>
                 <% end %>
             </dd>
 
