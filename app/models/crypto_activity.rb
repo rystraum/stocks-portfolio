@@ -34,22 +34,11 @@ class CryptoActivity < ApplicationRecord
 
     return 0 if activities.empty?
 
-    fiat = 0
-    crypto = 0
+    cost_basis_calculator = CostBasisCalculator.new(activities)
+    cost_basis_calculator.cost_basis!
 
-    activities.each do |activity|
-      if activity.buy?
-        fiat += activity.fiat_amount
-        crypto += activity.crypto_amount - (activity.fee_crypto || 0)
-      else
-        fiat -= activity.fiat_amount - (activity.fee_fiat || 0)
-        crypto -= activity.crypto_amount
-      end
-    end
-
-    return 0 if crypto.zero?
-
-    return fiat / crypto
+    return 0 if cost_basis_calculator.crypto.zero?
+    return cost_basis_calculator.rate
   end
 
   # Computes the fiat conversion rate (fiat per 1 crypto) based on net crypto and net fiat spent (after fees)
