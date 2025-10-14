@@ -1,6 +1,4 @@
-class DashboardController < ApplicationController
-  before_action :authenticate_user!
-
+class DashboardController < AuthenticatedUserController
   def show
     company_set = CompanySet.new(
       UserPortfolio.new(current_user).companies,

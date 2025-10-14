@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-class CompaniesController < ApplicationController
-  before_action :authenticate_user!
+class CompaniesController < AuthenticatedUserController
   before_action :set_company, only: %i[show edit update destroy last_price price_update_from_pse refetch_announcements]
 
   # GET /companies

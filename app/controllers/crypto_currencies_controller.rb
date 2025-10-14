@@ -1,5 +1,4 @@
-class CryptoCurrenciesController < ApplicationController
-  before_action :authenticate_user!
+class CryptoCurrenciesController < AuthenticatedUserController
   before_action :set_crypto_currency, only: [:show, :edit, :update]
 
   # GET /crypto_currencies

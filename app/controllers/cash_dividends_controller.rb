@@ -1,6 +1,5 @@
-class CashDividendsController < ApplicationController
+class CashDividendsController < AuthenticatedUserController
   before_action :set_cash_dividend, only: %i[show edit update destroy update_meta]
-  before_action :authenticate_user!
 
   # GET /cash_dividends
   # GET /cash_dividends.json

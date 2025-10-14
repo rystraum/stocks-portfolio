@@ -1,5 +1,4 @@
-class CryptoActivitiesController < ApplicationController
-  before_action :authenticate_user!
+class CryptoActivitiesController < AuthenticatedUserController
   before_action :set_crypto_activity, only: [:show, :edit, :update, :destroy]
 
   def index

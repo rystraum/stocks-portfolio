@@ -1,6 +1,6 @@
 # app/controllers/dividend_announcements_controller.rb
 
-class DividendAnnouncementsController < ApplicationController
+class DividendAnnouncementsController < AuthenticatedUserController
   def index
     params[:future_only] ||= '1'
     params[:company_scope] ||= 'portfolio'
