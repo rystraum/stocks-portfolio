@@ -37,8 +37,8 @@ Rails.application.routes.draw do
 
   put :update_prices, to: "dashboard#update_prices"
 
-  get '/dashboard', to: 'dashboard#show'
+  get '/portfolio/stocks', to: 'portfolio#stocks'
   get '/portfolio', to: 'portfolio#home'
-  root to: 'dashboard#show'
+  root to: 'portfolio#home'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

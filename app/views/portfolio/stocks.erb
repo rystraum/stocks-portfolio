@@ -1,4 +1,4 @@
-<%= render "shared/header", text: "All Time Portfolio" do %>
+<%= render "shared/header", text: "Stocks Portfolio" do %>
     <% if @permissions.can?(:price_update, Company) %>
         <%= link_to update_prices_path, method: :put, class: "btn btn-secondary ml-auto" do %>
             <span class="mr-2 inline-block"><%= save_as_icon %></span>
