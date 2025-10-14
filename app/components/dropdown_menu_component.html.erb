@@ -9,10 +9,14 @@
     <%= helpers.chevron_down_icon %>
   </button>
   <div class="opacity-0 invisible dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95">
-    <div class="absolute left-0 w-56 mt-2 origin-top-left bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" id="<%= @menu_id %>-menu-items" role="menu">
+    <div class="absolute left-0 w-56 mt-2 origin-top-left bg-white border border-gray-200 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" id="<%= @menu_id %>-menu-items" role="menu">
       <% @links.each_with_index do |link, index| %>
         <% if link.visible %>
-          <%= helpers.header_link_to link.display_name, link.link, class: "block text-gray-700", id: "#{@menu_id}-menu-item-#{index}" %>
+          <% if link.hr %>
+            <hr class="border-t border-gray-200 my-2">
+          <% else %>
+            <%= helpers.header_link_to link.display_name.titleize, link.link, class: "block text-gray-900", id: "#{@menu_id}-menu-item-#{index}" %>
+          <% end %>
         <% end %>
       <% end %>
     </div>
