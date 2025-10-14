@@ -8,13 +8,14 @@ class CryptoActivitiesController < ApplicationController
 
   def new
     @crypto = CryptoCurrency.find_by(ticker: params[:ticker])
-    @crypto_activity = current_user.crypto_activities.build(activity_date: Date.today, crypto_currency_id: @crypto.id)
+    @crypto_activity = current_user.crypto_activities.build(activity_date: Date.today)
+    @crypto_activity.crypto_currency = @crypto
   end
 
   def create
     @crypto_activity = current_user.crypto_activities.build(crypto_activity_params)
     if @crypto_activity.save
-      redirect_to crypto_activities_path, notice: 'Crypto activity was successfully recorded.'
+      redirect_to @crypto_activity.crypto_currency, notice: 'Crypto activity was successfully recorded.'
     else
       render :new
     end
@@ -42,6 +43,6 @@ class CryptoActivitiesController < ApplicationController
     end
 
     def crypto_activity_params
-      params.require(:crypto_activity).permit(:crypto_currency_id, :activity_type, :crypto_amount, :fiat_amount, :fiat_currency, :fee_crypto, :fee_fiat, :activity_date, :notes)
+      params.require(:crypto_activity).permit(:crypto_currency_id, :activity_type, :crypto_amount, :fiat_amount, :fee_crypto, :fee_fiat, :activity_date, :notes)
     end
 end

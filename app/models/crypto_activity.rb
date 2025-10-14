@@ -4,6 +4,7 @@ class CryptoActivity < ApplicationRecord
 
   enum activity_type: { buy: 0, sell: 1 }
 
+  before_validation :set_fiat_currency
   validates :activity_type, :crypto_currency_id, :user_id, :crypto_amount, :fiat_amount, :fiat_currency,
             :activity_date, presence: true
 
@@ -59,5 +60,9 @@ class CryptoActivity < ApplicationRecord
     return 0 if net_crypto.to_d.zero?
 
     net_fiat.to_d / net_crypto.to_d
+  end
+
+  def set_fiat_currency
+    self.fiat_currency = crypto_currency.fiat
   end
 end
