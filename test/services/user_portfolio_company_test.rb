@@ -3,5 +3,4 @@
 require 'test_helper'
 
 class UserPortfolioCompanyTest < ActiveSupport::TestCase
-  test ""
 end
