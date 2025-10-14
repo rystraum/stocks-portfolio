@@ -1,0 +1,85 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="card">
+    <div class="card-header">
+      <h4 class="card-header-title">Portfolio Split</h4>
+    </div>
+    <div class="card-body">
+      <div class="overflow-x-auto">
+        <table class="table-auto w-full">
+          <thead>
+            <tr class="bg-gray-100 dark:bg-gray-700">
+              <th class="px-4 py-2 text-left">
+                Asset Type
+              </th>
+              <th class="px-4 py-2 text-right">
+                Total Spend
+              </th>
+              <th class="px-4 py-2 text-right">
+                Total Spend (%)
+              </th>
+              <th class="px-4 py-2 text-right">
+                Current Value
+              </th>
+              <th class="px-4 py-2 text-right">
+                Current Value (%)
+              </th>
+              <th class="px-4 py-2 text-right">
+                Change (Value)
+              </th>
+              <th class="px-4 py-2 text-right">
+                Change (%)
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="<%= cycle('bg-white', 'bg-gray-50 dark:bg-gray-800') %>">
+              <td class="px-4 py-2 border-t text-left">Cash</td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@cash.spent) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage(@cash.spent, @total_spent) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@cash.current_value) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage(@cash.current_value, @total_current_value) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.green_red(@cash.change) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.green_red_percent(@cash.change, @cash.spent) %></td>
+            </tr>
+            <tr class="<%= cycle('bg-white', 'bg-gray-50 dark:bg-gray-800') %>">
+              <td class="px-4 py-2 border-t text-left">UITF</td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@uitf.spent) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage(@uitf.spent, @total_spent) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@uitf.current_value) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage(@uitf.current_value, @total_current_value) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.green_red(@uitf.change) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.green_red_percent(@uitf.change, @uitf.spent) %></td>
+            </tr>
+            <tr class="<%= cycle('bg-white', 'bg-gray-50 dark:bg-gray-800') %>">
+              <td class="px-4 py-2 border-t text-left">Stock</td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@stock.spent) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage(@stock.spent, @total_spent) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@stock.current_value) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage(@stock.current_value, @total_current_value) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.green_red(@stock.change) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.green_red_percent(@stock.change, @stock.spent) %></td>
+            </tr>
+            <tr class="<%= cycle('bg-white', 'bg-gray-50 dark:bg-gray-800') %>">
+              <td class="px-4 py-2 border-t text-left">Crypto</td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@crypto.spent) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage(@crypto.spent, @total_spent) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@crypto.current_value) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage(@crypto.current_value, @total_current_value) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.green_red(@crypto.change) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.green_red_percent(@crypto.change, @crypto.spent) %></td>
+            </tr>
+            <tr class="bg-gray-100 dark:bg-gray-700 font-bold">
+              <td class="px-4 py-2 border-t text-left">Total</td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@total_spent) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage(@total_spent, @total_spent) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@total_current_value) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage(@total_current_value, @total_current_value) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.green_red(@total_change) %></td>
+              <td class="px-4 py-2 border-t text-right"><%= helpers.green_red_percent(@total_change, @total_spent) %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
