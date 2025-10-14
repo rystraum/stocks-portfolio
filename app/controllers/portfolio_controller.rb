@@ -1,0 +1,3 @@
+class PortfolioController < AuthenticatedUserController
+
+end

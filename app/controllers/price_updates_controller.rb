@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PriceUpdatesController < ApplicationController
+class PriceUpdatesController < AuthenticatedUserController
   before_action :set_price_update, only: %i[show edit update destroy]
 
   # GET /price_updates

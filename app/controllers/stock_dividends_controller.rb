@@ -1,6 +1,5 @@
-class StockDividendsController < ApplicationController
+class StockDividendsController < AuthenticatedUserController
   before_action :set_stock_dividend, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_user!
 
   # GET /stock_dividends
   # GET /stock_dividends.json

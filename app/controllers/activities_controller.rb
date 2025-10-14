@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-class ActivitiesController < ApplicationController
+class ActivitiesController < AuthenticatedUserController
   before_action :set_activity, only: %i[show edit update destroy convert_planned]
-  before_action :authenticate_user!
 
   # GET /activities
   # GET /activities.json
