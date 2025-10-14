@@ -31,10 +31,11 @@
                             links: [
                                 OpenStruct.new(display_name: "Portfolio", link: portfolio_stocks_path, visible: true),
                                 OpenStruct.new(display_name: "Buy/Sell Stocks", link: new_activity_path, visible: true),
-                                OpenStruct.new(display_name: "New cash Dividend", link: new_cash_dividend_path, visible: true),
+                                OpenStruct.new(display_name: "New Cash Dividend", link: new_cash_dividend_path, visible: true),
                                 OpenStruct.new(display_name: "Activity History", link: activities_path, visible: true),
                                 OpenStruct.new(display_name: "Dividends", link: cash_dividends_path, visible: true),
                                 OpenStruct.new(display_name: "Companies", link: companies_path, visible: @permissions.can?(:create, Company)),
+                                OpenStruct.new(hr: true, visible: true),
                                 OpenStruct.new(display_name: "Price History", link: price_updates_path, visible: @permissions.can?(:price_update, Company)),
                                 OpenStruct.new(display_name: "Price Update", link: new_price_update_path, visible: @permissions.can?(:price_update, Company)),
                                 OpenStruct.new(display_name: "Dividend Announcements", link: dividend_announcements_path, visible: true)
@@ -47,17 +48,6 @@
                             links: [
                                 OpenStruct.new(display_name: "Portfolio", link: crypto_currencies_path, visible: true),
                                 OpenStruct.new(display_name: "Crypto Activities", link: crypto_activities_path, visible: true),
-                            ]
-                        ) %>
-                        <%= render DropdownMenuComponent.new(
-                            menu_item_name: "History",
-                            menu_id: "history",
-                            links: [
-                                OpenStruct.new(display_name: "Crypto Activities", link: crypto_activities_path, visible: true),
-                                OpenStruct.new(display_name: "Activity History", link: activities_path, visible: true),
-                                OpenStruct.new(display_name: "Price History", link: price_updates_path, visible: @permissions.can?(:price_update, Company)),
-                                OpenStruct.new(display_name: "Price Update", link: new_price_update_path, visible: @permissions.can?(:price_update, Company)),
-                                OpenStruct.new(display_name: "Dividend Announcements", link: dividend_announcements_path, visible: true)
                             ]
                         ) %>
                     </div>
