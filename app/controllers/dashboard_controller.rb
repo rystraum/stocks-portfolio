@@ -1,19 +1,4 @@
 class DashboardController < AuthenticatedUserController
-  def show
-    company_set = CompanySet.new(
-      UserPortfolio.new(current_user).companies,
-      current_user
-    )
-    if params[:sort_by]
-      company_set.sort_by = params[:sort_by]
-    end
-
-    respond_to do |format|
-      format.html { render "show", locals: { company_set: company_set } }
-      format.json { render json: company_set.to_json }
-    end
-  end
-
   def update_prices
     portfolio_companies = UserPortfolio.new(current_user).companies
     update_results = portfolio_companies.collect.with_index do |company, index|
