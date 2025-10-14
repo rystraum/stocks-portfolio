@@ -25,62 +25,34 @@
                     <div class="flex space-x-4">
                         <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                         <%= header_link_to home_icon, root_path %>
-                        <div class="relative inline-block dropdown">
-                            <button 
-                                class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out rounded-md hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800" 
-                                type="button"
-                                aria-haspopup="true"
-                                aria-expanded="true"
-                                aria-controls="stocks-menu-items">
-                                <span>Stocks</span>
-                                <%= chevron_down_icon %>
-                            </button>
-                            <div class="opacity-0 invisible dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95">
-                                <div class="absolute left-0 w-56 mt-2 origin-top-left bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" id="stocks-menu-items" role="menu">
-                                    <%= header_link_to "Portfolio", portfolio_stocks_path, class: "block text-gray-700", id: "history-menu-item-0" %>
-                                    <%= header_link_to "Buy/Sell Stocks", new_activity_path, class: "block text-gray-700", id: "history-menu-item-1" %>
-                                    <%= header_link_to "New cash Dividend", new_cash_dividend_path, class: "block text-gray-700", id: "history-menu-item-2" %>
-                                    <%= header_link_to "Activity History", activities_path, class: "block text-gray-700", id: "history-menu-item-3" %>
-                                    <%= header_link_to "Dividends", cash_dividends_path, class: "block text-gray-700", id: "history-menu-item-4" %>
-                                    <% if @permissions.can? :create, Company %>
-                                        <%= header_link_to "Companies", companies_path, class: "block text-gray-700", id: "history-menu-item-5" %>
-                                    <% end %>
-                                    <% if @permissions.can? :price_update, Company %>
-                                        <%= header_link_to "Price History", price_updates_path, class: "block text-gray-700", id: "history-menu-item-6" %>
-                                    <% end %>
-                                    <% if @permissions.can? :price_update, Company %>
-                                        <%= header_link_to "Price Update", new_price_update_path, class: "block text-gray-700", id: "history-menu-item-7" %>
-                                    <% end %>
-                                    <%= header_link_to "Dividend Announcements", dividend_announcements_path, class: "block text-gray-700", id: "history-menu-item-8" %>
-                                </div>
-                            </div>
-                        </div>
+                        <%= render DropdownMenuComponent.new(
+                            menu_item_name: "Stocks",
+                            menu_id: "stocks",
+                            links: [
+                                OpenStruct.new(display_name: "Portfolio", link: portfolio_stocks_path, visible: true),
+                                OpenStruct.new(display_name: "Buy/Sell Stocks", link: new_activity_path, visible: true),
+                                OpenStruct.new(display_name: "New cash Dividend", link: new_cash_dividend_path, visible: true),
+                                OpenStruct.new(display_name: "Activity History", link: activities_path, visible: true),
+                                OpenStruct.new(display_name: "Dividends", link: cash_dividends_path, visible: true),
+                                OpenStruct.new(display_name: "Companies", link: companies_path, visible: @permissions.can?(:create, Company)),
+                                OpenStruct.new(display_name: "Price History", link: price_updates_path, visible: @permissions.can?(:price_update, Company)),
+                                OpenStruct.new(display_name: "Price Update", link: new_price_update_path, visible: @permissions.can?(:price_update, Company)),
+                                OpenStruct.new(display_name: "Dividend Announcements", link: dividend_announcements_path, visible: true)
+                            ]
+                        ) %>
 
                         <%= header_link_to "Crypto Currencies", crypto_currencies_path %>
-                        <div class="relative inline-block dropdown">
-                            <button 
-                                class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out rounded-md hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800" 
-                                type="button"
-                                aria-haspopup="true"
-                                aria-expanded="true"
-                                aria-controls="history-menu-items">
-                                <span>History</span>
-                                <%= chevron_down_icon %>
-                            </button>
-                            <div class="opacity-0 invisible dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95">
-                                <div class="absolute left-0 w-56 mt-2 origin-top-left bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none" aria-labelledby="headlessui-menu-button-1" id="history-menu-items" role="menu">
-                                    <%= header_link_to "Crypto Activities", crypto_activities_path, class: "block text-gray-700", id: "history-menu-item-0" %>
-                                    <%= header_link_to "Activity History", activities_path, class: "block text-gray-700", id: "history-menu-item-1" %>
-                                    <% if @permissions.can? :price_update, Company %>
-                                        <%= header_link_to "Price History", price_updates_path, class: "block text-gray-700", id: "history-menu-item-2" %>
-                                    <% end %>
-                                    <% if @permissions.can? :price_update, Company %>
-                                        <%= header_link_to "Price Update", new_price_update_path, class: "block text-gray-700", id: "history-menu-item-3" %>
-                                    <% end %>
-                                    <%= header_link_to "Dividend Announcements", dividend_announcements_path, class: "block text-gray-700", id: "history-menu-item-4" %>
-                                </div>
-                            </div>
-                        </div>
+                        <%= render DropdownMenuComponent.new(
+                            menu_item_name: "History",
+                            menu_id: "history",
+                            links: [
+                                OpenStruct.new(display_name: "Crypto Activities", link: crypto_activities_path, visible: true),
+                                OpenStruct.new(display_name: "Activity History", link: activities_path, visible: true),
+                                OpenStruct.new(display_name: "Price History", link: price_updates_path, visible: @permissions.can?(:price_update, Company)),
+                                OpenStruct.new(display_name: "Price Update", link: new_price_update_path, visible: @permissions.can?(:price_update, Company)),
+                                OpenStruct.new(display_name: "Dividend Announcements", link: dividend_announcements_path, visible: true)
+                            ]
+                        ) %>
                     </div>
                 </div>
             </div>
