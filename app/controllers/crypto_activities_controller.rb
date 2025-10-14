@@ -7,7 +7,8 @@ class CryptoActivitiesController < ApplicationController
   end
 
   def new
-    @crypto_activity = current_user.crypto_activities.build(activity_date: Date.today)
+    @crypto = CryptoCurrency.find_by(ticker: params[:ticker])
+    @crypto_activity = current_user.crypto_activities.build(activity_date: Date.today, crypto_currency_id: @crypto.id)
   end
 
   def create
