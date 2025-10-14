@@ -1,4 +1,5 @@
 <%= form_with(model: crypto_activity, local: true) do |f| %>
+  <% fiat = crypto_activity.crypto_currency.blank? ? "PHP" : crypto_activity.crypto_currency.fiat %>
   <% if crypto_activity.errors.any? %>
     <div class="alert alert-danger">
       <ul>
@@ -22,19 +23,15 @@
     <%= f.number_field :crypto_amount, step: 0.00000001, class: "form-control" %>
   </div>
   <div class="form-group">
-    <%= f.label :fiat_amount, 'Fiat Amount (PHP)' %>
+    <%= f.label :fiat_amount, "Fiat Amount (#{fiat})" %>
     <%= f.number_field :fiat_amount, step: 0.01, class: "form-control" %>
-  </div>
-  <div class="form-group">
-    <%= f.label :fiat_currency %>
-    <%= f.text_field :fiat_currency, value: 'PHP', class: "form-control" %>
   </div>
   <div class="form-group">
     <%= f.label :fee_crypto, 'Fee (Crypto)' %>
     <%= f.number_field :fee_crypto, step: 0.00000000001, class: "form-control" %>
   </div>
   <div class="form-group">
-    <%= f.label :fee_fiat, 'Fee (PHP)' %>
+    <%= f.label :fee_fiat, "Fee (#{fiat})" %>
     <%= f.number_field :fee_fiat, step: 0.01, class: "form-control" %>
   </div>
   <div class="form-group">
