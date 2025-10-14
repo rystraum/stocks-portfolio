@@ -34,7 +34,7 @@
         </thead>
         <tbody>
           <tr class="<%= cycle('bg-white', 'bg-gray-50 dark:bg-gray-800') %>">
-            <td class="px-4 py-2 border-t text-left">Cash</td>
+            <td class="px-4 py-2 border-t text-left">Cash - Coming Soon!</td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@cash.spent) %></td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage(@cash.spent, @total_spent) %></td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@cash.current_value) %></td>
@@ -43,7 +43,7 @@
             <td class="px-4 py-2 border-t text-right"><%= helpers.green_red_percent(@cash.change, @cash.spent) %></td>
           </tr>
           <tr class="<%= cycle('bg-white', 'bg-gray-50 dark:bg-gray-800') %>">
-            <td class="px-4 py-2 border-t text-left">UITF</td>
+            <td class="px-4 py-2 border-t text-left">UITF - Coming Soon!</td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@uitf.spent) %></td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage(@uitf.spent, @total_spent) %></td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@uitf.current_value) %></td>
@@ -61,7 +61,7 @@
             <td class="px-4 py-2 border-t text-right"><%= helpers.green_red_percent(@stock.change, @stock.spent) %></td>
           </tr>
           <tr class="<%= cycle('bg-white', 'bg-gray-50 dark:bg-gray-800') %>">
-            <td class="px-4 py-2 border-t text-left">Crypto</td>
+            <td class="px-4 py-2 border-t text-left">Crypto - Coming Soon!</td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@crypto.spent) %></td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_percentage(@crypto.spent, @total_spent) %></td>
             <td class="px-4 py-2 border-t text-right"><%= helpers.format_currency(@crypto.current_value) %></td>
