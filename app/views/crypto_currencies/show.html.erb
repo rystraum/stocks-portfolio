@@ -5,7 +5,7 @@
   <% if @permissions.can?(:update, @crypto_currency) %>
     <%= link_to "Edit #{@crypto_currency.ticker}", edit_crypto_currency_path(@crypto_currency), class: "btn btn-info ml-auto" %>
   <% end %>
-  <%= link_to "Add Crypto Activity", new_crypto_activity_path, class: "btn btn-success ml-2" %>
+  <%= link_to "Add Crypto Activity", new_crypto_activity_path(ticker: @crypto_currency.ticker), class: "btn btn-success ml-2" %>
 </div>
 <div class="block lg:flex">
   <div class="w-full lg:w-1/3">
