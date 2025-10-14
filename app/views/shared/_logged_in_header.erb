@@ -41,7 +41,14 @@
                             ]
                         ) %>
 
-                        <%= header_link_to "Crypto Currencies", crypto_currencies_path %>
+                        <%= render DropdownMenuComponent.new(
+                            menu_item_name: "Crypto",
+                            menu_id: "crypto",
+                            links: [
+                                OpenStruct.new(display_name: "Portfolio", link: crypto_currencies_path, visible: true),
+                                OpenStruct.new(display_name: "Crypto Activities", link: crypto_activities_path, visible: true),
+                            ]
+                        ) %>
                         <%= render DropdownMenuComponent.new(
                             menu_item_name: "History",
                             menu_id: "history",
