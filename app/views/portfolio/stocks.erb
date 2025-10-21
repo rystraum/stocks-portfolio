@@ -24,12 +24,12 @@
         <tr class="portfolio-header bg-blue-800 text-white">
             <th scope="col" class="text-left">
                 Company <br />
-                #{link_to 'Sort', root_path(sort_by: "ticker")}
+                #{link_to 'Sort', portfolio_stocks_path(sort_by: "ticker")}
             </th>
             <th scope="col" class="text-left">Shares</th>
             <th scope="col" class="text-right">
                 Total Cost <br />
-                #{link_to 'Sort', root_path(sort_by: "cost")}
+                #{link_to 'Sort', portfolio_stocks_path(sort_by: "cost")}
             </th>
             <th scope="col" class="text-right">CPS</th>
             <th scope="col" class="text-right">% Cost</th>
@@ -44,12 +44,12 @@
             <th scope="col" class="text-left" colspan="2">P/L</th>
             <th scope="col" class="text-left" colspan="2">
                 Divs <br />
-                #{link_to 'Sort %', root_path(sort_by: "dividends_percent")}
+                #{link_to 'Sort %', portfolio_stocks_path(sort_by: "dividends_percent")}
             </th>
             <th scope="col" class="text-left" colspan="2">Annual DPS</th>
             <th scope="col" class="text-left" colspan="2">
                 P/L + Divs <br />
-                #{link_to 'Sort %', root_path(sort_by: "final_pl_percent")}
+                #{link_to 'Sort %', portfolio_stocks_path(sort_by: "final_pl_percent")}
             </th>
         </tr>
       HEREDOC
