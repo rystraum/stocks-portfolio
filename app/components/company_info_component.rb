@@ -11,6 +11,7 @@ class CompanyInfoComponent < ViewComponent::Base
   end
 
   def simply_wall_st_url
+    return company.simply_wall_st_url if !company.simply_wall_st_url.blank?
     return "" if !with_company_name?
     "https://simplywall.st/stocks/ph/#{@company.industry.parameterize.downcase}/pse-#{@company.ticker.downcase}/#{@company.name.parameterize}-shares"
   end

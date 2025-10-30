@@ -11,6 +11,8 @@ class Company < ApplicationRecord
   scope :alphabetical, -> { order(:ticker) }
   scope :active, -> { where(inactive: false) }
 
+  store :urls, accessors: [:simply_wall_st_url]
+
   def to_s
     ticker
   end

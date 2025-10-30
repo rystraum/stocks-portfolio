@@ -44,6 +44,10 @@
         <p class="w-full text-muted text-sm">Generally: 7% target dividend rate based on previous year total dividends</p>
     </div>
     <div class="field">
+        <%= form.label :simply_wall_st_url, "Simply Wall Street URL" %>
+        <%= form.text_field :simply_wall_st_url, class: 'w-full' %>
+    </div>
+    <div class="field">
         <%= form.label :dividend_frequency_months %>
         <%= form.text_field :dividend_frequency_months, class: 'w-full' %>
         <p class="w-full text-muted text-sm">Common Values - Quarterly: 3, Semi-Annual: 6, Annual: 12</p>
