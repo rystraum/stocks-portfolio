@@ -6,32 +6,36 @@
         <% end %>
     <% end %>
 <% end %>
-<div class="container-fluid main-body" data-controller="dashboard-controller">
+<div class="container-fluid main-body" data-controller="dashboard">
     <div class="flex p-8">
         <div class="flex">
             <div class="form-check form-switch mr-4">
-                <input class="form-check-input" type="checkbox" role="switch" id="inactiveCompaniesSwitch">
-                <label class="form-check-label" for="inactiveCompaniesSwitch" data-dashboard-controller-target="inactiveCompaniesSwitch" data-action="change->dashboard-controller#toggleInactiveCompanies">Inactive Companies</label>
+                <input class="form-check-input" type="checkbox" role="switch" id="inactiveCompaniesSwitch" data-dashboard-target="inactiveCompaniesSwitch" data-action="change->dashboard#toggleInactiveCompanies">
+                <label class="form-check-label" for="inactiveCompaniesSwitch">Inactive Companies</label>
             </div>
             <div class="form-check form-switch mr-4">
-                <input class="form-check-input" type="checkbox" role="switch" id="liquidatedCompaniesSwitch">
-                <label class="form-check-label" for="liquidatedCompaniesSwitch" data-dashboard-controller-target="liquidatedCompaniesSwitch" data-action="change->dashboard-controller#toggleLiquidatedCompanies">Liquidated Companies</label>
+                <input class="form-check-input" type="checkbox" role="switch" id="liquidatedCompaniesSwitch" data-dashboard-target="liquidatedCompaniesSwitch" data-action="change->dashboard#toggleLiquidatedCompanies">
+                <label class="form-check-label" for="liquidatedCompaniesSwitch">Liquidated Companies</label>
+            </div>
+            <div class="form-check form-switch mr-4">
+                <input class="form-check-input" type="checkbox" role="switch" id="actualValuesSwitch" data-dashboard-target="actualValuesSwitch" data-action="change->dashboard#toggleActualValues">
+                <label class="form-check-label" for="actualValuesSwitch">Show/Hide Actual Values</label>
             </div>
         </div>
     </div>
     <%
       portfolio_headers = <<~HEREDOC
-        <tr class="portfolio-header bg-blue-800 text-white">
+        <tr class="portfolio-header bg-blue-800 text-white" data-dashboard-target="portfolioHeader">
             <th scope="col" class="text-left">
                 Company <br />
                 #{link_to 'Sort', portfolio_stocks_path(sort_by: "ticker")}
             </th>
-            <th scope="col" class="text-left">Shares</th>
-            <th scope="col" class="text-right">
+            <th scope="col" class="text-left tables-shares">Shares</th>
+            <th scope="col" class="text-right tables-total-cost">
                 Total Cost <br />
                 #{link_to 'Sort', portfolio_stocks_path(sort_by: "cost")}
             </th>
-            <th scope="col" class="text-right">CPS</th>
+            <th scope="col" class="text-right tables-cps">CPS</th>
             <th scope="col" class="text-right">% Cost</th>
             <th scope="col" class="text-right">Last Price</th>
             <th scope="col" class="text-right">
@@ -39,15 +43,14 @@
                 Target <br>Buy Price [?]
                 </div>
             </th>
-            <th scope="col" class="text-right">Last Value</th>
+            <th scope="col" class="text-right tables-last-value">Last Value</th>
             <th scope="col" class="text-right">% Value</th>
-            <th scope="col" class="text-left" colspan="2">P/L</th>
-            <th scope="col" class="text-left" colspan="2">
+            <th scope="col" class="text-left tables-pnl" colspan="2">P/L</th>
+            <th scope="col" class="text-left tables-divs" colspan="2">
                 Divs <br />
                 #{link_to 'Sort %', portfolio_stocks_path(sort_by: "dividends_percent")}
             </th>
-            <th scope="col" class="text-left" colspan="2">Annual DPS</th>
-            <th scope="col" class="text-left" colspan="2">
+            <th scope="col" class="text-left tables-final-pnl" colspan="2">
                 P/L + Divs <br />
                 #{link_to 'Sort %', portfolio_stocks_path(sort_by: "final_pl_percent")}
             </th>
@@ -63,7 +66,7 @@
                 <% company_set.companies.each do |company| %>
                     <% portfolio = company_set.get_portfolio(company) %>
                     <tr
-                        data-dashboard-controller-target="companyRow"
+                        data-dashboard-target="companyRow"
                         data-company-status="<%= company.inactive? ? "inactive" : portfolio.total_shares.zero? ? "liquidated" : "active" %>"
                         class="<%= company.inactive? ? "bg-gray-700 bg-gray-700 text-white" : cycle('bg-white', 'bg-blue-50') %>">
                         <td scope="row" class="tables-company">
@@ -103,9 +106,9 @@
                         </td>
 
                         <% if company.inactive? %>
-                            <td class="text-right text-secondary"><%= format_currency portfolio.profit_loss %></td>
+                            <td class="tables-pnl text-right text-secondary"><%= format_currency portfolio.profit_loss %></td>
                         <% else %>
-                            <td class="text-right"><%= green_red portfolio.profit_loss %></td>
+                            <td class="tables-pnl text-right"><%= green_red portfolio.profit_loss %></td>
                         <% end %>
 
                         <% if portfolio.total_shares.zero? # already liquidated %>
@@ -117,43 +120,21 @@
                                 <td class="text-right"><%= green_red_percent portfolio.profit_loss, portfolio.actual_total_costs %></td>
                             <% end %>
                         <% end %>
-                        <td class="text-right">
+                        <td class="text-right tables-divs-total">
                             <%= format_currency portfolio.cash_dividends_total %>
                         </td>
-                        <td class="text-right">
+                        <td class="text-right tables-divs-percent">
                             <%= format_percentage portfolio.cash_dividends_total, portfolio.total_costs %>
                         </td>
-                        <td class="text-right">
-                            <% if company.inactive? %>
-                                -
-                            <% else %>
-                                <% begin %>
-                                    <%= format_currency portfolio.cash_dividends_annual_dps %>
-                                <% rescue ZeroDivisionError %>
-                                    <%= link_to "Recompute", company %>
-                                <% end %>
-                            <% end %>
-                        </td>
-                        <td class="text-right">
-                            <% if company.inactive? %>
-                                -
-                            <% else %>
-                                <% begin %>
-                                    <%= format_percentage portfolio.cash_dividends_annual_dps, portfolio.cps %>
-                                <% rescue ZeroDivisionError %>
-                                    <%= link_to "Recompute", company %>
-                                <% end %>
-                            <% end %>
-                        </td>
                         <% if company.inactive? %>
-                            <td class="text-right text-secondary"><%= format_currency portfolio.final_profit_loss %></td>
+                            <td class="text-right text-secondary tables-final-pnl"><%= format_currency portfolio.final_profit_loss %></td>
                         <% else %>
-                            <td class="text-right"><%= green_red portfolio.final_profit_loss %></td>
+                            <td class="text-right tables-final-pnl"><%= green_red portfolio.final_profit_loss %></td>
                         <% end %>
                         <% if company.inactive? %>
-                            <td class="text-right text-secondary"><%= format_percentage portfolio.final_profit_loss, portfolio.total_costs %></td>
+                            <td class="text-right text-secondary tables-final-pnl-percent"><%= format_percentage portfolio.final_profit_loss, portfolio.total_costs %></td>
                         <% else %>
-                            <td class="text-right"><%= green_red_percent portfolio.final_profit_loss, portfolio.total_costs %></td>
+                            <td class="text-right tables-final-pnl-percent"><%= green_red_percent portfolio.final_profit_loss, portfolio.total_costs %></td>
                         <% end %>
                     </tr>
                 <% end %>
@@ -173,14 +154,12 @@
                     <td class="text-right"><%= green_red_percent company_set.total_profit_loss, company_set.total_value %></td>
                     <td class="text-right"><%= format_currency company_set.total_dividends %></td>
                     <td class="text-right"><%= format_percentage company_set.total_dividends, company_set.total_costs %></td>
-                    <td class="text-right">-</td>
-                    <td class="text-right">-</td>
                     <td class="text-right"><%= green_red company_set.final_profit_loss %></td>
                     <td class="text-right"><%= green_red_percent company_set.final_profit_loss, company_set.total_value %></td>
                 </tr>
                 <tr style="background: none;">
-                    <td colspan=8>* inactive</td>
-                    <td colspan=8>P/L Total also includes P/L from 0 share stocks</td>
+                    <td colspan=6>* inactive</td>
+                    <td colspan=6>P/L Total also includes P/L from 0 share stocks</td>
                 </tr>
                 <%= raw portfolio_headers %>
             </tfoot>
