@@ -2,7 +2,7 @@
 
 class PortfolioController < AuthenticatedUserController
   def home
-    companies = UserPortfolio.new(current_user).companies
+    companies = UserPortfolio.new(current_user).company_ids
     company_set = CompanySet.new(companies, current_user)
 
     @cash_data = PortfolioItem.new(spent: 0, current_value: 0)
@@ -13,7 +13,7 @@ class PortfolioController < AuthenticatedUserController
 
   def stocks
     company_set = CompanySet.new(
-      UserPortfolio.new(current_user).companies,
+      UserPortfolio.new(current_user).company_ids,
       current_user,
     )
 

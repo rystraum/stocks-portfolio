@@ -4,8 +4,8 @@ class CompanySet
   attr_reader :user, :portfolio
   attr_accessor :sort_by
 
-  def initialize(companies, user)
-    @companies = companies
+  def initialize(company_ids, user)
+    @companies = Company.where(id: company_ids)
     @user = user
     @portfolio = {}
     @sort_by = "default"
