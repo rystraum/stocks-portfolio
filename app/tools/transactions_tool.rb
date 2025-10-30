@@ -11,7 +11,7 @@ class TransactionsTool < ApplicationTool
   def call(ticker:)
     current_user = User.last
     company_set = CompanySet.new(
-      UserPortfolio.new(current_user).companies,
+      UserPortfolio.new(current_user).company_ids,
       current_user
     )
     company = company_set.companies.find { |company| company.ticker == ticker.upcase }

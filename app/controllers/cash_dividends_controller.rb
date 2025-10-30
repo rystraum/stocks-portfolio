@@ -8,7 +8,7 @@ class CashDividendsController < AuthenticatedUserController
     @cash_dividends = CashDividendSet.new(current_user.cash_dividends.order('pay_date desc, ex_date desc'))
     @stock_dividends = current_user.stock_dividends.order('pay_date desc')
     @companies = CompanySet.new(
-      UserPortfolio.new(current_user).companies,
+      UserPortfolio.new(current_user).company_ids,
       current_user
     ).companies
   end

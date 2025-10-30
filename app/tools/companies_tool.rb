@@ -11,7 +11,7 @@ class CompaniesTool < ApplicationTool
   def call
     current_user = User.last
     company_set = CompanySet.new(
-      UserPortfolio.new(current_user).companies,
+      UserPortfolio.new(current_user).company_ids,
       current_user
     )
     company_set.companies.to_json

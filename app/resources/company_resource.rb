@@ -9,7 +9,7 @@ class CompanyResource < ApplicationResource
   def content(params = {})
     current_user = User.last
     company_set = CompanySet.new(
-      UserPortfolio.new(current_user).companies,
+      UserPortfolio.new(current_user).company_ids,
       current_user
     )
     JSON.generate(company_set.companies.to_json)
