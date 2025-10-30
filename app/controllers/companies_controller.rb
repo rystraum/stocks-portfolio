@@ -162,6 +162,7 @@ class CompaniesController < AuthenticatedUserController
       :target_buy_price,
       :target_price_note,
       :dividend_frequency_months,
+      :simply_wall_st_url
     )
   end
 end
