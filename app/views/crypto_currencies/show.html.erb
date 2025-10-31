@@ -3,15 +3,15 @@
 <div class="flex flex-row p-4 mt-4">
   <%= link_to "#{chevron_left_icon} Back".html_safe, crypto_currencies_path, class: "btn btn-primary" %>
   <% if @permissions.can?(:update, @crypto_currency) %>
-    <%= link_to "Edit #{@crypto_currency.ticker}", edit_crypto_currency_path(@crypto_currency), class: "btn btn-info ml-auto" %>
+    <%= link_to "Edit #{@crypto_currency.ticker}/#{@crypto_currency.quote_token}", edit_crypto_currency_path(@crypto_currency), class: "btn btn-info ml-auto" %>
   <% end %>
-  <%= link_to "Add Crypto Activity", new_crypto_activity_path(ticker: @crypto_currency.ticker), class: "btn btn-success ml-2" %>
+  <%= link_to "Add Activity", new_crypto_activity_path(ticker: @crypto_currency.ticker), class: "btn btn-success ml-2" %>
 </div>
 <div class="block lg:flex">
   <div class="w-full lg:w-1/3">
     <div class="card">
       <div class="card-header">
-        <h4 class="card-header-title"><%= @crypto_currency.name %> (<%= @crypto_currency.ticker %>)</h4>
+        <h4 class="card-header-title"><%= @crypto_currency.name %> (<%= @crypto_currency.compound_ticker %>)</h4>
       </div>
       <div class="card-body">
         <dl class="kv-pair">
