@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_10_31_155756) do
+ActiveRecord::Schema.define(version: 2025_10_31_160726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -111,7 +111,9 @@ ActiveRecord::Schema.define(version: 2025_10_31_155756) do
     t.string "datasource", default: "https://api.pro.coins.ph/"
     t.string "datasource_ticker"
     t.string "quote_token"
-    t.index ["ticker"], name: "index_crypto_currencies_on_ticker", unique: true
+    t.string "compound_ticker"
+    t.index ["compound_ticker"], name: "index_crypto_currencies_on_compound_ticker"
+    t.index ["ticker", "quote_token"], name: "index_crypto_currencies_on_ticker_and_quote_token", unique: true
   end
 
   create_table "dividend_announcements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
