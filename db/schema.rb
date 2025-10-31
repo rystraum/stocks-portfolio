@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_10_30_090222) do
+ActiveRecord::Schema.define(version: 2025_10_31_155756) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -110,6 +110,7 @@ ActiveRecord::Schema.define(version: 2025_10_30_090222) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "datasource", default: "https://api.pro.coins.ph/"
     t.string "datasource_ticker"
+    t.string "quote_token"
     t.index ["ticker"], name: "index_crypto_currencies_on_ticker", unique: true
   end
 
