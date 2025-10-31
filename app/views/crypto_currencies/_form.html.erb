@@ -14,6 +14,11 @@
     <%= form.text_field :ticker, class: 'w-full', placeholder: "Ticker" %>
   </div>
   <div class="field">
+    <%= form.label :quote_token %>
+    <%= form.text_field :quote_token, class: 'w-full', placeholder: "Quote Token" %>
+    <small>Typically USDC, USDT or PHP</small>
+  </div>
+  <div class="field">
     <%= form.label :name %>
     <%= form.text_field :name, class: 'w-full', placeholder: "Crypto Name" %>
   </div>

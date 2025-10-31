@@ -19,7 +19,12 @@ class CryptoCurrency < ApplicationRecord
 
   self.primary_key = :id
   validates :name, presence: true
-  validates :ticker, presence: true, uniqueness: true
+  validates :ticker, presence: true, uniqueness: { scope: :quote_token }
+  validates :quote_token, presence: true
+  validates :compound_ticker, presence: true
+
+  before_validation :set_compound_ticker
+
   validate :datasource_ticker_validation
 
   scope :alphabetical, -> { order(:ticker) }
@@ -45,6 +50,8 @@ class CryptoCurrency < ApplicationRecord
   end
 
   def fiat
+    return quote_token if !quote_token.blank?
+
     return 'USDT' if ticker.end_with?('USDT') && ticker != 'USDT'
     return 'USDC' if ticker.end_with?('USDC') && ticker != 'USDC'
 
@@ -58,14 +65,20 @@ class CryptoCurrency < ApplicationRecord
   end
 
   def is_php?
-    fiat == 'PHP'
+    quote_token == 'PHP'
   end
 
   def to_s
-    ticker
+    compound_ticker
   end
 
   def to_param
-    ticker
+    compound_ticker
+  end
+
+  private
+
+  def set_compound_ticker
+    self.compound_ticker = "#{ticker}#{quote_token}"
   end
 end

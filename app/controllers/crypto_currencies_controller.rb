@@ -65,7 +65,7 @@ class CryptoCurrenciesController < AuthenticatedUserController
   private
 
   def set_crypto_currency
-    @crypto_currency = CryptoCurrency.find_by(id: params[:id]) || CryptoCurrency.find_by(ticker: params[:id])
+    @crypto_currency = CryptoCurrency.find_by(id: params[:id]) || CryptoCurrency.find_by(compound_ticker: params[:id])
   end
 
   def crypto_currency_params
