@@ -1,6 +1,6 @@
 module rystraum.com/stocks-portfolio
 
-go 1.23.0
+go 1.24.0
 
 require (
 	gopkg.in/yaml.v2 v2.4.0
@@ -17,7 +17,7 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.14.1 // indirect
-	golang.org/x/crypto v0.35.0 // indirect
-	golang.org/x/sync v0.11.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	golang.org/x/crypto v0.45.0 // indirect
+	golang.org/x/sync v0.18.0 // indirect
+	golang.org/x/text v0.31.0 // indirect
 )
