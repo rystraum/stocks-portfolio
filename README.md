@@ -1,3 +1,15 @@
+# Launchctl
+
+```
+sudo mkdir /Library/Logs/StocksPortfolio
+sudo chown rystraum:staff /Library/Logs/StocksPortfolio
+sudo launchctl load /Library/LaunchDaemons/com.rystraum.stocks-portfolio.plist
+sudo launchctl print system/com.rystraum.stocks-portfolio
+```
+
+launchcontrol - GUI for managing plists
+
+
 # TODOs
 
 ```
