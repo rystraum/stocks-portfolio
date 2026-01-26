@@ -6,9 +6,10 @@ class CostsCalculator
   def costs_as_of(year: -> { Date.today.year }.call, month: -> { Date.today.month }.call)
     buys = []
     sells = []
+    cutoff_date = Date.new(year, month, 1).end_of_month
 
     @activities.each do |activity|
-      next if activity.date > Date.new(year, month, 1)
+      next if activity.date > cutoff_date
       buys << activity if activity.activity_type == "BUY"
       sells << activity if activity.activity_type == "SELL"
     end
