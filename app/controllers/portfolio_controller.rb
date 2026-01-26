@@ -23,7 +23,10 @@ class PortfolioController < AuthenticatedUserController
 
     respond_to do |format|
       format.html { render 'stocks', locals: { company_set: company_set } }
-      format.json { render json: company_set.to_json }
+      format.json do
+        include_companies = params[:include_companies].to_s == "true"
+        render json: company_set.to_json(include_companies: include_companies)
+      end
     end
   end
 end
