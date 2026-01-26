@@ -1,4 +1,8 @@
 <%= render "shared/header", text: "Stocks Portfolio" do %>
+    <%= link_to portfolio_stocks_path(format: :json, include_companies: true), target: "_blank", rel: "noopener", class: "btn btn-secondary ml-auto" do %>
+        <span class="mr-2 inline-block"><%= save_as_icon %></span>
+        <span>Open JSON</span>
+    <% end %>
     <% if @permissions.can?(:price_update, Company) %>
         <%= link_to update_prices_path, method: :put, class: "btn btn-secondary ml-auto" do %>
             <span class="mr-2 inline-block"><%= save_as_icon %></span>
