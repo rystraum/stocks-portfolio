@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_10_31_160726) do
-
+ActiveRecord::Schema[7.2].define(version: 2026_01_26_142325) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -23,8 +22,8 @@ ActiveRecord::Schema.define(version: 2025_10_31_160726) do
     t.integer "number_of_shares"
     t.decimal "total_price", precision: 15, scale: 2
     t.date "date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.decimal "charges", precision: 15, scale: 4
     t.bigint "old_user_id"
     t.text "notes"
@@ -41,8 +40,8 @@ ActiveRecord::Schema.define(version: 2025_10_31_160726) do
     t.decimal "amount", precision: 15, scale: 2
     t.date "pay_date"
     t.date "ex_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "meta"
     t.bigint "old_user_id"
     t.bigint "old_last_price_update_id"
@@ -58,8 +57,8 @@ ActiveRecord::Schema.define(version: 2025_10_31_160726) do
     t.bigint "old_id"
     t.string "ticker"
     t.string "industry"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "inactive", default: false
     t.string "pse_security_id"
     t.string "pse_company_id"
@@ -79,8 +78,8 @@ ActiveRecord::Schema.define(version: 2025_10_31_160726) do
     t.uuid "cash_dividend_id"
     t.bigint "old_user_id"
     t.bigint "old_cash_dividend_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "crypto_activities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -92,8 +91,8 @@ ActiveRecord::Schema.define(version: 2025_10_31_160726) do
     t.string "fiat_currency", null: false
     t.decimal "fee_crypto", precision: 30, scale: 20, default: "0.0"
     t.date "activity_date", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.decimal "fee_fiat", precision: 18, scale: 2, default: "0.0"
     t.text "notes"
     t.index ["activity_type"], name: "index_crypto_activities_on_activity_type"
@@ -105,9 +104,9 @@ ActiveRecord::Schema.define(version: 2025_10_31_160726) do
     t.string "name", null: false
     t.string "ticker", null: false
     t.decimal "last_price", precision: 30, scale: 20
-    t.datetime "last_price_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "last_price_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "datasource", default: "https://api.pro.coins.ph/"
     t.string "datasource_ticker"
     t.string "quote_token"
@@ -127,8 +126,8 @@ ActiveRecord::Schema.define(version: 2025_10_31_160726) do
     t.date "payout_date"
     t.string "circular_number"
     t.string "raw_html"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["circular_number"], name: "index_dividend_announcements_on_circular_number", unique: true
     t.index ["company_id"], name: "index_dividend_announcements_on_company_id"
   end
@@ -136,10 +135,10 @@ ActiveRecord::Schema.define(version: 2025_10_31_160726) do
   create_table "price_updates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "old_id"
     t.bigint "old_company_id"
-    t.datetime "datetime"
+    t.datetime "datetime", precision: nil
     t.decimal "price", precision: 15, scale: 2
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "notes"
     t.uuid "company_id"
     t.index ["old_company_id"], name: "index_price_updates_on_old_company_id"
@@ -151,8 +150,8 @@ ActiveRecord::Schema.define(version: 2025_10_31_160726) do
     t.integer "amount"
     t.date "pay_date"
     t.date "ex_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "old_user_id"
     t.bigint "old_last_price_update_id"
     t.uuid "user_id"
@@ -168,10 +167,10 @@ ActiveRecord::Schema.define(version: 2025_10_31_160726) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
