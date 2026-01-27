@@ -9,7 +9,7 @@ class CashDividend < ApplicationRecord
   belongs_to :company
   has_one :converted_announcement, dependent: :destroy
 
-  serialize :meta, Hash
+  serialize :meta, coder: JSON
   store_accessor :meta, :dividend_per_share
   store_accessor :meta, :stocks_at_ex_date
 
