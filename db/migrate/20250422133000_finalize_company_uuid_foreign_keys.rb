@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FinalizeCompanyUuidForeignKeys < ActiveRecord::Migration[6.0]
   def up
     # drop old foreign keys first

@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 class DashboardController < AuthenticatedUserController
   def update_prices
     portfolio_companies = UserPortfolio.new(current_user).companies
-    update_results = portfolio_companies.collect.with_index do |company, index|
-      next if !company.can_update_from_pse?
+    portfolio_companies.collect.with_index do |company, index|
+      next unless company.can_update_from_pse?
+
       PriceUpdateJob.set(wait: 2.seconds * index).perform_later(company)
     rescue RuntimeError
       false

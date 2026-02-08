@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SwapPriceUpdatesToUuid < ActiveRecord::Migration[6.0]
   def up
     # Step 4: Drop dependent foreign keys
@@ -11,6 +13,6 @@ class SwapPriceUpdatesToUuid < ActiveRecord::Migration[6.0]
 
   def down
     rename_table :price_updates, :price_updates_new
-    # Note: restoring the old table is not implemented here for safety
+    # NOTE: restoring the old table is not implemented here for safety
   end
 end

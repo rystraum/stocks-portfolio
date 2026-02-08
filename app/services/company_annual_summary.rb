@@ -2,26 +2,19 @@
 
 class CompanyAnnualSummary
   attr_accessor :year, :company
+
   def initialize(company, year)
     @company = company
     @year = year
   end
 
-  def bought_shares
-    activities_calculator.bought_shares
-  end
+  delegate :bought_shares, to: :activities_calculator
 
-  def sold_shares
-    activities_calculator.sold_shares
-  end
+  delegate :sold_shares, to: :activities_calculator
 
-  def buy_costs
-    activities_calculator.buy_costs
-  end
+  delegate :buy_costs, to: :activities_calculator
 
-  def sell_gains
-    activities_calculator.sell_gains
-  end
+  delegate :sell_gains, to: :activities_calculator
 
   private
 

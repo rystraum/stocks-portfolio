@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DividendCalendarComponent < ViewComponent::Base
   def initialize(companies:, set:, year:, costs_calculator:)
     @companies = companies

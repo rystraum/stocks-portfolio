@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SwapActivitiesToUuid < ActiveRecord::Migration[6.0]
   def up
     # Step 4: Drop dependent foreign keys (none found for activities)
@@ -9,6 +11,6 @@ class SwapActivitiesToUuid < ActiveRecord::Migration[6.0]
 
   def down
     rename_table :activities, :activities_new
-    # Note: restoring the old table is not implemented here for safety
+    # NOTE: restoring the old table is not implemented here for safety
   end
 end

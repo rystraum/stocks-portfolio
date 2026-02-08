@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DividendMonthComponent < ViewComponent::Base
   def initialize(companies:, set:, year:, month:)
     @companies = companies
@@ -8,7 +10,7 @@ class DividendMonthComponent < ViewComponent::Base
 
   def breakdown
     @set.breakdown[@year][@month] || {}
-  rescue
+  rescue StandardError
     {}
   end
 

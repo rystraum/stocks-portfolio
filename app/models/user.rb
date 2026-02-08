@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  has_many :cash_dividends
-  has_many :stock_dividends
-  has_many :activities
+  has_many :cash_dividends, dependent: :restrict_with_error
+  has_many :stock_dividends, dependent: :restrict_with_error
+  has_many :activities, dependent: :restrict_with_error
   has_many :companies, -> { distinct }, through: :activities
-  has_many :converted_announcements
-  has_many :crypto_activities
+  has_many :converted_announcements, dependent: :restrict_with_error
+  has_many :crypto_activities, dependent: :restrict_with_error
 
   def gravatar_hash
     Digest::MD5.hexdigest email.downcase

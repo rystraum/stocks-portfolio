@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SwapUsersToUuid < ActiveRecord::Migration[6.0]
   def up
     # Step 4: Drop dependent foreign keys
@@ -13,6 +15,6 @@ class SwapUsersToUuid < ActiveRecord::Migration[6.0]
 
   def down
     rename_table :users, :users_new
-    # Note: restoring the old table is not implemented here for safety
+    # NOTE: restoring the old table is not implemented here for safety
   end
 end

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class StockDividendsController < AuthenticatedUserController
-  before_action :set_stock_dividend, only: [:show, :edit, :update, :destroy]
+  before_action :set_stock_dividend, only: %i[show edit update destroy]
 
   # GET /stock_dividends
   # GET /stock_dividends.json
@@ -9,8 +11,7 @@ class StockDividendsController < AuthenticatedUserController
 
   # GET /stock_dividends/1
   # GET /stock_dividends/1.json
-  def show
-  end
+  def show; end
 
   # GET /stock_dividends/new
   def new
@@ -18,8 +19,7 @@ class StockDividendsController < AuthenticatedUserController
   end
 
   # GET /stock_dividends/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /stock_dividends
   # POST /stock_dividends.json
@@ -28,7 +28,7 @@ class StockDividendsController < AuthenticatedUserController
 
     respond_to do |format|
       if @stock_dividend.save
-        format.html { redirect_to @stock_dividend, notice: 'Stock dividend was successfully created.' }
+        format.html { redirect_to @stock_dividend, notice: "Stock dividend was successfully created." }
         format.json { render :show, status: :created, location: @stock_dividend }
       else
         format.html { render :new }
@@ -42,7 +42,7 @@ class StockDividendsController < AuthenticatedUserController
   def update
     respond_to do |format|
       if @stock_dividend.update(stock_dividend_params)
-        format.html { redirect_to @stock_dividend, notice: 'Stock dividend was successfully updated.' }
+        format.html { redirect_to @stock_dividend, notice: "Stock dividend was successfully updated." }
         format.json { render :show, status: :ok, location: @stock_dividend }
       else
         format.html { render :edit }
@@ -56,19 +56,20 @@ class StockDividendsController < AuthenticatedUserController
   def destroy
     @stock_dividend.destroy
     respond_to do |format|
-      format.html { redirect_to stock_dividends_url, notice: 'Stock dividend was successfully destroyed.' }
+      format.html { redirect_to stock_dividends_url, notice: "Stock dividend was successfully destroyed." }
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_stock_dividend
-      @stock_dividend = current_user.stock_dividends.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def stock_dividend_params
-      params.require(:stock_dividend).permit(:company_id, :amount, :pay_date, :ex_date)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_stock_dividend
+    @stock_dividend = current_user.stock_dividends.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def stock_dividend_params
+    params.require(:stock_dividend).permit(:company_id, :amount, :pay_date, :ex_date)
+  end
 end

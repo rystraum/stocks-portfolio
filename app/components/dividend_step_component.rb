@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DividendStepComponent < ViewComponent::Base
   def initialize(set:, year:, month:)
     @set = set
@@ -6,7 +8,9 @@ class DividendStepComponent < ViewComponent::Base
   end
 
   def breakdown
-    @set.breakdown[@year][@month].to_a.sort rescue []
+    @set.breakdown[@year][@month].to_a.sort
+  rescue StandardError
+    []
   end
 
   def total_count_this_month

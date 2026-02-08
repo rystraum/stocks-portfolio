@@ -42,7 +42,7 @@ class PriceUpdatesController < AuthenticatedUserController
   def update
     respond_to do |format|
       if @price_update.update(price_update_params)
-        format.html { redirect_to @price_update, notice: 'Price update was successfully updated.' }
+        format.html { redirect_to @price_update, notice: "Price update was successfully updated." }
         format.json { render :show, status: :ok, location: @price_update }
       else
         format.html { render :edit }
@@ -56,7 +56,7 @@ class PriceUpdatesController < AuthenticatedUserController
   def destroy
     @price_update.destroy
     respond_to do |format|
-      format.html { redirect_to price_updates_url, notice: 'Price update was successfully destroyed.' }
+      format.html { redirect_to price_updates_url, notice: "Price update was successfully destroyed." }
       format.json { head :no_content }
     end
   end

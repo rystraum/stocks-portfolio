@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # TODO: Rename from PriceUpdateJob to more generic scraping
 
 class PriceUpdateJob < ApplicationJob

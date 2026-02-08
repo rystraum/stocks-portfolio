@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FinalizeConvertedAnnouncementsToUuid < ActiveRecord::Migration[6.0]
   def up
     # Step 4: Drop dependent foreign keys (if any exist)
@@ -10,13 +12,16 @@ class FinalizeConvertedAnnouncementsToUuid < ActiveRecord::Migration[6.0]
     rename_table :converted_announcements_new, :converted_announcements
 
     # Step 6: Re-add foreign keys for uuid columns
-    add_foreign_key :converted_announcements, :dividend_announcements, column: :dividend_announcement_id if !foreign_key_exists?(:converted_announcements, :dividend_announcements)
-    add_foreign_key :converted_announcements, :users, column: :user_id if !foreign_key_exists?(:converted_announcements, :users)
-    add_foreign_key :converted_announcements, :cash_dividends, column: :cash_dividend_id if !foreign_key_exists?(:converted_announcements, :cash_dividends)
+    add_foreign_key :converted_announcements, :dividend_announcements, column: :dividend_announcement_id unless foreign_key_exists?(
+      :converted_announcements, :dividend_announcements,
+    )
+    add_foreign_key :converted_announcements, :users, column: :user_id unless foreign_key_exists?(:converted_announcements, :users)
+    add_foreign_key :converted_announcements, :cash_dividends, column: :cash_dividend_id unless foreign_key_exists?(:converted_announcements,
+                                                                                                                    :cash_dividends,)
   end
 
   def down
     rename_table :converted_announcements, :converted_announcements_new
-    # Note: restoring the old table is not implemented here for safety
+    # NOTE: restoring the old table is not implemented here for safety
   end
 end

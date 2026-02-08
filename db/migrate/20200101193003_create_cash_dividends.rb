@@ -14,22 +14,22 @@ class CreateCashDividends < ActiveRecord::Migration[5.2]
     reversible do |dir|
       dir.up do
         [
-          ['ALI', 163.80, 'Nov 29, 2019',  'Nov 11, 2019'],
-          ['ALI',  158.76, 'Oct 2, 2018',  'Sep 3, 2018'],
-          ['PHN',  118.80, 'Apr 6, 2018',  ''],
-          ['ALI',  158.76, 'Apr 3, 2018',  ''],
-          ['ALI',  129.60, 'Sep 15, 2017',  '']
+          ["ALI", 163.80, "Nov 29, 2019",  "Nov 11, 2019"],
+          ["ALI",  158.76, "Oct 2, 2018",  "Sep 3, 2018"],
+          ["PHN",  118.80, "Apr 6, 2018",  ""],
+          ["ALI",  158.76, "Apr 3, 2018",  ""],
+          ["ALI",  129.60, "Sep 15, 2017",  ""],
         ].each do |arr|
           ticker, amount, pay_date, ex_date = arr
           company = Company.find_by(ticker: ticker)
-          fpay_date = Date.strptime(pay_date, '%h %d, %Y')
-          fex_date = ex_date.blank? ? nil : Date.strptime(ex_date, '%h %d, %Y')
+          fpay_date = Date.strptime(pay_date, "%h %d, %Y")
+          fex_date = ex_date.blank? ? nil : Date.strptime(ex_date, "%h %d, %Y")
           attrs = {
             company: company,
             amount: amount,
             pay_date: fpay_date
           }
-          attrs[:ex_date] = fex_date unless ex_date.blank?
+          attrs[:ex_date] = fex_date if ex_date.present?
 
           CashDividend.where(attrs).first_or_create
         end

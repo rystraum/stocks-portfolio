@@ -1,17 +1,83 @@
+plugins:
+  - rubocop-rails
+  - rubocop-minitest
+
 AllCops:
   NewCops: disable
+  Exclude:
+    - "bin/**/*"
+    - "node_modules/**/*"
+    - "tmp/**/*"
 
 Style/Documentation:
   Enabled: false
 
+Layout/LineLength:
+  Max: 160
+  Exclude:
+    - "db/**/*"
+    - "test/**/*"
+    - "config/**/*"
+
 Style/RedundantReturn:
   Enabled: false
+
+Naming/PredicatePrefix:
+  ForbiddenPrefixes: []
 
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: consistent_comma
 
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+
 Metrics/AbcSize:
-  Max: 50
+  Max: 70
+
+Metrics/CyclomaticComplexity:
+  Max: 20
+
+Metrics/ClassLength:
+  Max: 200
+
+Metrics/BlockLength:
+  Exclude:
+    - "db/schema.rb"
+    - "config/routes.rb"
+    - "app/services/pse.rb"
+    - "db/migrate/**/*"
+
+Metrics/ModuleLength:
+  Exclude:
+    - "app/helpers/tailwind_helper.rb"
+
+Metrics/MethodLength:
+  Max: 45
+  Exclude:
+    - "db/**/*"
+
+Metrics/PerceivedComplexity:
+  Max: 20
 
 Style/NegatedIf:
   EnforcedStyle: postfix
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Lint/MissingSuper:
+  Exclude:
+    - "app/components/**/*"
+
+Rails/SkipsModelValidations:
+  Exclude:
+    - "db/migrate/**/*"
+    - "db/seeds/**/*"
+
+Rails/BulkChangeTable:
+  Exclude:
+    - "db/migrate/**/*"
+
+Rails/ReversibleMigration:
+  Exclude:
+    - "db/migrate/**/*"

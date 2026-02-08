@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 class CostBasisCalculatorTest < ActiveSupport::TestCase
   test "cost_basis happy path 1" do

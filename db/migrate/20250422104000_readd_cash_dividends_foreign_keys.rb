@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReaddCashDividendsForeignKeys < ActiveRecord::Migration[6.0]
   def up
     add_foreign_key :cash_dividends, :companies

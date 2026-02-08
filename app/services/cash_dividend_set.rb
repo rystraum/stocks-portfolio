@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-require 'forwardable'
+
+require "forwardable"
 
 class CashDividendSet
   extend Forwardable
-  attr_accessor :dividends
   attr_reader :dividends, :years, :amounts, :breakdown, :sums
 
   def_delegators :@dividends, :each

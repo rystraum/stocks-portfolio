@@ -20,19 +20,17 @@ class CompaniesController < AuthenticatedUserController
     end
 
     current_user.company_dividends(@company).each do |dividend|
-      next if !dividend.is_a?(CashDividend)
-      next if !dividend.dividend_per_share.blank?
+      next unless dividend.is_a?(CashDividend)
+      next if dividend.dividend_per_share.present?
 
-      puts "Setting meta for #{dividend.id}"
+      Rails.logger.debug "Setting meta for #{dividend.id}"
 
-      dividend.set_meta!(true)
+      dividend.set_meta!(force: true)
     end
   end
 
   def price_update_all_from_pse
-    if !@permissions.can?(:price_update, Company)
-      return redirect_back(fallback_location: companies_url, alert: "No permissions")
-    end
+    return redirect_back(fallback_location: companies_url, alert: "No permissions") unless @permissions.can?(:price_update, Company)
 
     count = PriceUpdateCompanies.new.run!
     respond_to do |format|
@@ -44,9 +42,8 @@ class CompaniesController < AuthenticatedUserController
   end
 
   def price_update_from_pse
-    if !@permissions.can?(:price_update, @company)
-      return redirect_back(fallback_location: @company, alert: "No permissions")
-    end
+    return redirect_back(fallback_location: @company, alert: "No permissions") unless @permissions.can?(:price_update, @company)
+
     price_update = PSE.new(@company).price_update!
 
     redirect_back(fallback_location: @company, alert: "Price update failed.") and return unless price_update.persisted?
@@ -69,31 +66,28 @@ class CompaniesController < AuthenticatedUserController
 
   # GET /companies/new
   def new
-    if !@permissions.can?(:create, Company)
-      return redirect_back(fallback_location: companies_url, alert: "No permissions")
-    end
+    return redirect_back(fallback_location: companies_url, alert: "No permissions") unless @permissions.can?(:create, Company)
+
     @company = Company.new
   end
 
   # GET /companies/1/edit
   def edit
-    if !@permissions.can?(:update, @company)
-      return redirect_back(fallback_location: @company, alert: "No permissions")
-    end
+    return if @permissions.can?(:update, @company)
+
+    return redirect_back(fallback_location: @company, alert: "No permissions")
   end
 
   # POST /companies
   # POST /companies.json
   def create
-    if !@permissions.can?(:create, Company)
-      return redirect_back(fallback_location: companies_url, alert: "No permissions")
-    end
+    return redirect_back(fallback_location: companies_url, alert: "No permissions") unless @permissions.can?(:create, Company)
 
     @company = Company.new(company_params)
 
     respond_to do |format|
       if @company.save
-        format.html { redirect_to @company, notice: 'Company was successfully created.' }
+        format.html { redirect_to @company, notice: "Company was successfully created." }
         format.json { render :show, status: :created, location: @company }
       else
         format.html { render :new }
@@ -105,13 +99,11 @@ class CompaniesController < AuthenticatedUserController
   # PATCH/PUT /companies/1
   # PATCH/PUT /companies/1.json
   def update
-    if !@permissions.can?(:update, @company)
-      return redirect_back(fallback_location: @company, alert: "No permissions")
-    end
+    return redirect_back(fallback_location: @company, alert: "No permissions") unless @permissions.can?(:update, @company)
 
     respond_to do |format|
       if @company.update(company_params)
-        format.html { redirect_to @company, notice: 'Company was successfully updated.' }
+        format.html { redirect_to @company, notice: "Company was successfully updated." }
         format.json { render :show, status: :ok, location: @company }
       else
         format.html { render :edit }
@@ -123,13 +115,11 @@ class CompaniesController < AuthenticatedUserController
   # DELETE /companies/1
   # DELETE /companies/1.json
   def destroy
-    if !@permissions.can?(:delete, @company)
-      return redirect_back(fallback_location: @company, alert: "No permissions")
-    end
+    return redirect_back(fallback_location: @company, alert: "No permissions") unless @permissions.can?(:delete, @company)
 
     @company.destroy
     respond_to do |format|
-      format.html { redirect_to companies_url, notice: 'Company was successfully destroyed.' }
+      format.html { redirect_to companies_url, notice: "Company was successfully destroyed." }
       format.json { head :no_content }
     end
   end
@@ -162,7 +152,7 @@ class CompaniesController < AuthenticatedUserController
       :target_buy_price,
       :target_price_note,
       :dividend_frequency_months,
-      :simply_wall_st_url
+      :simply_wall_st_url,
     )
   end
 end

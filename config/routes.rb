@@ -32,13 +32,13 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :crypto_currencies, only: [:index, :new, :create, :show, :edit, :update]
+  resources :crypto_currencies, only: %i[index new create show edit update]
   resources :crypto_activities
 
   put :update_prices, to: "dashboard#update_prices"
 
-  get '/portfolio/stocks', to: 'portfolio#stocks'
-  get '/portfolio', to: 'portfolio#home'
-  root to: 'portfolio#home'
+  get "/portfolio/stocks", to: "portfolio#stocks"
+  get "/portfolio", to: "portfolio#home"
+  root to: "portfolio#home"
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
