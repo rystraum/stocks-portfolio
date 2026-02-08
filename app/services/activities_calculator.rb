@@ -33,16 +33,17 @@ class ActivitiesCalculator
 
   def cps_on_buy
     return 0 if bought_shares.zero?
+
     buy_costs / bought_shares
   end
 
   protected
 
   def buy
-    @buy ||= activities.select { |a| a.activity_type == 'BUY' }
+    @buy ||= activities.select { |a| a.activity_type == "BUY" }
   end
 
   def sell
-    @sell ||= activities.select { |a| a.activity_type == 'SELL' }
+    @sell ||= activities.select { |a| a.activity_type == "SELL" }
   end
 end

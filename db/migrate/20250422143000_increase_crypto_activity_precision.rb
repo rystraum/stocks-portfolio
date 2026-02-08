@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IncreaseCryptoActivityPrecision < ActiveRecord::Migration[6.0]
   def change
     change_column :crypto_activities, :crypto_amount, :decimal, precision: 30, scale: 20

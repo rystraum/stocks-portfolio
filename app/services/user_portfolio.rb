@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserPortfolio
   attr_accessor :user
 
@@ -5,9 +7,7 @@ class UserPortfolio
     @user = user
   end
 
-  def companies
-    user.companies
-  end
+  delegate :companies, to: :user
 
   def company_ids
     @company_ids ||= companies.ids

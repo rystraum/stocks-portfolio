@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DividendLadderComponent < ViewComponent::Base
   def initialize(set:, year:, costs_calculator:)
     @costs_calculator = costs_calculator

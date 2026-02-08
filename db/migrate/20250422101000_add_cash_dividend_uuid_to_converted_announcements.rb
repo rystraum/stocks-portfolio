@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddCashDividendUuidToConvertedAnnouncements < ActiveRecord::Migration[6.0]
   def up
     # Step 6: Create temporary column for UUID reference

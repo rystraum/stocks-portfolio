@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class ChangeCryptoCurrenciesToUuid < ActiveRecord::Migration[6.0]
   def up
-    enable_extension 'pgcrypto' unless extension_enabled?('pgcrypto')
+    enable_extension "pgcrypto" unless extension_enabled?("pgcrypto")
 
     # Create new table with UUID as primary key
     create_table :crypto_currencies_new, id: :uuid do |t|

@@ -14,23 +14,21 @@ class ConvertDividendAnnouncement
   end
 
   def call
-    if @dividend_announcement.payout_date > Date.today
-      return [false, 'Dividend announcement pay date not in the future']
-    end
+    return [false, "Dividend announcement pay date not in the future"] if @dividend_announcement.payout_date > Time.zone.today
 
     if existing_cash_dividend.present?
       create_converted(existing_cash_dividend)
-      return [true, 'Successfully linked existing dividend']
+      return [true, "Successfully linked existing dividend"]
     end
 
     cash_dividend = create_cash_dividend
 
     if cash_dividend.persisted?
       create_converted(cash_dividend)
-      return [true, 'Successfully created new cash dividend']
+      return [true, "Successfully created new cash dividend"]
     end
 
-    return [false, 'Error saving cash dividend']
+    return [false, "Error saving cash dividend"]
   end
 
   private

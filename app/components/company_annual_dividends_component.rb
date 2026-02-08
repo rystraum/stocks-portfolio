@@ -9,7 +9,6 @@ class CompanyAnnualDividendsComponent < ViewComponent::Base
     @dividend_years = @dividends.group_by { |d| d.pay_date.year }.sort
   end
 
-  # rubocop:disable Metrics/MethodLength
   def years
     @dividend_years.collect do |year, dividends|
       total = dividends.sum(&:amount)
@@ -25,5 +24,4 @@ class CompanyAnnualDividendsComponent < ViewComponent::Base
       }
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end

@@ -2,11 +2,11 @@
 
 class Company < ApplicationRecord
   validates :ticker, uniqueness: true, presence: true
-  has_many :activities
-  has_many :stock_dividends
-  has_many :cash_dividends
-  has_many :price_updates
-  has_many :dividend_announcements, dependent: :destroy
+  has_many :activities, dependent: :restrict_with_error
+  has_many :stock_dividends, dependent: :restrict_with_error
+  has_many :cash_dividends, dependent: :restrict_with_error
+  has_many :price_updates, dependent: :restrict_with_error
+  has_many :dividend_announcements, dependent: :restrict_with_error
 
   scope :alphabetical, -> { order(:ticker) }
   scope :active, -> { where(inactive: false) }
@@ -28,25 +28,25 @@ class Company < ApplicationRecord
   end
 
   def last_price
-    @last_price ||= price_updates.order('datetime desc').first&.price || 0
+    @last_price ||= price_updates.order("datetime desc").first&.price || 0
   end
 
   def last_price_timestamp
-    @last_price_timestamp ||= price_updates.order('datetime desc').first&.datetime&.to_datetime || DateTime.now
+    @last_price_timestamp ||= price_updates.order("datetime desc").first&.datetime&.to_datetime || DateTime.now
   end
 
-  def history(user)
+  def history(_user)
     @history ||= (activities + stock_dividends + cash_dividends).sort_by do |thing|
       if thing.is_a?(Activity)
         thing.date
       else
-        (thing.ex_date.blank? ? thing.pay_date : thing.ex_date)
+        thing.ex_date.presence || thing.pay_date
       end
     end
   end
 
   def can_update_from_pse?
-    !pse_company_id.blank? && !pse_security_id.blank?
+    pse_company_id.present? && pse_security_id.present?
   end
 
   def is_preferred?
@@ -55,11 +55,13 @@ class Company < ApplicationRecord
 
   def pse_url
     return "" if pse_company_id.blank?
+
     "https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id}"
   end
 
   def pse_dividends_url
     return "" if pse_company_id.blank?
+
     "https://edge.pse.com.ph/companyPage/dividends_and_rights_form.do?cmpy_id=#{pse_company_id}"
   end
 end

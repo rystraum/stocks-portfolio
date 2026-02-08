@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CompanyInfoComponent < ViewComponent::Base
   attr_reader :company, :last_price
 
@@ -7,12 +9,13 @@ class CompanyInfoComponent < ViewComponent::Base
   end
 
   def with_company_name?
-    !@company.name.blank?
+    @company.name.present?
   end
 
   def simply_wall_st_url
-    return company.simply_wall_st_url if !company.simply_wall_st_url.blank?
-    return "" if !with_company_name?
+    return company.simply_wall_st_url if company.simply_wall_st_url.present?
+    return "" unless with_company_name?
+
     "https://simplywall.st/stocks/ph/#{@company.industry.parameterize.downcase}/pse-#{@company.ticker.downcase}/#{@company.name.parameterize}-shares"
   end
 

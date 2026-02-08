@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FinalizePriceUpdateUuidForeignKeys < ActiveRecord::Migration[6.0]
   def up
     # Step 8: Rename old foreign key columns

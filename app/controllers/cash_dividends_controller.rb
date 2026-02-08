@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CashDividendsController < AuthenticatedUserController
   before_action :set_cash_dividend, only: %i[show edit update destroy update_meta]
 
@@ -5,11 +7,11 @@ class CashDividendsController < AuthenticatedUserController
   # GET /cash_dividends.json
   def index
     @costs_calculator = CostsCalculator.new(current_user.activities)
-    @cash_dividends = CashDividendSet.new(current_user.cash_dividends.order('pay_date desc, ex_date desc'))
-    @stock_dividends = current_user.stock_dividends.order('pay_date desc')
+    @cash_dividends = CashDividendSet.new(current_user.cash_dividends.order("pay_date desc, ex_date desc"))
+    @stock_dividends = current_user.stock_dividends.order("pay_date desc")
     @companies = CompanySet.new(
       UserPortfolio.new(current_user).company_ids,
-      current_user
+      current_user,
     ).companies
   end
 
@@ -32,7 +34,7 @@ class CashDividendsController < AuthenticatedUserController
 
     respond_to do |format|
       if @cash_dividend.save
-        format.html { redirect_to @cash_dividend, notice: 'Cash dividend was successfully created.' }
+        format.html { redirect_to @cash_dividend, notice: "Cash dividend was successfully created." }
         format.json { render :show, status: :created, location: @cash_dividend }
       else
         format.html { render :new }
@@ -46,7 +48,7 @@ class CashDividendsController < AuthenticatedUserController
   def update
     respond_to do |format|
       if @cash_dividend.update(cash_dividend_params)
-        format.html { redirect_back(fallback_location: @cash_dividend, notice: 'Cash dividend was successfully updated.') }
+        format.html { redirect_back(fallback_location: @cash_dividend, notice: "Cash dividend was successfully updated.") }
         format.json { render :show, status: :ok, location: @cash_dividend }
       else
         format.html { render :edit }
@@ -60,16 +62,16 @@ class CashDividendsController < AuthenticatedUserController
   def destroy
     @cash_dividend.destroy
     respond_to do |format|
-      format.html { redirect_to cash_dividends_url, notice: 'Cash dividend was successfully destroyed.' }
+      format.html { redirect_to cash_dividends_url, notice: "Cash dividend was successfully destroyed." }
       format.json { head :no_content }
     end
   end
 
   def update_meta
-    @cash_dividend.set_meta(true)
+    @cash_dividend.set_meta(force: true)
     respond_to do |format|
       if @cash_dividend.save
-        format.html { redirect_back(fallback_location: @cash_dividend, notice: 'Cash dividend was successfully updated.') }
+        format.html { redirect_back(fallback_location: @cash_dividend, notice: "Cash dividend was successfully updated.") }
         format.json { render :show, status: :ok, location: @cash_dividend }
       else
         format.html { render :edit }

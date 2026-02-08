@@ -12,7 +12,7 @@ class CreateCompanies < ActiveRecord::Migration[5.2]
     reversible do |dir|
       dir.up do
         [
-          ['ALI', 'Real Estate'],
+          ["ALI", "Real Estate"],
           %w[BPI Finance],
           %w[DMC Holding],
           %w[FBP2 Preferred],
@@ -25,7 +25,7 @@ class CreateCompanies < ActiveRecord::Migration[5.2]
           %w[SMC2I Preferred],
           %w[URC Industrial],
           %w[EDC Industrial],
-          %w[FGENF Preferred]
+          %w[FGENF Preferred],
         ].each do |arr|
           ticker, industry = arr
           c = Company.where(ticker: ticker).first_or_create

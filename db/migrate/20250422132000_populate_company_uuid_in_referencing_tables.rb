@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PopulateCompanyUuidInReferencingTables < ActiveRecord::Migration[6.0]
   def up
     add_column :activities, :company_uuid, :uuid

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddUserIdToStockDividends < ActiveRecord::Migration[6.0]
   def change
     add_reference :stock_dividends, :user, null: true, foreign_key: true

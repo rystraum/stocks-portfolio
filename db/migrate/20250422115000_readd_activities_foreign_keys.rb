@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ReaddActivitiesForeignKeys < ActiveRecord::Migration[6.0]
   def up
     add_foreign_key :activities, :companies

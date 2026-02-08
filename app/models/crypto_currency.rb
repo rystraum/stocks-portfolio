@@ -14,8 +14,8 @@
 #
 
 class CryptoCurrency < ApplicationRecord
-  COINSPH_DATASOURCE = "https://api.pro.coins.ph/".freeze
-  COINMARKETCAP_DATASOURCE = "https://pro-api.coinmarketcap.com/".freeze
+  COINSPH_DATASOURCE = "https://api.pro.coins.ph/"
+  COINMARKETCAP_DATASOURCE = "https://pro-api.coinmarketcap.com/"
 
   self.primary_key = :id
   validates :name, presence: true
@@ -50,22 +50,22 @@ class CryptoCurrency < ApplicationRecord
   end
 
   def fiat
-    return quote_token if !quote_token.blank?
+    return quote_token if quote_token.present?
 
-    return 'USDT' if ticker.end_with?('USDT') && ticker != 'USDT'
-    return 'USDC' if ticker.end_with?('USDC') && ticker != 'USDC'
+    return "USDT" if ticker.end_with?("USDT") && ticker != "USDT"
+    return "USDC" if ticker.end_with?("USDC") && ticker != "USDC"
 
-    return 'PHP'
+    return "PHP"
   end
 
   def pretty_ticker
-    return ticker if ticker == 'USDT' || ticker == 'USDC'
+    return ticker if %w[USDT USDC].include?(ticker)
 
-    return ticker.gsub('USDT', '').gsub('USDC', '')
+    return ticker.gsub("USDT", "").gsub("USDC", "")
   end
 
   def is_php?
-    quote_token == 'PHP'
+    quote_token == "PHP"
   end
 
   def to_s

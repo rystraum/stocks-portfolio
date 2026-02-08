@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
 # rubocop:disable Metrics/AbcSize
-# rubocop:disable Metrics/CyclomaticComplexity
 # rubocop:disable Metrics/MethodLength
-# rubocop:disable Metrics/ClassLength
-# rubocop:disable Metrics/PerceivedComplexity
 
 class PSE
   attr_accessor :company, :company_id, :pse_company_id, :pse_security_id
 
-  def initialize(company, force = false)
+  def initialize(company, force: false)
     @company = company
     @company_id = company.id
     @can_update = company.can_update_from_pse?
@@ -38,29 +35,29 @@ class PSE
     #   </span>
     # </form>
     begin
-      date_string = document.css('form[name=form1]').first.children[5].children.first.to_s
-      datetime = DateTime.strptime("#{date_string.match(/As of (.*)/)[1]} +0800", '%h %d, %Y %H:%M %p %z')
-    rescue NoMethodError => e
+      date_string = document.css("form[name=form1]").first.children[5].children.first.to_s
+      datetime = DateTime.strptime("#{date_string.match(/As of (.*)/)[1]} +0800", "%h %d, %Y %H:%M %p %z")
+    rescue NoMethodError
       # binding.pry if Rails.env.development?
       raise "HTML does not match expected format: #{document}"
-    rescue Date::Error => e
+    rescue Date::Error
       # binding.pry if Rails.env.development?
       raise "HTML does not match expected format: #{document}"
     end
 
-    last_trade_label = document.css('table.view').last.children[3].children[1].to_s
-    raise 'HTML does not match expected format' unless last_trade_label.match?(/Last Traded Price/)
+    last_trade_label = document.css("table.view").last.children[3].children[1].to_s
+    raise "HTML does not match expected format" unless last_trade_label.match?(/Last Traded Price/)
 
-    last_trade_value = document.css('table.view').last.children[3].children[3].children.to_s.sub("\r\n", '').sub(',',
-                                                                                                                 '').to_d
+    last_trade_value = document.css("table.view").last.children[3].children[3].children.to_s.sub("\r\n", "").sub(",",
+                                                                                                                 "",).to_d
 
     final_price = last_trade_value.zero? || last_trade_value.blank? ? company.last_price : last_trade_value
 
-    return company.price_updates.order('created_at desc').first if final_price.blank?
+    return company.price_updates.order("created_at desc").first if final_price.blank?
 
     price_update = company.price_updates.where(datetime: datetime).first_or_create do |update|
       update.price = final_price
-      update.notes = final_price.zero? ? response.body : ''
+      update.notes = final_price.zero? ? response.body : ""
     end
 
     price_update.update(price: final_price) if @force
@@ -69,71 +66,71 @@ class PSE
   end
 
   def fetch_history
-    require 'net/http'
-    require 'uri'
+    require "net/http"
+    require "uri"
 
-    uri = URI.parse('https://edge.pse.com.ph/common/DisclosureCht.ax')
+    uri = URI.parse("https://edge.pse.com.ph/common/DisclosureCht.ax")
     request = Net::HTTP::Post.new(uri)
     data = {
       'cmpy_id': pse_company_id.to_s,
       'security_id': pse_security_id.to_s,
-      'startDate': 30.days.ago.strftime('%m-%d-%Y'),
-      'endDate': Date.today.strftime('%m-%d-%Y')
-    }.to_json.unpack('C*')
+      'startDate': 30.days.ago.strftime("%m-%d-%Y"),
+      'endDate': Time.zone.today.strftime("%m-%d-%Y")
+    }.to_json.unpack("C*")
 
-    request['Connection'] = 'keep-alive'
-    request['Pragma'] = 'no-cache'
-    request['Cache-Control'] = 'no-cache'
-    request['Dnt'] = '1'
-    request['X-Requested-With'] = 'XMLHttpRequest'
-    request['User-Agent'] =
-      'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
-    request['Accept'] = 'Accept: application/json, text/javascript, */*; q=0.01'
-    request['Origin'] = 'https://edge.pse.com.ph'
-    request['Content-Type'] = 'application/json'
-    request['Sec-Fetch-Site'] = 'same-origin'
-    request['Sec-Fetch-Mode'] = 'cors'
-    request['Sec-Fetch-Dest'] = 'empty'
-    request['Referer'] = "https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id}&security=#{pse_security_id}"
-    request['Accept-Language'] = 'en-US,en;q=0.9'
-    request['Cookie'] =
-      'Cookie: JSESSIONID=uhHyB6YqPkdIEjpEWZ9hVwrH.server-ep; BIGipServerPOOL_EDGE=1427584378.20480.0000; access=approve'
-    request.content_type = 'application/octet-stream'
+    request["Connection"] = "keep-alive"
+    request["Pragma"] = "no-cache"
+    request["Cache-Control"] = "no-cache"
+    request["Dnt"] = "1"
+    request["X-Requested-With"] = "XMLHttpRequest"
+    request["User-Agent"] =
+      "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
+    request["Accept"] = "Accept: application/json, text/javascript, */*; q=0.01"
+    request["Origin"] = "https://edge.pse.com.ph"
+    request["Content-Type"] = "application/json"
+    request["Sec-Fetch-Site"] = "same-origin"
+    request["Sec-Fetch-Mode"] = "cors"
+    request["Sec-Fetch-Dest"] = "empty"
+    request["Referer"] = "https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id}&security=#{pse_security_id}"
+    request["Accept-Language"] = "en-US,en;q=0.9"
+    request["Cookie"] =
+      "Cookie: JSESSIONID=uhHyB6YqPkdIEjpEWZ9hVwrH.server-ep; BIGipServerPOOL_EDGE=1427584378.20480.0000; access=approve"
+    request.content_type = "application/octet-stream"
     request.set_form_data(data)
 
     req_options = {
-      use_ssl: uri.scheme == 'https'
+      use_ssl: uri.scheme == "https"
     }
 
     response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
       http.request(request)
     end
 
-    puts response.code
+    Rails.logger.debug response.code
     response.body
   end
 
   def dividend_announcements!
     headers = {}
-    headers['Host'] = 'edge.pse.com.ph'
-    headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:136.0) Gecko/20100101 Firefox/136.0'
-    headers['Accept'] = '*/*'
-    headers['Accept-Language'] = 'en-US,en;q=0.5'
-    headers['Accept-Encoding'] = 'gzip, deflate, br, zstd'
-    headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
-    headers['X-Requested-With'] = 'XMLHttpRequest'
-    headers['Content-Length'] = '11'
-    headers['Origin'] = 'https://edge.pse.com.ph'
-    headers['Connection'] = 'keep-alive'
-    headers['Referer'] = "https://edge.pse.com.ph/companyPage/dividends_and_rights_form.do?cmpy_id=#{pse_company_id}"
-    headers['Cookie'] = 'JSESSIONID=u4rIcBK2baU9ZFJwJPKf4ALJ.server-ep; BIGipServerPOOL_EDGE=1427584378.20480.0000'
-    headers['Sec-Fetch-Dest'] = 'empty'
-    headers['Sec-Fetch-Mode'] = 'cors'
-    headers['Sec-Fetch-Site'] = 'same-origin'
-    headers['Sec-GPC'] = '1'
-    headers['TE'] = 'trailers'
+    headers["Host"] = "edge.pse.com.ph"
+    headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:136.0) Gecko/20100101 Firefox/136.0"
+    headers["Accept"] = "*/*"
+    headers["Accept-Language"] = "en-US,en;q=0.5"
+    headers["Accept-Encoding"] = "gzip, deflate, br, zstd"
+    headers["Content-Type"] = "application/x-www-form-urlencoded; charset=UTF-8"
+    headers["X-Requested-With"] = "XMLHttpRequest"
+    headers["Content-Length"] = "11"
+    headers["Origin"] = "https://edge.pse.com.ph"
+    headers["Connection"] = "keep-alive"
+    headers["Referer"] = "https://edge.pse.com.ph/companyPage/dividends_and_rights_form.do?cmpy_id=#{pse_company_id}"
+    headers["Cookie"] = "JSESSIONID=u4rIcBK2baU9ZFJwJPKf4ALJ.server-ep; BIGipServerPOOL_EDGE=1427584378.20480.0000"
+    headers["Sec-Fetch-Dest"] = "empty"
+    headers["Sec-Fetch-Mode"] = "cors"
+    headers["Sec-Fetch-Site"] = "same-origin"
+    headers["Sec-GPC"] = "1"
+    headers["TE"] = "trailers"
 
-    url = 'https://edge.pse.com.ph/companyPage/dividends_and_rights_list.ax?DividendsOrRights=Dividends'
+    url = "https://edge.pse.com.ph/companyPage/dividends_and_rights_list.ax?DividendsOrRights=Dividends"
     body = {
       cmpy_id: pse_company_id
     }
@@ -155,33 +152,33 @@ class PSE
     #   <td><a>C01864-2025</a></td> - Circular Number
     # </tr>
 
-    rows = document.css('table tbody tr') || []
+    rows = document.css("table tbody tr") || []
     created_announcements = 0
 
     rows.each do |row|
-      tds = row.children.select { |e| e.to_s.include?('td') }
+      tds = row.children.select { |e| e.to_s.include?("td") }
       share_class = tds[0].text
-      next if share_class.include?('no data')
+      next if share_class.include?("no data")
 
       dividend_type = tds[1].text
-      next if dividend_type.downcase.include?('stock')
+      next if dividend_type.downcase.include?("stock")
 
       # this regex will remove all non-numeric characters except for the decimal point
       # from the amount string. This is because the amount string may contain non-numeric
       # characters such as commas or currency symbols.
       amount_raw = tds[2].text.downcase
-      amount = amount_raw.gsub(/[^0-9.]/, '').to_d
+      amount = amount_raw.gsub(/[^0-9.]/, "").to_d
 
-      ex_date = Date.strptime(tds[3].text, '%b %d, %Y')
-      record_date = Date.strptime(tds[4].text, '%b %d, %Y')
-      payout_date = Date.strptime(tds[5].text, '%b %d, %Y')
+      ex_date = Date.strptime(tds[3].text, "%b %d, %Y")
+      record_date = Date.strptime(tds[4].text, "%b %d, %Y")
+      payout_date = Date.strptime(tds[5].text, "%b %d, %Y")
       circular_number = tds[6].text
 
-      raise 'amount cannot be 0' if amount.zero?
+      raise "amount cannot be 0" if amount.zero?
 
       if company.is_preferred?
         next if share_class != company.ticker
-      elsif share_class != 'COMMON'
+      elsif share_class != "COMMON"
         next
       end
 
@@ -194,13 +191,13 @@ class PSE
         record_date: record_date,
         payout_date: payout_date,
         circular_number: circular_number,
-        raw_html: row.to_html.to_s
+        raw_html: row.to_html.to_s,
       )
 
       created_announcements += 1 if announcement.persisted?
     end
 
-    puts "Created #{ActionController::Base.helpers.pluralize(created_announcements, 'announcement')}"
+    Rails.logger.debug "Created #{ActionController::Base.helpers.pluralize(created_announcements, 'announcement')}"
 
     return created_announcements
   rescue StandardError => e
@@ -211,25 +208,25 @@ class PSE
     pages.times do |page|
       data = {
         pageNo: page + 1,
-        dateSortType: 'DESC',
-        cmpySortType: 'ASC',
-        symbolSortType: 'ASC',
+        dateSortType: "DESC",
+        cmpySortType: "ASC",
+        symbolSortType: "ASC",
         companyId: nil,
         keyword: nil,
-        sector: 'ALL',
-        subsector: 'ALL'
+        sector: "ALL",
+        subsector: "ALL"
       }
 
-      body = HTTParty.post('https://edge.pse.com.ph/companyDirectory/search.ax', body: data)
-      document = Nokogiri::HTML.parse(body.gsub("\r\n", '').gsub(/\s{2,}/, ''))
+      body = HTTParty.post("https://edge.pse.com.ph/companyDirectory/search.ax", body: data)
+      document = Nokogiri::HTML.parse(body.gsub("\r\n", "").gsub(/\s{2,}/, ""))
 
-      rows = document.css('tr')
+      rows = document.css("tr")
       rows.each do |row|
-        next if row.css('th').count.positive?
+        next if row.css("th").count.positive?
 
         name_column, ticker_column, sector_column = row.children
 
-        name = name_column.text
+        name_column.text
         ticker = ticker_column.text
         sector = sector_column.text
 
@@ -250,7 +247,4 @@ class PSE
 end
 
 # rubocop:enable Metrics/AbcSize
-# rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/MethodLength
-# rubocop:enable Metrics/ClassLength
-# rubocop:enable Metrics/PerceivedComplexity

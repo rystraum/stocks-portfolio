@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class ChangeStockDividendsToUuid < ActiveRecord::Migration[6.0]
   def up
-    enable_extension 'pgcrypto' unless extension_enabled?('pgcrypto')
+    enable_extension "pgcrypto" unless extension_enabled?("pgcrypto")
 
     # Step 2: Create new table with UUID primary key, retaining all columns and old_id
     create_table :stock_dividends_new, id: :uuid do |t|

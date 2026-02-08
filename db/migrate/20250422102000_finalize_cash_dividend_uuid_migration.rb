@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FinalizeCashDividendUuidMigration < ActiveRecord::Migration[6.0]
   def up
     # Step 8: Rename old foreign key column
@@ -18,6 +20,7 @@ class FinalizeCashDividendUuidMigration < ActiveRecord::Migration[6.0]
     rename_column :converted_announcements, :old_cash_dividend_id, :cash_dividend_id
     remove_index :converted_announcements, :cash_dividend_id if index_exists?(:converted_announcements, :cash_dividend_id)
     add_index :converted_announcements, :cash_dividend_id
-    remove_foreign_key :converted_announcements, column: :cash_dividend_id if foreign_key_exists?(:converted_announcements, :cash_dividends_new, column: :cash_dividend_id)
+    remove_foreign_key :converted_announcements, column: :cash_dividend_id if foreign_key_exists?(:converted_announcements, :cash_dividends_new,
+                                                                                                  column: :cash_dividend_id,)
   end
 end

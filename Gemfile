@@ -28,8 +28,8 @@ group :development, :test do
   gem "byebug", platforms: %i[mri windows]
   gem "pry"
   gem "rubocop"
-  gem "rubocop-rails"
   gem "rubocop-minitest"
+  gem "rubocop-rails"
 end
 
 group :development do

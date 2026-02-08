@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class CreateCryptoActivities < ActiveRecord::Migration[6.0]
   def change
-    enable_extension 'pgcrypto' unless extension_enabled?('pgcrypto')
+    enable_extension "pgcrypto" unless extension_enabled?("pgcrypto")
     create_table :crypto_activities, id: :uuid do |t|
       t.uuid :user_id, null: false
       t.uuid :crypto_currency_id, null: false

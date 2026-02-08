@@ -1,41 +1,48 @@
+# frozen_string_literal: true
+
 module TailwindHelper
   def header_link_to(text, path, **args)
     is_active_path = request.path == path
 
     if is_active_path
       css_class =
-        'bg-gray-900 text-white'
+        "bg-gray-900 text-white"
       args[:aria] ||= {}
-      args[:aria][:current] = 'page'
+      args[:aria][:current] = "page"
     else
       css_class =
-        'text-gray-300 hover:bg-gray-700 hover:text-white'
+        "text-gray-300 hover:bg-gray-700 hover:text-white"
     end
 
     args[:class] = "rounded-md text-sm font-medium border-0 px-3 py-2 #{css_class} #{args[:class]}"
     link_to(text, path, args)
   end
 
+  # rubocop:disable Rails/OutputSafety
   def link_icon
     i = <<~HEREDOC
-    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-      <polyline points="15 3 21 3 21 9"></polyline>
-      <line x1="10" y1="14" x2="21" y2="3"></line>
-    </svg>
+      <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        <polyline points="15 3 21 3 21 9"></polyline>
+        <line x1="10" y1="14" x2="21" y2="3"></line>
+      </svg>
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def info_icon
     i = <<~HEREDOC
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-      <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 0 1 .67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 1 1-.671-1.34l.041-.022ZM12 9a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
-    </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 0 1 .67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 1 1-.671-1.34l.041-.022ZM12 9a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+      </svg>
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def home_icon
     i = <<~HEREDOC
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -44,14 +51,18 @@ module TailwindHelper
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def chevron_down_icon
     i = <<~HEREDOC
       <svg class="w-5 h-5 ml-2 -mr-1" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def chevron_left_icon
     i = <<~HEREDOC
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -60,7 +71,9 @@ module TailwindHelper
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def speaker_icon
     i = <<~HEREDOC
       <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -69,7 +82,9 @@ module TailwindHelper
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def x_icon
     i = <<~HEREDOC
       <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -78,7 +93,9 @@ module TailwindHelper
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def closed_lock_icon
     i = <<~HEREDOC
       <svg class="h-6 w-6 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -87,7 +104,9 @@ module TailwindHelper
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def eye_icon
     i = <<~HEREDOC
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -97,7 +116,9 @@ module TailwindHelper
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def trash_icon
     i = <<~HEREDOC
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -106,7 +127,9 @@ module TailwindHelper
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def edit_icon
     i = <<~HEREDOC
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -116,7 +139,9 @@ module TailwindHelper
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def add_icon
     i = <<~HEREDOC
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -125,7 +150,9 @@ module TailwindHelper
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def save_as_icon
     i = <<~HEREDOC
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -134,13 +161,16 @@ module TailwindHelper
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 
+  # rubocop:disable Rails/OutputSafety
   def refresh_icon
     i = <<~HEREDOC
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-      </svg>  
+      </svg>#{'  '}
     HEREDOC
     i.html_safe
   end
+  # rubocop:enable Rails/OutputSafety
 end

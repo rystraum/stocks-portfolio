@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PopulateDividendAnnouncementUuidInReferencingTables < ActiveRecord::Migration[6.0]
   def up
     # Step 6: Create temporary columns to store the new UUID foreign keys

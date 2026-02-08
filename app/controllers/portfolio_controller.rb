@@ -17,12 +17,10 @@ class PortfolioController < AuthenticatedUserController
       current_user,
     )
 
-    if params[:sort_by]
-      company_set.sort_by = params[:sort_by]
-    end
+    company_set.sort_by = params[:sort_by] if params[:sort_by]
 
     respond_to do |format|
-      format.html { render 'stocks', locals: { company_set: company_set } }
+      format.html { render "stocks", locals: { company_set: company_set } }
       format.json do
         include_companies = params[:include_companies].to_s == "true"
         render json: company_set.to_json(include_companies: include_companies)

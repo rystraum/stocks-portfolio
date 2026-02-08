@@ -2,6 +2,7 @@
 
 class PortfolioItem
   attr_reader :spent, :current_value
+
   def initialize(spent:, current_value:)
     @spent = spent
     @current_value = current_value

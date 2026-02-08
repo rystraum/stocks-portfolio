@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FinalizeUserUuidForeignKeys < ActiveRecord::Migration[6.0]
   def up
     # Step 9: Rename temporary UUID columns to original foreign key names

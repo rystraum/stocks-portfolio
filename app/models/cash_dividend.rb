@@ -12,7 +12,7 @@ class CashDividend < ApplicationRecord
         value,
         permitted_classes: [Date, Time, ActiveSupport::HashWithIndifferentAccess, BigDecimal],
         permitted_symbols: [],
-        aliases: true
+        aliases: true,
       ) || {}
     rescue Psych::SyntaxError
       {}
@@ -37,7 +37,7 @@ class CashDividend < ApplicationRecord
 
   before_update :set_meta
 
-  belongs_to :last_price_update, class_name: 'PriceUpdate', foreign_key: :last_price_update_id, optional: true
+  belongs_to :last_price_update, class_name: "PriceUpdate", optional: true
 
   def display_date
     if ex_date.blank?
@@ -50,7 +50,7 @@ class CashDividend < ApplicationRecord
   def last_price
     return last_price_update if last_price_update.present?
 
-    lpu = company.price_updates.where('date(datetime) <= ?', ex_date).order('datetime desc').first
+    lpu = company.price_updates.where("date(datetime) <= ?", ex_date).order("datetime desc").first
     self.last_price_update = lpu
     save
 
@@ -71,27 +71,27 @@ class CashDividend < ApplicationRecord
     dividend_per_share / last_price.price * 100
   end
 
-  def update_dps(val, force = false)
+  def update_dps(val, force: false)
     update(dividend_per_share: val) if dividend_per_share.blank? || force
   end
 
-  def update_stocks(val, force = false)
+  def update_stocks(val, force: false)
     update(stocks_at_ex_date: val) if stocks_at_ex_date.blank? || force
   end
 
-  def set_meta(force = false)
+  def set_meta(force: false)
     return if ex_date.blank?
     return if dividend_per_share.present? && stocks_at_ex_date.present? && !force
 
-    ac = ActivitiesCalculator.new(company.activities.where('date < ?', ex_date).where(user: user))
+    ac = ActivitiesCalculator.new(company.activities.where("date < ?", ex_date).where(user: user))
     current_shares = ac.ending_shares
 
     self.dividend_per_share = amount / current_shares
     self.stocks_at_ex_date = current_shares
   end
 
-  def set_meta!(force = false)
-    set_meta(force)
+  def set_meta!(force: false)
+    set_meta(force: force)
     save
   end
 end
