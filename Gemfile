@@ -32,6 +32,10 @@ group :development, :test do
   gem "rubocop-rails"
 end
 
+group :test do
+  gem "simplecov", require: false
+end
+
 group :development do
   gem "listen", "~> 3.3"
   gem "spring", ">= 3.0"
