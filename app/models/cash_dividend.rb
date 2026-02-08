@@ -1,6 +1,28 @@
 # frozen_string_literal: true
 
 class CashDividend < ApplicationRecord
+  class MetaCoder
+    def self.load(value)
+      return {} if value.blank?
+      return value if value.is_a?(Hash)
+
+      JSON.parse(value)
+    rescue JSON::ParserError
+      YAML.safe_load(
+        value,
+        permitted_classes: [Date, Time, ActiveSupport::HashWithIndifferentAccess, BigDecimal],
+        permitted_symbols: [],
+        aliases: true
+      ) || {}
+    rescue Psych::SyntaxError
+      {}
+    end
+
+    def self.dump(value)
+      JSON.dump(value || {})
+    end
+  end
+
   validates :amount, presence: true
   validates :pay_date, presence: true
   validates :ex_date, presence: true, on: :create
@@ -9,7 +31,7 @@ class CashDividend < ApplicationRecord
   belongs_to :company
   has_one :converted_announcement, dependent: :destroy
 
-  serialize :meta, coder: JSON
+  serialize :meta, coder: MetaCoder
   store_accessor :meta, :dividend_per_share
   store_accessor :meta, :stocks_at_ex_date
 
