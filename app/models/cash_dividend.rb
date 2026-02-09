@@ -32,8 +32,8 @@ class CashDividend < ApplicationRecord
   has_one :converted_announcement, dependent: :destroy
 
   serialize :meta, coder: MetaCoder
-  store_accessor :meta, :dividend_per_share
-  store_accessor :meta, :stocks_at_ex_date
+
+  store :meta, accessors: %i[dividend_per_share stocks_at_ex_date]
 
   before_update :set_meta
 
