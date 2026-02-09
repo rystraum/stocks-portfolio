@@ -24,13 +24,13 @@ module ApplicationHelper
   end
 
   def format_currency(amount, places = 2)
-    number_to_currency amount, unit: "", precision: places
+    number_to_currency(amount || 0, unit: "", precision: places)
   end
 
   def format_percentage(numerator, denominator, precision = 1)
     return "-" if denominator.nil? || denominator.zero?
 
-    number_to_percentage (numerator * 100 / denominator), precision: precision, format: "%n%"
+    number_to_percentage ((numerator || 0) * 100 / denominator), precision: precision, format: "%n%"
   end
 
   def green_red(amount)
