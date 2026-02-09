@@ -20,6 +20,11 @@ class CompaniesController < AuthenticatedUserController
     end
 
     current_user.company_dividends(@company).each do |dividend|
+      if dividend.is_a?(StockDividend)
+        dividend.create_buy_activity
+        next
+      end
+
       next unless dividend.is_a?(CashDividend)
       next if dividend.dividend_per_share.present?
 

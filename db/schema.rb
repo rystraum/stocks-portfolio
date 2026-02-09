@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 20_260_126_142_325) do
+ActiveRecord::Schema[7.2].define(version: 20_260_209_120_000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -159,6 +159,8 @@ ActiveRecord::Schema[7.2].define(version: 20_260_126_142_325) do
     t.uuid "user_id"
     t.uuid "last_price_update_id"
     t.uuid "company_id"
+    t.uuid "activity_id"
+    t.index ["activity_id"], name: "index_stock_dividends_on_activity_id"
     t.index ["old_company_id"], name: "index_stock_dividends_on_old_company_id"
     t.index ["old_last_price_update_id"], name: "index_stock_dividends_on_old_last_price_update_id"
     t.index ["user_id"], name: "index_stock_dividends_on_user_id"
@@ -189,6 +191,7 @@ ActiveRecord::Schema[7.2].define(version: 20_260_126_142_325) do
   add_foreign_key "crypto_activities", "users"
   add_foreign_key "dividend_announcements", "companies"
   add_foreign_key "price_updates", "companies"
+  add_foreign_key "stock_dividends", "activities"
   add_foreign_key "stock_dividends", "companies"
   add_foreign_key "stock_dividends", "price_updates", column: "last_price_update_id"
   add_foreign_key "stock_dividends", "users"

@@ -43,7 +43,7 @@ class UserPortfolioCompany
   end
 
   def total_shares
-    @total_shares ||= activities_calculator.bought_shares + stock_dividend_shares - activities_calculator.sold_shares
+    @total_shares ||= activities_calculator.ending_shares
   end
 
   def cps
@@ -102,10 +102,6 @@ class UserPortfolioCompany
 
   def activities_calculator
     @activities_calculator ||= ActivitiesCalculator.new(activities)
-  end
-
-  def stock_dividend_shares
-    stock_dividends.pluck(:amount).sum
   end
 
   def cash_dividends_average_dps

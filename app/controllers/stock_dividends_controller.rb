@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class StockDividendsController < AuthenticatedUserController
-  before_action :set_stock_dividend, only: %i[show edit update destroy]
+  before_action :set_stock_dividend, only: %i[show edit update destroy create_buy_activity]
 
   # GET /stock_dividends
   # GET /stock_dividends.json
@@ -58,6 +58,14 @@ class StockDividendsController < AuthenticatedUserController
     respond_to do |format|
       format.html { redirect_to stock_dividends_url, notice: "Stock dividend was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+
+  def create_buy_activity
+    @stock_dividend.create_buy_activity
+    respond_to do |format|
+      format.html { redirect_back(fallback_location: @stock_dividend, notice: "Stock dividend buy activity updated.") }
+      format.json { render :show, status: :ok, location: @stock_dividend }
     end
   end
 

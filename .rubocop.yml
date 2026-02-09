@@ -81,3 +81,6 @@ Rails/BulkChangeTable:
 Rails/ReversibleMigration:
   Exclude:
     - "db/migrate/**/*"
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false

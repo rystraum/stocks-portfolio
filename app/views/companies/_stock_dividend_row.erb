@@ -8,5 +8,5 @@
     <td><%= dividend.pay_date.to_formatted_s(:long) %></td>
     <td></td>
     <td><%= dividend.last_price&.to_formatted_s %></td>
-    <td><%= link_to(refresh_icon.html_safe, update_meta_cash_dividend_path(dividend), method: :put, class: "") %></td>
+    <td><%= link_to(refresh_icon.html_safe, create_buy_activity_stock_dividend_path(dividend), method: :put, class: "") %></td>
 </tr>

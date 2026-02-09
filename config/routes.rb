@@ -8,7 +8,11 @@ Rails.application.routes.draw do
       put :update_meta
     end
   end
-  resources :stock_dividends
+  resources :stock_dividends do
+    member do
+      put :create_buy_activity
+    end
+  end
   resources :activities do
     member do
       post :convert_planned
