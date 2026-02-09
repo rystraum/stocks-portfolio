@@ -211,18 +211,18 @@
             <dl class="card-body">
                 <% if number_of_shares.positive? %>
                     <h2 class="mb-2 mt-4 text-xl font-bold tracking-tight text-gray-900 dark:text-white;">Shares on Hand</h2>
-                    <%= render DLTableComponent.new("Expected Dividend", format_currency(number_of_shares * last_dividend_rate)) %>
+                    <%= render DLTableComponent.new("Expected Dividend") { format_currency(number_of_shares * last_dividend_rate) } %>
                     <%= render DLTableComponent.new("Shares on Hand", format_currency(number_of_shares, 0)) %>
                     <%= render DLTableComponent.new("Yield", format_percentage(last_dividend_rate, last_price)) %>
-                    <%= render DLTableComponent.new("Annualized", format_percentage(last_dividend_rate * @company.dividend_releases_in_a_year, last_price)) %>
+                    <%= render DLTableComponent.new("Annualized") { format_percentage(last_dividend_rate * @company.dividend_releases_in_a_year, last_price) } %>
                 <% end %>
 
                 <% if planned_number_of_shares.positive? %>
                     <h2 class="mb-2 mt-4 text-xl font-bold tracking-tight text-gray-900 dark:text-white;">Planned Shares</h2>
-                    <%= render DLTableComponent.new("Expected Dividend", format_currency(planned_number_of_shares * last_dividend_rate)) %>
+                    <%= render DLTableComponent.new("Expected Dividend") { format_currency(planned_number_of_shares * last_dividend_rate) } %>
                     <%= render DLTableComponent.new("Shares on Hand", format_currency(planned_number_of_shares, 0)) %>
                     <%= render DLTableComponent.new("Yield", format_percentage(last_dividend_rate, last_price)) %>
-                    <%= render DLTableComponent.new("Annualized", format_percentage(last_dividend_rate * @company.dividend_releases_in_a_year, last_price)) %>
+                    <%= render DLTableComponent.new("Annualized") { format_percentage(last_dividend_rate * @company.dividend_releases_in_a_year, last_price) } %>
                 <% end %>
             </dl>
         </div>
