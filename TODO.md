@@ -4,7 +4,7 @@
 
 ## CRITICAL PRIORITY (Data-updating from scrapers - highest risk)
 
-1. **PSE** ⚠️ **NO TESTS**
+1. **PSE** ✅ **HAS TESTS**
    - Scrapes price updates & dividend announcements from PSE
    - High complexity (web scraping, HTML parsing, datetime handling, error recovery)
    - Used in: PriceUpdateJob, PriceUpdateCompanies, CompaniesController
@@ -60,7 +60,7 @@
 
 ## Recommended Testing Order
 
-1. **PSE** - Most critical & complex scraper
+1. **PSE** - Most critical & complex scraper (covered)
 2. **ActivitiesCalculator** - Foundation for other calculators
 3. **PriceUpdateCompanies** - Batch orchestration
 4. **CoinMarketCap** - Second data source
