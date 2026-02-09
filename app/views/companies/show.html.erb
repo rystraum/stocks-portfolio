@@ -200,7 +200,6 @@
                     number_of_shares = thing.adjust(number_of_shares)
                     planned_number_of_shares = thing.adjust(planned_number_of_shares, include_planned: true)
                 else
-                    thing.is_a?(StockDividend) && (number_of_shares += thing.amount)
                     thing.is_a?(CashDividend) && (last_dividend_rate = thing.dividend_per_share)
                 end
             end
