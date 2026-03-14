@@ -9,7 +9,7 @@ class User < ApplicationRecord
   has_many :cash_dividends, dependent: :restrict_with_error
   has_many :stock_dividends, dependent: :restrict_with_error
   has_many :activities, dependent: :restrict_with_error
-  has_many :companies, -> { distinct }, through: :activities
+  has_many :companies, -> { group("companies.id") }, through: :activities
   has_many :converted_announcements, dependent: :restrict_with_error
   has_many :crypto_activities, dependent: :restrict_with_error
 
