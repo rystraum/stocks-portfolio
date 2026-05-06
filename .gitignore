@@ -41,3 +41,5 @@ yarn-debug.log*
 config/credentials.yml.enc
 
 coverage/
+*.sql
+*.tar.gz
