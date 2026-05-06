@@ -40,6 +40,31 @@ class CoinMarketCap
     end
   end
 
+  def self.update!(crypto_currency)
+    ticker = crypto_currency.datasource_ticker
+    is_id = Float(ticker, exception: false).present?
+
+    if is_id
+      response = prices_by_id([ticker], [crypto_currency.fiat]).parsed_response["data"]
+      coin_data = response[ticker]
+    else
+      symbol_response = prices_by_symbol([ticker], [crypto_currency.fiat]).parsed_response["data"]
+      coin = symbol_response[ticker]&.first
+      return if coin.nil?
+
+      crypto_currency.update(datasource_ticker: coin["id"])
+      response = prices_by_id([coin["id"]], [crypto_currency.fiat]).parsed_response["data"]
+      coin_data = response[coin["id"]]
+    end
+
+    return if coin_data.blank?
+
+    crypto_currency.update(
+      last_price: coin_data["quote"][crypto_currency.fiat]["price"].to_d,
+      last_price_at: Time.zone.now,
+    )
+  end
+
   def self.prices_by_id(ids, convert_symbols)
     HTTParty.get(
       "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest",

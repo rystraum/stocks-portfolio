@@ -36,7 +36,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :crypto_currencies, only: %i[index new create show edit update]
+  resources :crypto_currencies, only: %i[index new create show edit update] do
+    member do
+      post :refresh_price
+    end
+  end
   resources :crypto_activities
 
   put :update_prices, to: "dashboard#update_prices"

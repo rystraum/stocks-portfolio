@@ -4,6 +4,7 @@
   <%= link_to "#{chevron_left_icon} Back".html_safe, crypto_currencies_path, class: "btn btn-primary" %>
   <% if @permissions.can?(:update, @crypto_currency) %>
     <%= link_to "Edit #{@crypto_currency.ticker}/#{@crypto_currency.quote_token}", edit_crypto_currency_path(@crypto_currency), class: "btn btn-info ml-auto" %>
+    <%= button_to "Refresh Price", refresh_price_crypto_currency_path(@crypto_currency), method: :post, class: "btn btn-warning ml-2" %>
   <% end %>
   <%= link_to "Add Activity", new_crypto_activity_path(ticker: @crypto_currency.ticker), class: "btn btn-success ml-2" %>
 </div>
