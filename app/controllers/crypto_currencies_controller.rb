@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CryptoCurrenciesController < AuthenticatedUserController
-  before_action :set_crypto_currency, only: %i[show edit update]
+  before_action :set_crypto_currency, only: %i[show edit update refresh_price]
 
   # GET /crypto_currencies
   def index
@@ -46,6 +46,21 @@ class CryptoCurrenciesController < AuthenticatedUserController
     @pnl = @current_value + @total_proceeds - @total_fiat
   end
 
+  # POST /crypto_currencies/:id/refresh_price
+  def refresh_price
+    return redirect_back(fallback_location: @crypto_currency, alert: "No permissions") unless @permissions.can?(:update, @crypto_currency)
+
+    if @crypto_currency.coinsph?
+      Coinsph.update!(@crypto_currency)
+    elsif @crypto_currency.coinmarketcap?
+      CoinMarketCap.update!(@crypto_currency)
+    else
+      return redirect_back(fallback_location: @crypto_currency, alert: "No datasource configured.")
+    end
+
+    redirect_back(fallback_location: @crypto_currency, notice: "Price refreshed from #{@crypto_currency.datasource}.")
+  end
+
   # GET /crypto_currencies/:id/edit
   def edit
     # Uses @crypto_currency from before_action
@@ -75,6 +90,6 @@ class CryptoCurrenciesController < AuthenticatedUserController
   end
 
   def crypto_currency_params
-    params.require(:crypto_currency).permit(:name, :ticker, :last_price, :datasource, :datasource_ticker)
+    params.require(:crypto_currency).permit(:name, :ticker, :last_price, :datasource, :datasource_ticker, :quote_token)
   end
 end

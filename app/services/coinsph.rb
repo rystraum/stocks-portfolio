@@ -21,6 +21,13 @@ class Coinsph
     end
   end
 
+  def self.update!(crypto_currency)
+    coin = prices([crypto_currency.datasource_ticker]).parsed_response.first
+    return if coin.nil?
+
+    crypto_currency.update(last_price: coin["price"].to_d, last_price_at: Time.zone.now)
+  end
+
   def self.prices(tickers)
     HTTParty.get(
       "https://api.pro.coins.ph/openapi/quote/v1/ticker/price?symbols=[#{tickers.join(',')}]",
