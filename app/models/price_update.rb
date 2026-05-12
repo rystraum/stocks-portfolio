@@ -27,6 +27,31 @@ class PriceUpdate < ApplicationRecord
     end
   end
 
+  def self.recompute_from_notes!(batch_size: 1000)
+    loop do
+      batch = missing_ohlc.where.not(notes: [nil, ""]).limit(batch_size)
+      break if batch.empty?
+
+      batch.each do |update|
+        values = PSE.extract_ohlc_from_html(update.notes)
+        next if values.nil?
+        next if values[:open].blank? && values[:high].blank? && values[:low].blank?
+
+        # rubocop:disable Rails/SkipsModelValidations
+        update.update_columns(
+          open: values[:open],
+          high: values[:high],
+          low: values[:low],
+        )
+        # rubocop:enable Rails/SkipsModelValidations
+      end
+
+      remaining = missing_ohlc.where.not(notes: [nil, ""]).count
+      Rails.logger.info "Recompute from notes: #{remaining} records remaining"
+      break if remaining.zero?
+    end
+  end
+
   def self.recompute_company_ohlc!(company, updates)
     return unless company.can_update_from_pse?
 

@@ -78,6 +78,30 @@ class PSETest < ActiveSupport::TestCase
     end
   end
 
+  test "extract_ohlc_from_html returns open high low from cached html" do
+    values = PSE.extract_ohlc_from_html(price_update_html)
+
+    assert_equal 1200.0, values[:open].to_f
+    assert_equal 1250.0, values[:high].to_f
+    assert_equal 1190.0, values[:low].to_f
+  end
+
+  test "extract_ohlc_from_html returns nil for invalid html" do
+    assert_nil PSE.extract_ohlc_from_html("<html><body>no data</body></html>")
+  end
+
+  test "price_update! stores response body in notes" do
+    company = Company.create!(ticker: "ACNOTES", pse_company_id: "57", pse_security_id: "180")
+    response = OpenStruct.new(body: price_update_html)
+
+    stub_httparty(:get, response) do
+      price_update = PSE.new(company).price_update!
+
+      assert price_update.notes.present?
+      assert_includes price_update.notes, "Last Traded Price"
+    end
+  end
+
   private
 
   def price_update_html

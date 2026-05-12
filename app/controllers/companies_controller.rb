@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CompaniesController < AuthenticatedUserController
-  before_action :set_company, only: %i[show edit update destroy last_price price_update_from_pse refetch_announcements price_updates]
+  before_action :set_company, only: %i[show edit update destroy last_price price_update_from_pse refetch_announcements price_updates recompute_ohlc]
 
   # GET /companies
   # GET /companies.json
@@ -143,6 +143,14 @@ class CompaniesController < AuthenticatedUserController
     pse.dividend_announcements!
 
     return redirect_back(fallback_location: @company, notice: "Dividend Announcements Refetched!")
+  end
+
+  def recompute_ohlc
+    return redirect_back(fallback_location: @company, alert: "No permissions") unless @permissions.can?(:price_update, @company)
+
+    RecomputeOhlcJob.perform_later(@company)
+
+    redirect_back(fallback_location: @company, notice: "OHLC backfill queued for #{@company.ticker}.")
   end
 
   private
