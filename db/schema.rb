@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 20_260_209_120_000) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_09_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -114,7 +112,7 @@ ActiveRecord::Schema[7.2].define(version: 20_260_209_120_000) do
     t.string "quote_token"
     t.string "compound_ticker"
     t.index ["compound_ticker"], name: "index_crypto_currencies_on_compound_ticker"
-    t.index %w[ticker quote_token], name: "index_crypto_currencies_on_ticker_and_quote_token", unique: true
+    t.index ["ticker", "quote_token"], name: "index_crypto_currencies_on_ticker_and_quote_token", unique: true
   end
 
   create_table "dividend_announcements", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -143,6 +141,9 @@ ActiveRecord::Schema[7.2].define(version: 20_260_209_120_000) do
     t.datetime "updated_at", precision: nil, null: false
     t.text "notes"
     t.uuid "company_id"
+    t.decimal "open", precision: 15, scale: 2
+    t.decimal "high", precision: 15, scale: 2
+    t.decimal "low", precision: 15, scale: 2
     t.index ["old_company_id"], name: "index_price_updates_on_old_company_id"
   end
 

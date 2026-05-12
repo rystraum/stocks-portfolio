@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   resources :companies do
     member do
       get :last_price
+      get :price_updates
       post :price_update_from_pse
       delete :refetch_announcements
     end
