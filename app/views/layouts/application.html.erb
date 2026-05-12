@@ -19,6 +19,8 @@
         <% end %>
         
         <%= yield %>
-        <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+        <% packs = ['application'] %>
+        <% packs += content_for(:extra_js_packs).to_s.split(',').map(&:strip).reject(&:blank?) if content_for?(:extra_js_packs) %>
+        <%= javascript_pack_tag *packs, 'data-turbolinks-track': 'reload' %>
     </body>
 </html>
