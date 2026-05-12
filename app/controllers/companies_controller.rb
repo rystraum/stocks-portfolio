@@ -150,7 +150,7 @@ class CompaniesController < AuthenticatedUserController
 
     RecomputeOhlcJob.perform_later(@company)
 
-    redirect_back(fallback_location: @company, notice: "OHLC backfill queued for #{@company.ticker}.")
+    redirect_back(fallback_location: @company, notice: "OHLC backfill from PSE history queued for #{@company.ticker}.")
   end
 
   private
