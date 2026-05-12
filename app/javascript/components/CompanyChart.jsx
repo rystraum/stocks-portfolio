@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createChart, LineSeries, CandlestickSeries } from 'lightweight-charts';
 
-const CompanyChart = ({ ticker }) => {
+const CompanyChart = ({ ticker, targetBuyPrice }) => {
   const chartContainerRef = useRef(null);
   const chartRef = useRef(null);
   const seriesRef = useRef(null);
@@ -116,9 +116,20 @@ const CompanyChart = ({ ticker }) => {
           );
         }
 
+        if (targetBuyPrice) {
+          seriesRef.current.createPriceLine({
+            price: parseFloat(targetBuyPrice),
+            color: '#16a34a',
+            lineWidth: 2,
+            lineStyle: 2,
+            title: 'Target Buy',
+            axisLabelVisible: true,
+          });
+        }
+
         chart.timeScale().fitContent();
       });
-  }, [ticker, range]);
+  }, [ticker, range, targetBuyPrice]);
 
   return (
     <div className="card">

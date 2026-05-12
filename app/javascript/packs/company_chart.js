@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('company-chart-root');
   if (container) {
     const ticker = container.dataset.ticker;
-    ReactDOM.render(<CompanyChart ticker={ticker} />, container);
+    const targetBuyPrice = container.dataset.targetBuyPrice;
+    ReactDOM.render(<CompanyChart ticker={ticker} targetBuyPrice={targetBuyPrice} />, container);
   }
 });
