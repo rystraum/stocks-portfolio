@@ -45,11 +45,16 @@ class PSE
       raise "HTML does not match expected format: #{document}"
     end
 
-    last_trade_label = document.css("table.view").last.children[3].children[1].to_s
+    stock_table = document.css("table.view").last
+    rows = stock_table.css("tr")
+
+    last_trade_label = rows[0]&.css("th")&.first&.text.to_s
     raise "HTML does not match expected format" unless last_trade_label.match?(/Last Traded Price/)
 
-    last_trade_value = document.css("table.view").last.children[3].children[3].children.to_s.sub("\r\n", "").sub(",",
-                                                                                                                 "",).to_d
+    last_trade_value = extract_cell_value(rows[0], 0)
+    open_value = extract_cell_value(rows[0], 1)
+    high_value = extract_cell_value(rows[1], 1)
+    low_value = extract_cell_value(rows[2], 1)
 
     final_price = last_trade_value.zero? || last_trade_value.blank? ? company.last_price : last_trade_value
 
@@ -57,46 +62,44 @@ class PSE
 
     price_update = company.price_updates.where(datetime: datetime).first_or_create do |update|
       update.price = final_price
+      update.open = open_value.presence
+      update.high = high_value.presence
+      update.low = low_value.presence
       update.notes = final_price.zero? ? response.body : ""
     end
 
-    price_update.update(price: final_price) if @force
+    if @force || price_update.open.nil?
+      price_update.update(
+        price: final_price,
+        open: open_value.presence || price_update.open,
+        high: high_value.presence || price_update.high,
+        low: low_value.presence || price_update.low,
+      )
+    end
 
     price_update
   end
 
-  def fetch_history
+  def fetch_history_ohlc(start_date = 30.days.ago.to_date, end_date = Time.zone.today)
     require "net/http"
     require "uri"
+    require "json"
 
     uri = URI.parse("https://edge.pse.com.ph/common/DisclosureCht.ax")
     request = Net::HTTP::Post.new(uri)
-    data = {
-      'cmpy_id': pse_company_id.to_s,
-      'security_id': pse_security_id.to_s,
-      'startDate': 30.days.ago.strftime("%m-%d-%Y"),
-      'endDate': Time.zone.today.strftime("%m-%d-%Y")
-    }.to_json.unpack("C*")
-
-    request["Connection"] = "keep-alive"
-    request["Pragma"] = "no-cache"
-    request["Cache-Control"] = "no-cache"
-    request["Dnt"] = "1"
-    request["X-Requested-With"] = "XMLHttpRequest"
-    request["User-Agent"] =
-      "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"
-    request["Accept"] = "Accept: application/json, text/javascript, */*; q=0.01"
-    request["Origin"] = "https://edge.pse.com.ph"
     request["Content-Type"] = "application/json"
-    request["Sec-Fetch-Site"] = "same-origin"
-    request["Sec-Fetch-Mode"] = "cors"
-    request["Sec-Fetch-Dest"] = "empty"
-    request["Referer"] = "https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id}&security=#{pse_security_id}"
-    request["Accept-Language"] = "en-US,en;q=0.9"
-    request["Cookie"] =
-      "Cookie: JSESSIONID=uhHyB6YqPkdIEjpEWZ9hVwrH.server-ep; BIGipServerPOOL_EDGE=1427584378.20480.0000; access=approve"
-    request.content_type = "application/octet-stream"
-    request.set_form_data(data)
+    request["X-Requested-With"] = "XMLHttpRequest"
+    request["Referer"] = "https://edge.pse.com.ph/companyPage/stockData.do?cmpy_id=#{pse_company_id}&security_id=#{pse_security_id}"
+    request["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+    request["Origin"] = "https://edge.pse.com.ph"
+    request["Accept"] = "application/json, text/javascript, */*; q=0.01"
+
+    request.body = {
+      cmpy_id: pse_company_id.to_s,
+      security_id: pse_security_id.to_s,
+      startDate: start_date.strftime("%m-%d-%Y"),
+      endDate: end_date.strftime("%m-%d-%Y")
+    }.to_json
 
     req_options = {
       use_ssl: uri.scheme == "https"
@@ -106,8 +109,13 @@ class PSE
       http.request(request)
     end
 
-    Rails.logger.debug response.code
-    response.body
+    raise "PSE history request failed: #{response.code}" unless response.code == "200"
+
+    JSON.parse(response.body)["chartData"] || []
+  end
+
+  def fetch_history
+    fetch_history_ohlc
   end
 
   def dividend_announcements!
@@ -243,6 +251,16 @@ class PSE
 
   def can_update?
     @can_update
+  end
+
+  private
+
+  def extract_cell_value(row, cell_index)
+    cell = row&.css("td")&.[](cell_index)
+    return nil if cell.nil?
+
+    text = cell.text.gsub(/[\r\n\s]/, "").sub(",", "").sub("<br>", "").presence
+    text&.to_d
   end
 end
 

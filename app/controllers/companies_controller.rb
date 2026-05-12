@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CompaniesController < AuthenticatedUserController
-  before_action :set_company, only: %i[show edit update destroy last_price price_update_from_pse refetch_announcements]
+  before_action :set_company, only: %i[show edit update destroy last_price price_update_from_pse refetch_announcements price_updates]
 
   # GET /companies
   # GET /companies.json
@@ -66,6 +66,13 @@ class CompaniesController < AuthenticatedUserController
     respond_to do |format|
       format.html
       format.json { render json: { lastPrice: @company.last_price } }
+    end
+  end
+
+  def price_updates
+    @price_updates = @company.price_updates.latest_first
+    respond_to do |format|
+      format.json
     end
   end
 

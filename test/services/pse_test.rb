@@ -19,6 +19,9 @@ class PSETest < ActiveSupport::TestCase
       price_update = PSE.new(company).price_update!
 
       assert_equal 1234.0, price_update.price.to_f
+      assert_equal 1200.0, price_update.open.to_f
+      assert_equal 1250.0, price_update.high.to_f
+      assert_equal 1190.0, price_update.low.to_f
       assert_equal DateTime.new(2021, 3, 30, 12, 50, 0, "+08:00"), price_update.datetime
       assert_equal 1, company.price_updates.count
     end
@@ -61,14 +64,17 @@ class PSETest < ActiveSupport::TestCase
     end
   end
 
-  test "fetch_history returns response body" do
+  test "fetch_history returns parsed chart data" do
     company = Company.create!(ticker: "HIST", pse_company_id: "57", pse_security_id: "180")
-    response = OpenStruct.new(code: "200", body: "history")
+    response = OpenStruct.new(code: "200", body: '{"chartData":[{"OPEN":100.0,"HIGH":110.0,"LOW":95.0,"CLOSE":105.0,"CHART_DATE":"May 01, 2021 00:00:00"}]}')
     http = Object.new
     http.define_singleton_method(:request) { |_req| response }
 
     stub_net_http_start(http) do
-      assert_equal "history", PSE.new(company).fetch_history
+      history = PSE.new(company).fetch_history
+      assert_equal 1, history.length
+      assert_equal 100.0, history.first["OPEN"]
+      assert_equal 110.0, history.first["HIGH"]
     end
   end
 
@@ -83,10 +89,67 @@ class PSETest < ActiveSupport::TestCase
         <span style="float:right; margin-left:1em;"></span>
       </form>
       <table class="view">
-        <tr><td>Ignore</td></tr>
+        <colgroup>
+          <col width="17%"/>
+          <col width="28%"/>
+          <col width="31%"/>
+          <col width="24%"/>
+        </colgroup>
         <tr>
-          <td>Last Traded Price</td>
-          <td>1,234</td>
+          <th>Status</th>
+          <td>Open</td>
+          <th>Market Capitalization</th>
+          <td style="text-align:right;padding-right:1.5em;">100</td>
+        </tr>
+      </table>
+      <table class="view">
+        <colgroup>
+          <col width="17%"/>
+          <col width="18%"/>
+          <col width="15%"/>
+          <col width="13%"/>
+          <col width="19%"/>
+          <col width="18%"/>
+        </colgroup>
+        <tr>
+          <th>Last Traded Price</th>
+          <td style="text-align:right;padding-right:1.2em;">1,234</td>
+          <th>Open</th>
+          <td style="text-align:right;padding-right:1.2em;">1,200</td>
+          <th>Previous Close and Date</th>
+          <td style="text-align:right;padding-right:1.2em;">1,100 (Mar 29, 2021)</td>
+        </tr>
+        <tr>
+          <th>Change(% Change)</th>
+          <td style="text-align:right;padding-right:1.2em;">up 10 (1%)</td>
+          <th>High</th>
+          <td style="text-align:right;padding-right:1.2em;">1,250</td>
+          <th>P/E Ratio</th>
+          <td style="text-align:right;padding-right:1.2em;">15</td>
+        </tr>
+        <tr>
+          <th>Value</th>
+          <td style="text-align:right;padding-right:1.2em;">1000000</td>
+          <th>Low</th>
+          <td style="text-align:right;padding-right:1.2em;">1,190</td>
+          <th>Sector P/E Ratio</th>
+          <td style="text-align:right;padding-right:1.2em;">12</td>
+        </tr>
+        <tr>
+          <th>Volume</th>
+          <td style="text-align:right;padding-right:1.2em;">500</td>
+          <th>Average Price</th>
+          <td style="text-align:right;padding-right:1.2em;">1220</td>
+          <th>Book Value</th>
+          <td style="text-align:right;padding-right:1.2em;">100</td>
+        </tr>
+        <tr>
+          <th>52-Week High</th>
+          <td style="text-align:right;padding-right:1.2em;">2000</td>
+          <th>52-Week Low</th>
+          <td style="text-align:right;padding-right:1.2em;">500</td>
+          <th>P/BV Ratio</th>
+          <td style="text-align:right;padding-right:1.2em;">2</td>
         </tr>
       </table>
     HTML

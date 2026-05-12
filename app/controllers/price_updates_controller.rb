@@ -70,6 +70,6 @@ class PriceUpdatesController < AuthenticatedUserController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def price_update_params
-    params.require(:price_update).permit(:company_id, :datetime, :price)
+    params.require(:price_update).permit(:company_id, :datetime, :price, :open, :high, :low)
   end
 end
