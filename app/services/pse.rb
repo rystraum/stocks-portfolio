@@ -65,7 +65,7 @@ class PSE
       update.open = open_value.presence
       update.high = high_value.presence
       update.low = low_value.presence
-      update.notes = final_price.zero? ? response.body : ""
+      update.notes = response.body
     end
 
     if @force || price_update.open.nil?
@@ -249,6 +249,30 @@ class PSE
     end
   end
 
+  def self.extract_ohlc_from_html(html)
+    document = Nokogiri::HTML.parse(html)
+    stock_table = document.css("table.view").last
+    return nil unless stock_table
+
+    rows = stock_table.css("tr")
+    last_trade_label = rows[0]&.css("th")&.first&.text.to_s
+    return nil unless last_trade_label.match?(/Last Traded Price/)
+
+    {
+      open: extract_cell_value(rows[0], 1),
+      high: extract_cell_value(rows[1], 1),
+      low: extract_cell_value(rows[2], 1)
+    }
+  end
+
+  def self.extract_cell_value(row, cell_index)
+    cell = row&.css("td")&.[](cell_index)
+    return nil if cell.nil?
+
+    text = cell.text.gsub(/[\r\n\s]/, "").sub(",", "").sub("<br>", "").presence
+    text&.to_d
+  end
+
   def can_update?
     @can_update
   end
@@ -256,11 +280,7 @@ class PSE
   private
 
   def extract_cell_value(row, cell_index)
-    cell = row&.css("td")&.[](cell_index)
-    return nil if cell.nil?
-
-    text = cell.text.gsub(/[\r\n\s]/, "").sub(",", "").sub("<br>", "").presence
-    text&.to_d
+    self.class.extract_cell_value(row, cell_index)
   end
 end
 
