@@ -27,29 +27,31 @@ class PriceUpdate < ApplicationRecord
     end
   end
 
-  def self.recompute_from_notes!(batch_size: 1000)
-    loop do
-      batch = missing_ohlc.where.not(notes: [nil, ""]).limit(batch_size)
-      break if batch.empty?
+  def self.recompute_company_from_history!(company, days: 365)
+    return unless company.can_update_from_pse?
 
-      batch.each do |update|
-        values = PSE.extract_ohlc_from_html(update.notes)
-        next if values.nil?
-        next if values[:open].blank? && values[:high].blank? && values[:low].blank?
+    updates = missing_ohlc.where(company: company)
+                          .where("datetime >= ?", days.days.ago)
+                          .order(datetime: :asc)
+    return if updates.empty?
 
-        # rubocop:disable Rails/SkipsModelValidations
-        update.update_columns(
-          open: values[:open],
-          high: values[:high],
-          low: values[:low],
-        )
-        # rubocop:enable Rails/SkipsModelValidations
-      end
+    dates = updates.map { |u| u.datetime.to_date }
+    history = PSE.new(company).fetch_history_ohlc(dates.min, dates.max)
 
-      remaining = missing_ohlc.where.not(notes: [nil, ""]).count
-      Rails.logger.info "Recompute from notes: #{remaining} records remaining"
-      break if remaining.zero?
+    updates.each do |update|
+      match = history.find { |h| Date.parse(h["CHART_DATE"]) == update.datetime.to_date }
+      next unless match
+
+      # rubocop:disable Rails/SkipsModelValidations
+      update.update_columns(
+        open: match["OPEN"],
+        high: match["HIGH"],
+        low: match["LOW"],
+      )
+      # rubocop:enable Rails/SkipsModelValidations
     end
+  rescue StandardError => e
+    Rails.logger.error "Failed to recompute OHLC from history for #{company.ticker}: #{e.message}"
   end
 
   def self.recompute_company_ohlc!(company, updates)
