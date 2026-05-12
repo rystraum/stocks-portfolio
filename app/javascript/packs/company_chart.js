@@ -1,0 +1,11 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import CompanyChart from '../components/CompanyChart';
+
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('company-chart-root');
+  if (container) {
+    const ticker = container.dataset.ticker;
+    ReactDOM.render(<CompanyChart ticker={ticker} />, container);
+  }
+});
