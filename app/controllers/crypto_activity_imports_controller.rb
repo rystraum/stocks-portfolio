@@ -79,6 +79,18 @@ class CryptoActivityImportsController < AuthenticatedUserController
     end
   end
 
+  def destroy
+    @import = current_user.crypto_activity_imports.find(params[:id])
+
+    if @import.completed?
+      redirect_to crypto_activity_imports_path, alert: "Cannot delete a completed import."
+      return
+    end
+
+    @import.destroy!
+    redirect_to crypto_activity_imports_path, notice: "Import was successfully deleted."
+  end
+
   private
 
   def import_json
