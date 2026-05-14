@@ -21,12 +21,15 @@ class CoinsPhCsvImporter
     import = CryptoActivityImport.create!(user: @user, filename: @file.original_filename, status: :pending, content_hash: content_hash)
 
     rows = parse_csv(content)
-    groups = group_by_order_id(rows)
+    format = detect_format(rows)
 
-    groups.each do |order_id, group_rows|
-      item = build_import_item(import, order_id, group_rows)
-      duplicate = find_duplicate(item)
-      item.update!(duplicate_crypto_activity: duplicate) if duplicate
+    case format
+    when :orders
+      import_orders_format(import, rows)
+    when :spot_trades
+      import_spot_trades_format(import, rows)
+    else
+      raise ArgumentError, "Unsupported CSV format. Expected columns: pair, order_id, side, executed, total, fee (Orders format) or token_id, type, asset_changes (Spot Trades format)."
     end
 
     if import.import_items.where.not(duplicate_crypto_activity_id: nil).any?
@@ -72,11 +75,43 @@ class CoinsPhCsvImporter
     csv.map(&:to_h)
   end
 
-  def group_by_order_id(rows)
-    rows.group_by { |r| r["order_id"] }
+  def detect_format(rows)
+    return :unknown if rows.empty?
+
+    headers = rows.first.keys
+
+    if headers.include?("pair") && headers.include?("order_id") && headers.include?("side")
+      :orders
+    elsif headers.include?("token_id") && headers.include?("type") && headers.include?("asset_changes")
+      :spot_trades
+    else
+      :unknown
+    end
   end
 
-  def build_import_item(import, order_id, group_rows)
+  def import_orders_format(import, rows)
+    groups = rows.group_by { |r| r["order_id"] }
+
+    groups.each do |order_id, group_rows|
+      item = build_orders_import_item(import, order_id, group_rows)
+      duplicate = find_duplicate(item)
+      item.update!(duplicate_crypto_activity: duplicate) if duplicate
+    end
+  end
+
+  def import_spot_trades_format(import, rows)
+    groups = rows.group_by { |r| "#{r["created_at"]}|#{r["account_id"]}" }
+
+    groups.each do |group_key, group_rows|
+      item = build_spot_trade_import_item(import, group_key, group_rows)
+      next if item.nil?
+
+      duplicate = find_duplicate(item)
+      item.update!(duplicate_crypto_activity: duplicate) if duplicate
+    end
+  end
+
+  def build_orders_import_item(import, order_id, group_rows)
     first_row = group_rows.first
     pair = first_row["pair"]
     ticker, quote = pair.split("/")
@@ -114,6 +149,56 @@ class CoinsPhCsvImporter
       raw_rows: group_rows,
       resolution: :pending,
     )
+  end
+
+  def build_spot_trade_import_item(import, group_key, group_rows)
+    trade_rows = group_rows.select { |r| r["type"] == "Spot Trade" }
+    fee_rows = group_rows.select { |r| r["type"] == "Fees" }
+
+    return nil if trade_rows.empty?
+
+    first_row = trade_rows.first
+    ticker = first_row["token_id"]
+    crypto_currency = CryptoCurrency.find_by(ticker: ticker, quote_token: "PHP")
+
+    if crypto_currency.nil?
+      raise ArgumentError, "No CryptoCurrency found for #{ticker}/PHP. Please create it first."
+    end
+
+    asset_change = parse_decimal(first_row["asset_changes"])
+    activity_type = asset_change.positive? ? :buy : :sell
+    crypto_amount = asset_change.abs
+
+    fee_crypto = fee_rows.sum { |r| parse_decimal(r["asset_changes"]).abs }
+    fee_fiat = 0.to_d
+
+    activity_date = Time.zone.parse(first_row["created_at"]).to_date
+
+    estimated_fiat = estimate_fiat_amount(crypto_currency, crypto_amount, activity_date)
+
+    CryptoActivityImportItem.create!(
+      crypto_activity_import: import,
+      order_id: group_key,
+      crypto_currency: crypto_currency,
+      activity_type: activity_type,
+      crypto_amount: crypto_amount,
+      fiat_amount: estimated_fiat,
+      fee_crypto: fee_crypto,
+      fee_fiat: fee_fiat,
+      activity_date: activity_date,
+      notes: "CoinsPH Spot Trade Import - verify fiat amount",
+      raw_rows: group_rows,
+      resolution: :pending,
+    )
+  end
+
+  def estimate_fiat_amount(crypto_currency, crypto_amount, activity_date)
+    price = crypto_currency.last_price
+    if price.present? && price.positive?
+      return (crypto_amount * price).round(2)
+    end
+
+    crypto_amount.round(2)
   end
 
   def parse_decimal(value)
