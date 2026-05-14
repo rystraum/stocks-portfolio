@@ -117,3 +117,45 @@ class CoinsPhCsvImporterTest < ActiveSupport::TestCase
     end
   end
 end
+
+class CoinsPhSpotTradesImporterTest < ActiveSupport::TestCase
+  setup do
+    @user = User.create!(email: "spot@example.com", password: "password123")
+    @usdt = CryptoCurrency.create!(name: "Tether", ticker: "USDT", quote_token: "PHP", datasource_ticker: "USDTPHP", last_price: 57.5)
+  end
+
+  def spot_trades_csv_file
+    path = Rails.root.join("test/fixtures/files/coins_ph_spot_trades_sample.csv")
+    ActionDispatch::Http::UploadedFile.new(
+      tempfile: File.open(path),
+      filename: "coins_ph_spot_trades_sample.csv",
+      type: "text/csv",
+    )
+  end
+
+  test "imports spot trades format without crashing" do
+    importer = CoinsPhCsvImporter.new(spot_trades_csv_file, @user)
+    import = importer.import!
+
+    assert import.completed?
+    assert_equal 5, import.import_items.count
+
+    item = import.import_items.order(:activity_date).first
+    assert item.buy?
+    assert_equal 100.53.to_d, item.crypto_amount
+    assert_equal 5780.48.to_d, item.fiat_amount
+    assert_equal 0.150795.to_d, item.fee_crypto
+    assert_equal "CoinsPH Spot Trade Import - verify fiat amount", item.notes
+
+    assert_equal 5, import.crypto_activities.count
+  end
+
+  test "raises clear error when crypto_currency missing for spot trades" do
+    usdt = CryptoCurrency.find_by(ticker: "USDT", quote_token: "PHP")
+    usdt&.destroy
+
+    importer = CoinsPhCsvImporter.new(spot_trades_csv_file, @user)
+    error = assert_raises(ArgumentError) { importer.import! }
+    assert_match(/No CryptoCurrency found for USDT\/PHP/, error.message)
+  end
+end
