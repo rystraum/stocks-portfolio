@@ -165,4 +165,42 @@ class CryptoActivityImportsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_crypto_activity_import_path
     assert_match /Duplicate file/, flash[:alert]
   end
+
+  test "should delete non-completed import" do
+    CryptoActivity.create!(
+      user: @user,
+      crypto_currency: @crypto,
+      activity_type: :buy,
+      crypto_amount: 0.012,
+      fiat_amount: 2000.00,
+      fiat_currency: "PHP",
+      activity_date: Date.new(2025, 12, 18),
+    )
+
+    file = fixture_file_upload("coins_ph_sample.csv", "text/csv")
+    importer = CoinsPhCsvImporter.new(file, @user)
+    import = importer.import!
+    assert import.resolving?
+
+    assert_difference("CryptoActivityImport.count", -1) do
+      delete crypto_activity_import_path(import)
+    end
+
+    assert_redirected_to crypto_activity_imports_path
+    assert_match /successfully deleted/, flash[:notice]
+  end
+
+  test "should not delete completed import" do
+    file = fixture_file_upload("coins_ph_sample.csv", "text/csv")
+    importer = CoinsPhCsvImporter.new(file, @user)
+    import = importer.import!
+    assert import.completed?
+
+    assert_no_difference("CryptoActivityImport.count") do
+      delete crypto_activity_import_path(import)
+    end
+
+    assert_redirected_to crypto_activity_imports_path
+    assert_match /Cannot delete a completed import/, flash[:alert]
+  end
 end

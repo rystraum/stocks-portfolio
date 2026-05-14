@@ -25,6 +25,9 @@
         <td><%= import.crypto_activities.count %></td>
         <td class="text-right">
           <%= link_to "View", crypto_activity_import_path(import), class: "btn btn-sm btn-primary" %>
+          <% unless import.completed? %>
+            <%= link_to trash_icon, crypto_activity_import_path(import), method: :delete, data: { confirm: 'Are you sure you want to delete this import?' }, class: "btn btn-sm btn-danger ml-1" %>
+          <% end %>
         </td>
       </tr>
     <% end %>
