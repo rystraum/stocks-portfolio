@@ -44,6 +44,12 @@ Rails.application.routes.draw do
     end
   end
   resources :crypto_activities
+  resources :crypto_activity_imports, only: %i[index new create show] do
+    member do
+      post :resolve
+      post :finalize
+    end
+  end
 
   put :update_prices, to: "dashboard#update_prices"
 
