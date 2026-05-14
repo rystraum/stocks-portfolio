@@ -1,0 +1,7 @@
+<%= render "shared/header", text: "Import: #{@import.filename}" do %>
+  <%= link_to "All Imports", crypto_activity_imports_path, class: "btn btn-secondary" %>
+<% end %>
+
+<div id="crypto-import-review-root" data-import-id="<%= @import.id %>"></div>
+
+<% content_for :extra_js_packs, 'crypto_import_review' %>
