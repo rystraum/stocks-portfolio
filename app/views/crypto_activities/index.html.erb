@@ -1,4 +1,5 @@
 <%= render "shared/header", text: "Crypto Activities" do %>
+  <%= link_to "Import from CoinsPH", new_crypto_activity_import_path, class: "btn btn-info" %>
   <%= link_to 'Add Crypto Activity', new_crypto_activity_path, class: 'btn btn-success' %>
 <% end %>
 
