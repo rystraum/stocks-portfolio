@@ -75,7 +75,8 @@ const CompanyChart = ({ ticker, targetBuyPrice }) => {
         });
         const filtered = Array.from(byDate.values());
 
-        const hasOhlcData = filtered.some((d) => d.open && d.high && d.low);
+        const ohlcPoints = filtered.filter((d) => d.open && d.high && d.low && d.price != null);
+        const hasOhlcData = ohlcPoints.length > 0;
         setHasOhlc(hasOhlcData);
 
         const chart = chartRef.current;
@@ -94,7 +95,7 @@ const CompanyChart = ({ ticker, targetBuyPrice }) => {
           });
 
           seriesRef.current.setData(
-            filtered.map((d) => ({
+            ohlcPoints.map((d) => ({
               time: d.datetime.split('T')[0],
               open: parseFloat(d.open),
               high: parseFloat(d.high),
