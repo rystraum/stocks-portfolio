@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :companies, -> { group("companies.id") }, through: :activities
   has_many :converted_announcements, dependent: :restrict_with_error
   has_many :crypto_activities, dependent: :restrict_with_error
+  has_many :crypto_activity_imports, dependent: :restrict_with_error
 
   def gravatar_hash
     Digest::MD5.hexdigest email.downcase

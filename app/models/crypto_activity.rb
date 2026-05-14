@@ -3,8 +3,9 @@
 class CryptoActivity < ApplicationRecord
   belongs_to :crypto_currency
   belongs_to :user
+  belongs_to :crypto_activity_import, optional: true
 
-  enum activity_type: { buy: 0, sell: 1 }
+  enum :activity_type, { buy: 0, sell: 1 }
 
   before_validation :set_fiat_currency
   validates :activity_type, :crypto_currency_id, :user_id, :crypto_amount, :fiat_amount, :fiat_currency,
