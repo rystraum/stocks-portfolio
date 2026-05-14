@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_09_120000) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_14_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -95,9 +95,42 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_09_120000) do
     t.datetime "updated_at", null: false
     t.decimal "fee_fiat", precision: 18, scale: 2, default: "0.0"
     t.text "notes"
+    t.uuid "crypto_activity_import_id"
     t.index ["activity_type"], name: "index_crypto_activities_on_activity_type"
+    t.index ["crypto_activity_import_id"], name: "index_crypto_activities_on_crypto_activity_import_id"
     t.index ["crypto_currency_id"], name: "index_crypto_activities_on_crypto_currency_id"
     t.index ["user_id"], name: "index_crypto_activities_on_user_id"
+  end
+
+  create_table "crypto_activity_import_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "crypto_activity_import_id", null: false
+    t.string "order_id", null: false
+    t.uuid "crypto_currency_id"
+    t.integer "activity_type"
+    t.decimal "crypto_amount", precision: 30, scale: 20
+    t.decimal "fiat_amount", precision: 18, scale: 2
+    t.decimal "fee_crypto", precision: 30, scale: 20, default: "0.0"
+    t.decimal "fee_fiat", precision: 18, scale: 2, default: "0.0"
+    t.date "activity_date"
+    t.text "notes"
+    t.integer "resolution", default: 0
+    t.uuid "duplicate_crypto_activity_id"
+    t.jsonb "raw_rows", default: []
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crypto_activity_import_id"], name: "idx_on_crypto_activity_import_id_2e7e06b440"
+    t.index ["duplicate_crypto_activity_id"], name: "idx_on_duplicate_crypto_activity_id_487d6bf822"
+  end
+
+  create_table "crypto_activity_imports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "filename", null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "content_hash"
+    t.index ["user_id", "content_hash"], name: "index_crypto_activity_imports_on_user_id_and_content_hash", unique: true
+    t.index ["user_id"], name: "index_crypto_activity_imports_on_user_id"
   end
 
   create_table "crypto_currencies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -188,6 +221,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_09_120000) do
   add_foreign_key "converted_announcements", "cash_dividends"
   add_foreign_key "converted_announcements", "dividend_announcements"
   add_foreign_key "converted_announcements", "users"
+  add_foreign_key "crypto_activities", "crypto_activity_imports"
   add_foreign_key "crypto_activities", "crypto_currencies"
   add_foreign_key "crypto_activities", "users"
   add_foreign_key "dividend_announcements", "companies"
