@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.rystraum.crypto-updater</string>
+
+  <key>UserName</key>
+  <string>rystraum</string>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/rystraum/Code/personal/stocks-portfolio</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>-ilc</string>
+    <string>echo ${HOME}; source $HOME/.zshrc; echo ${PATH}; date; cd /Users/rystraum/Code/personal/stocks-portfolio; rbenv rehash; type -a ruby; which ruby; rbenv version; which bundler; which gem; bundle exec rails runner "CryptoPriceUpdate.update_all!";</string>
+  </array>
+
+  <key>Nice</key>
+  <integer>1</integer>
+
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict>
+      <key>Minute</key>
+      <integer>31</integer>
+    </dict>
+    <dict>
+      <key>Minute</key>
+      <integer>1</integer>
+    </dict>
+  </array>
+
+  <key>StandardErrorPath</key>
+  <string>/Users/rystraum/Library/Logs/stocks-portfolio/launchd-crypto.error.log</string>
+
+  <key>StandardOutPath</key>
+  <string>/Users/rystraum/Library/Logs/stocks-portfolio/launchd-crypto.out.log</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>DISABLE_SPRING</key>
+    <string>true</string>
+  </dict>
+</dict>
+</plist>
