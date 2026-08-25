@@ -9,6 +9,9 @@
             <span class="mr-2 inline-block"><%= save_as_icon %></span>
             <span>Update from PSE</span>
         <% end %>
+        <%= link_to [:backfill_prices, @company], method: :post, class: "btn btn-secondary ml-2" do %>
+            <span>Backfill missing days</span>
+        <% end %>
     <% end %>
     <% price_updates = @company.price_updates.latest_first.first(5) %>
     <% last_price = price_updates.first&.price || 0 %>

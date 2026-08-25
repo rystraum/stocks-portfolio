@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class CompaniesController < AuthenticatedUserController
-  before_action :set_company, only: %i[show edit update destroy last_price price_update_from_pse refetch_announcements price_updates recompute_ohlc]
+  before_action :set_company,
+                only: %i[show edit update destroy last_price price_update_from_pse refetch_announcements price_updates recompute_ohlc backfill_prices]
 
   # GET /companies
   # GET /companies.json
@@ -151,6 +152,17 @@ class CompaniesController < AuthenticatedUserController
     RecomputeOhlcJob.perform_later(@company)
 
     redirect_back(fallback_location: @company, notice: "OHLC backfill from PSE history queued for #{@company.ticker}.")
+  end
+
+  def backfill_prices
+    return redirect_back(fallback_location: @company, alert: "No permissions") unless @permissions.can?(:price_update, @company)
+
+    start_date = @company.price_updates.maximum(:datetime)&.to_date || 30.days.ago.to_date
+    created = PSE.new(@company).backfill_history!(start_date)
+
+    redirect_back(fallback_location: @company, notice: "Backfilled #{created} missing day(s) for #{@company.ticker}.")
+  rescue StandardError => e
+    redirect_back(fallback_location: @company, alert: "Backfill failed: #{e.message}")
   end
 
   private
