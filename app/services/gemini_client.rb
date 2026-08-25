@@ -8,6 +8,7 @@ class GeminiClient
   DEFAULT_MODEL = "gemini-3.7-flash"
   TIMEOUT_SECONDS = 120
   PDFTOTEXT_BIN = "/opt/homebrew/bin/pdftotext"
+  MAX_LOGGED_RESPONSE_BYTES = 50.kilobytes
 
   class Error < StandardError; end
   class ParseError < Error; end
@@ -19,14 +20,14 @@ class GeminiClient
   end
 
   def grounded_search(prompt)
-    response = HTTParty.post(
-      API_URL,
-      headers: { "x-goog-api-key" => @api_key, "Content-Type" => "application/json" },
-      body: { model: @model, input: prompt, tools: [{ type: "google_search" }] }.to_json,
-      timeout: TIMEOUT_SECONDS,
+    payload = post_interactions(
+      { model: @model, input: prompt, tools: [{ type: "google_search" }] },
+      purpose: "grounded_search",
+      log_prompt: prompt,
     )
+    raise Error, "Gemini API rejected the grounded search request" if payload.nil?
 
-    parse(JSON.parse(response.body))
+    parse(payload)
   end
 
   # Sends the PDF inline (base64) without any tools and parses the model output
@@ -38,12 +39,13 @@ class GeminiClient
       { type: "text", text: prompt },
       { type: "document", data: Base64.strict_encode64(pdf_content), mime_type: "application/pdf" },
     ]
+    log_prompt = "#{prompt}\n\n[PDF attached: #{pdf_content.bytesize} bytes]"
 
-    payload = post_interactions(inline_input)
+    payload = post_interactions({ model: @model, input: inline_input }, purpose: "extract_structured", log_prompt: log_prompt)
     if payload.nil?
       Rails.logger.warn "GeminiClient: inline PDF request rejected, falling back to pdftotext"
       text_input = "#{prompt}\n\nStatement text extracted with pdftotext -layout:\n\n#{pdftotext_extract(pdf_content)}"
-      payload = post_interactions(text_input)
+      payload = post_interactions({ model: @model, input: text_input }, purpose: "extract_structured", log_prompt: log_prompt)
     end
 
     raise Error, "Gemini API rejected both the inline PDF and the pdftotext fallback request" if payload.nil?
@@ -53,17 +55,38 @@ class GeminiClient
 
   private
 
-  # Returns the parsed response body, or nil when the API rejects the request.
-  def post_interactions(input)
+  # Posts one interaction and logs the call as an AiCall row. Returns the
+  # parsed response body, or nil when the API rejects the request.
+  def post_interactions(request_body, purpose:, log_prompt:)
     response = HTTParty.post(
       API_URL,
       headers: { "x-goog-api-key" => @api_key, "Content-Type" => "application/json" },
-      body: { model: @model, input: input }.to_json,
+      body: request_body.to_json,
       timeout: TIMEOUT_SECONDS,
     )
+
+    log_ai_call(purpose: purpose, log_prompt: log_prompt, response_body: response.body,
+                status: response.code.to_i == 200 ? "completed" : "failed",)
     return nil unless response.code.to_i == 200
 
     JSON.parse(response.body)
+  rescue StandardError => e
+    log_ai_call(purpose: purpose, log_prompt: log_prompt, status: "failed", error_message: e.message)
+    raise
+  end
+
+  # Logging must never break the caller.
+  def log_ai_call(purpose:, log_prompt:, status:, response_body: nil, error_message: nil)
+    AiCall.create!(
+      purpose: purpose,
+      model: @model,
+      prompt: log_prompt,
+      response_body: response_body&.truncate(MAX_LOGGED_RESPONSE_BYTES),
+      status: status,
+      error_message: error_message,
+    )
+  rescue StandardError => e
+    Rails.logger.error "GeminiClient: failed to log AI call: #{e.message}"
   end
 
   def pdftotext_extract(pdf_content)
@@ -92,7 +115,7 @@ class GeminiClient
       when "model_output"
         text, citations = collect_model_output(step, text, citations)
       when "google_search_call"
-        queries << step["query"] if step["query"].present?
+        queries.concat(Array(step.dig("arguments", "queries")))
       end
     end
 
@@ -100,12 +123,12 @@ class GeminiClient
   end
 
   def collect_model_output(step, text, citations)
-    Array(step.dig("content", "blocks")).each do |block|
+    Array(step["content"]).each do |block|
       next unless block["type"] == "text"
 
       text << block["text"].to_s
-      Array(block.dig("annotations", "url_citations")).each do |citation|
-        citations << { title: citation["title"], url: citation["url"] }
+      Array(block["annotations"]).each do |annotation|
+        citations << { title: annotation["title"], url: annotation["url"] } if annotation["type"] == "url_citation"
       end
     end
 
