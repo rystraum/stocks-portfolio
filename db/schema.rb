@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_14_150000) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_25_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -165,6 +165,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_14_150000) do
     t.index ["company_id"], name: "index_dividend_announcements_on_company_id"
   end
 
+  create_table "price_move_insights", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "company_id", null: false
+    t.date "move_date", null: false
+    t.decimal "pct_change", precision: 10, scale: 4
+    t.decimal "close_price", precision: 15, scale: 2
+    t.integer "range_days", null: false
+    t.text "explanation"
+    t.jsonb "news_items", default: []
+    t.jsonb "search_queries", default: []
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "move_date"], name: "index_price_move_insights_on_company_id_and_move_date", unique: true
+    t.index ["company_id"], name: "index_price_move_insights_on_company_id"
+  end
+
   create_table "price_updates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "old_id"
     t.bigint "old_company_id"
@@ -225,6 +240,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_14_150000) do
   add_foreign_key "crypto_activities", "crypto_currencies"
   add_foreign_key "crypto_activities", "users"
   add_foreign_key "dividend_announcements", "companies"
+  add_foreign_key "price_move_insights", "companies"
   add_foreign_key "price_updates", "companies"
   add_foreign_key "stock_dividends", "activities"
   add_foreign_key "stock_dividends", "companies"
