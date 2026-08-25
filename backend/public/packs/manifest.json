@@ -1,0 +1,88 @@
+{
+  "application.css": "/packs/css/application.css",
+  "application.css.map": "/packs/css/application.css.map",
+  "application.js": "/packs/js/application.js",
+  "application.js.map": "/packs/js/application.js.map",
+  "company_chart.js": "/packs/js/company_chart.js",
+  "company_chart.js.map": "/packs/js/company_chart.js.map",
+  "crypto_import_review.js": "/packs/js/crypto_import_review.js",
+  "crypto_import_review.js.map": "/packs/js/crypto_import_review.js.map",
+  "css/application-eb290f83.css.br": "/packs/css/application-eb290f83.css.br",
+  "css/application-eb290f83.css.gz": "/packs/css/application-eb290f83.css.gz",
+  "css/application-eb290f83.css.map.br": "/packs/css/application-eb290f83.css.map.br",
+  "css/application-eb290f83.css.map.gz": "/packs/css/application-eb290f83.css.map.gz",
+  "entrypoints": {
+    "application": {
+      "assets": {
+        "js": [
+          "/packs/js/runtime.js",
+          "/packs/js/vendors-node_modules_webpack-dev-server_client_index_js_protocol_ws_3A_hostname_0_0_0_0_port_-1c3fdf.js",
+          "/packs/js/vendors-node_modules_alpinejs_focus_dist_module_esm_js-node_modules_rails_activestorage_app_a-bceda5.js",
+          "/packs/js/application.js"
+        ],
+        "css": [
+          "/packs/css/application.css"
+        ]
+      }
+    },
+    "company_chart": {
+      "assets": {
+        "js": [
+          "/packs/js/runtime.js",
+          "/packs/js/vendors-node_modules_webpack-dev-server_client_index_js_protocol_ws_3A_hostname_0_0_0_0_port_-1c3fdf.js",
+          "/packs/js/vendors-node_modules_react-dom_index_js.js",
+          "/packs/js/vendors-node_modules_lightweight-charts_dist_lightweight-charts_development_mjs.js",
+          "/packs/js/company_chart.js"
+        ]
+      }
+    },
+    "crypto_import_review": {
+      "assets": {
+        "js": [
+          "/packs/js/runtime.js",
+          "/packs/js/vendors-node_modules_webpack-dev-server_client_index_js_protocol_ws_3A_hostname_0_0_0_0_port_-1c3fdf.js",
+          "/packs/js/vendors-node_modules_react-dom_index_js.js",
+          "/packs/js/crypto_import_review.js"
+        ]
+      }
+    }
+  },
+  "js/673-eb82729d48d9b2f83f9c.js": "/packs/js/673-eb82729d48d9b2f83f9c.js",
+  "js/673-eb82729d48d9b2f83f9c.js.LICENSE.txt": "/packs/js/673-eb82729d48d9b2f83f9c.js.LICENSE.txt",
+  "js/673-eb82729d48d9b2f83f9c.js.br": "/packs/js/673-eb82729d48d9b2f83f9c.js.br",
+  "js/673-eb82729d48d9b2f83f9c.js.gz": "/packs/js/673-eb82729d48d9b2f83f9c.js.gz",
+  "js/673-eb82729d48d9b2f83f9c.js.map": "/packs/js/673-eb82729d48d9b2f83f9c.js.map",
+  "js/673-eb82729d48d9b2f83f9c.js.map.br": "/packs/js/673-eb82729d48d9b2f83f9c.js.map.br",
+  "js/673-eb82729d48d9b2f83f9c.js.map.gz": "/packs/js/673-eb82729d48d9b2f83f9c.js.map.gz",
+  "js/753-2373eb4691ca8bf2e210.js": "/packs/js/753-2373eb4691ca8bf2e210.js",
+  "js/753-2373eb4691ca8bf2e210.js.LICENSE.txt": "/packs/js/753-2373eb4691ca8bf2e210.js.LICENSE.txt",
+  "js/753-2373eb4691ca8bf2e210.js.br": "/packs/js/753-2373eb4691ca8bf2e210.js.br",
+  "js/753-2373eb4691ca8bf2e210.js.gz": "/packs/js/753-2373eb4691ca8bf2e210.js.gz",
+  "js/753-2373eb4691ca8bf2e210.js.map": "/packs/js/753-2373eb4691ca8bf2e210.js.map",
+  "js/753-2373eb4691ca8bf2e210.js.map.br": "/packs/js/753-2373eb4691ca8bf2e210.js.map.br",
+  "js/753-2373eb4691ca8bf2e210.js.map.gz": "/packs/js/753-2373eb4691ca8bf2e210.js.map.gz",
+  "js/application-b51dd90c9dff2275c481.js.br": "/packs/js/application-b51dd90c9dff2275c481.js.br",
+  "js/application-b51dd90c9dff2275c481.js.gz": "/packs/js/application-b51dd90c9dff2275c481.js.gz",
+  "js/application-b51dd90c9dff2275c481.js.map.br": "/packs/js/application-b51dd90c9dff2275c481.js.map.br",
+  "js/application-b51dd90c9dff2275c481.js.map.gz": "/packs/js/application-b51dd90c9dff2275c481.js.map.gz",
+  "js/company_chart-17ddada78296ab061031.js.br": "/packs/js/company_chart-17ddada78296ab061031.js.br",
+  "js/company_chart-17ddada78296ab061031.js.gz": "/packs/js/company_chart-17ddada78296ab061031.js.gz",
+  "js/company_chart-17ddada78296ab061031.js.map.br": "/packs/js/company_chart-17ddada78296ab061031.js.map.br",
+  "js/company_chart-17ddada78296ab061031.js.map.gz": "/packs/js/company_chart-17ddada78296ab061031.js.map.gz",
+  "js/runtime-17fa9ceab9367fae49bf.js.br": "/packs/js/runtime-17fa9ceab9367fae49bf.js.br",
+  "js/runtime-17fa9ceab9367fae49bf.js.gz": "/packs/js/runtime-17fa9ceab9367fae49bf.js.gz",
+  "js/runtime-17fa9ceab9367fae49bf.js.map.br": "/packs/js/runtime-17fa9ceab9367fae49bf.js.map.br",
+  "js/runtime-17fa9ceab9367fae49bf.js.map.gz": "/packs/js/runtime-17fa9ceab9367fae49bf.js.map.gz",
+  "js/vendors-node_modules_alpinejs_focus_dist_module_esm_js-node_modules_rails_activestorage_app_a-bceda5.js": "/packs/js/vendors-node_modules_alpinejs_focus_dist_module_esm_js-node_modules_rails_activestorage_app_a-bceda5.js",
+  "js/vendors-node_modules_alpinejs_focus_dist_module_esm_js-node_modules_rails_activestorage_app_a-bceda5.js.map": "/packs/js/vendors-node_modules_alpinejs_focus_dist_module_esm_js-node_modules_rails_activestorage_app_a-bceda5.js.map",
+  "js/vendors-node_modules_lightweight-charts_dist_lightweight-charts_development_mjs.js": "/packs/js/vendors-node_modules_lightweight-charts_dist_lightweight-charts_development_mjs.js",
+  "js/vendors-node_modules_lightweight-charts_dist_lightweight-charts_development_mjs.js.map": "/packs/js/vendors-node_modules_lightweight-charts_dist_lightweight-charts_development_mjs.js.map",
+  "js/vendors-node_modules_react-dom_index_js-node_modules_lightweight-charts_dist_lightweight-char-d5ed68.js": "/packs/js/vendors-node_modules_react-dom_index_js-node_modules_lightweight-charts_dist_lightweight-char-d5ed68.js",
+  "js/vendors-node_modules_react-dom_index_js-node_modules_lightweight-charts_dist_lightweight-char-d5ed68.js.map": "/packs/js/vendors-node_modules_react-dom_index_js-node_modules_lightweight-charts_dist_lightweight-char-d5ed68.js.map",
+  "js/vendors-node_modules_react-dom_index_js.js": "/packs/js/vendors-node_modules_react-dom_index_js.js",
+  "js/vendors-node_modules_react-dom_index_js.js.map": "/packs/js/vendors-node_modules_react-dom_index_js.js.map",
+  "js/vendors-node_modules_webpack-dev-server_client_index_js_protocol_ws_3A_hostname_0_0_0_0_port_-1c3fdf.js": "/packs/js/vendors-node_modules_webpack-dev-server_client_index_js_protocol_ws_3A_hostname_0_0_0_0_port_-1c3fdf.js",
+  "js/vendors-node_modules_webpack-dev-server_client_index_js_protocol_ws_3A_hostname_0_0_0_0_port_-1c3fdf.js.map": "/packs/js/vendors-node_modules_webpack-dev-server_client_index_js_protocol_ws_3A_hostname_0_0_0_0_port_-1c3fdf.js.map",
+  "runtime.js": "/packs/js/runtime.js",
+  "runtime.js.map": "/packs/js/runtime.js.map"
+}

@@ -1,0 +1,36 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 20
+  hostname: localhost
+
+development:
+  <<: *default
+  database: stocks_portfolio_development
+
+test:
+  <<: *default
+  database: stocks_portfolio_test
+
+production:
+  <<: *default
+  database: stocks_portfolio_production
+  username: stocks_portfolio
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+
+# default: &default
+#   adapter: sqlite3
+#   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+#   timeout: 5000
+#
+# development:
+#   <<: *default
+#   database: db/development.sqlite3
+#
+# test:
+#   <<: *default
+#   database: db/test.sqlite3
+#
+# production:
+#   <<: *default
+#   database: db/production.sqlite3

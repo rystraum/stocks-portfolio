@@ -1,0 +1,101 @@
+{
+  "application.css": "/packs-test/css/application-be808c63.css",
+  "application.css.map": "/packs-test/css/application-be808c63.css.map",
+  "application.js": "/packs-test/js/application-b51dd90c9dff2275c481.js",
+  "application.js.map": "/packs-test/js/application-b51dd90c9dff2275c481.js.map",
+  "company_chart.js": "/packs-test/js/company_chart-f828b0b59fb2d2c18a2b.js",
+  "company_chart.js.map": "/packs-test/js/company_chart-f828b0b59fb2d2c18a2b.js.map",
+  "crypto_import_review.js": "/packs-test/js/crypto_import_review-3229ad733bcf843b4ea6.js",
+  "crypto_import_review.js.map": "/packs-test/js/crypto_import_review-3229ad733bcf843b4ea6.js.map",
+  "css/application-50e1bde9.css.br": "/packs-test/css/application-50e1bde9.css.br",
+  "css/application-50e1bde9.css.gz": "/packs-test/css/application-50e1bde9.css.gz",
+  "css/application-50e1bde9.css.map.br": "/packs-test/css/application-50e1bde9.css.map.br",
+  "css/application-50e1bde9.css.map.gz": "/packs-test/css/application-50e1bde9.css.map.gz",
+  "css/application-be808c63.css.br": "/packs-test/css/application-be808c63.css.br",
+  "css/application-be808c63.css.gz": "/packs-test/css/application-be808c63.css.gz",
+  "css/application-be808c63.css.map.br": "/packs-test/css/application-be808c63.css.map.br",
+  "css/application-be808c63.css.map.gz": "/packs-test/css/application-be808c63.css.map.gz",
+  "entrypoints": {
+    "application": {
+      "assets": {
+        "js": [
+          "/packs-test/js/runtime-17fa9ceab9367fae49bf.js",
+          "/packs-test/js/753-2373eb4691ca8bf2e210.js",
+          "/packs-test/js/application-b51dd90c9dff2275c481.js"
+        ],
+        "css": [
+          "/packs-test/css/application-be808c63.css"
+        ]
+      }
+    },
+    "company_chart": {
+      "assets": {
+        "js": [
+          "/packs-test/js/runtime-17fa9ceab9367fae49bf.js",
+          "/packs-test/js/961-c2730b2a04ea703e8b76.js",
+          "/packs-test/js/681-28cc4ee52709ef154cc0.js",
+          "/packs-test/js/company_chart-f828b0b59fb2d2c18a2b.js"
+        ]
+      }
+    },
+    "crypto_import_review": {
+      "assets": {
+        "js": [
+          "/packs-test/js/runtime-17fa9ceab9367fae49bf.js",
+          "/packs-test/js/961-c2730b2a04ea703e8b76.js",
+          "/packs-test/js/crypto_import_review-3229ad733bcf843b4ea6.js"
+        ]
+      }
+    }
+  },
+  "js/673-eb82729d48d9b2f83f9c.js": "/packs-test/js/673-eb82729d48d9b2f83f9c.js",
+  "js/673-eb82729d48d9b2f83f9c.js.LICENSE.txt": "/packs-test/js/673-eb82729d48d9b2f83f9c.js.LICENSE.txt",
+  "js/673-eb82729d48d9b2f83f9c.js.br": "/packs-test/js/673-eb82729d48d9b2f83f9c.js.br",
+  "js/673-eb82729d48d9b2f83f9c.js.gz": "/packs-test/js/673-eb82729d48d9b2f83f9c.js.gz",
+  "js/673-eb82729d48d9b2f83f9c.js.map": "/packs-test/js/673-eb82729d48d9b2f83f9c.js.map",
+  "js/673-eb82729d48d9b2f83f9c.js.map.br": "/packs-test/js/673-eb82729d48d9b2f83f9c.js.map.br",
+  "js/673-eb82729d48d9b2f83f9c.js.map.gz": "/packs-test/js/673-eb82729d48d9b2f83f9c.js.map.gz",
+  "js/681-28cc4ee52709ef154cc0.js": "/packs-test/js/681-28cc4ee52709ef154cc0.js",
+  "js/681-28cc4ee52709ef154cc0.js.LICENSE.txt": "/packs-test/js/681-28cc4ee52709ef154cc0.js.LICENSE.txt",
+  "js/681-28cc4ee52709ef154cc0.js.br": "/packs-test/js/681-28cc4ee52709ef154cc0.js.br",
+  "js/681-28cc4ee52709ef154cc0.js.gz": "/packs-test/js/681-28cc4ee52709ef154cc0.js.gz",
+  "js/681-28cc4ee52709ef154cc0.js.map": "/packs-test/js/681-28cc4ee52709ef154cc0.js.map",
+  "js/681-28cc4ee52709ef154cc0.js.map.br": "/packs-test/js/681-28cc4ee52709ef154cc0.js.map.br",
+  "js/681-28cc4ee52709ef154cc0.js.map.gz": "/packs-test/js/681-28cc4ee52709ef154cc0.js.map.gz",
+  "js/753-2373eb4691ca8bf2e210.js": "/packs-test/js/753-2373eb4691ca8bf2e210.js",
+  "js/753-2373eb4691ca8bf2e210.js.LICENSE.txt": "/packs-test/js/753-2373eb4691ca8bf2e210.js.LICENSE.txt",
+  "js/753-2373eb4691ca8bf2e210.js.br": "/packs-test/js/753-2373eb4691ca8bf2e210.js.br",
+  "js/753-2373eb4691ca8bf2e210.js.gz": "/packs-test/js/753-2373eb4691ca8bf2e210.js.gz",
+  "js/753-2373eb4691ca8bf2e210.js.map": "/packs-test/js/753-2373eb4691ca8bf2e210.js.map",
+  "js/753-2373eb4691ca8bf2e210.js.map.br": "/packs-test/js/753-2373eb4691ca8bf2e210.js.map.br",
+  "js/753-2373eb4691ca8bf2e210.js.map.gz": "/packs-test/js/753-2373eb4691ca8bf2e210.js.map.gz",
+  "js/961-c2730b2a04ea703e8b76.js": "/packs-test/js/961-c2730b2a04ea703e8b76.js",
+  "js/961-c2730b2a04ea703e8b76.js.LICENSE.txt": "/packs-test/js/961-c2730b2a04ea703e8b76.js.LICENSE.txt",
+  "js/961-c2730b2a04ea703e8b76.js.br": "/packs-test/js/961-c2730b2a04ea703e8b76.js.br",
+  "js/961-c2730b2a04ea703e8b76.js.gz": "/packs-test/js/961-c2730b2a04ea703e8b76.js.gz",
+  "js/961-c2730b2a04ea703e8b76.js.map": "/packs-test/js/961-c2730b2a04ea703e8b76.js.map",
+  "js/961-c2730b2a04ea703e8b76.js.map.br": "/packs-test/js/961-c2730b2a04ea703e8b76.js.map.br",
+  "js/961-c2730b2a04ea703e8b76.js.map.gz": "/packs-test/js/961-c2730b2a04ea703e8b76.js.map.gz",
+  "js/application-b51dd90c9dff2275c481.js.br": "/packs-test/js/application-b51dd90c9dff2275c481.js.br",
+  "js/application-b51dd90c9dff2275c481.js.gz": "/packs-test/js/application-b51dd90c9dff2275c481.js.gz",
+  "js/application-b51dd90c9dff2275c481.js.map.br": "/packs-test/js/application-b51dd90c9dff2275c481.js.map.br",
+  "js/application-b51dd90c9dff2275c481.js.map.gz": "/packs-test/js/application-b51dd90c9dff2275c481.js.map.gz",
+  "js/company_chart-206988fcd8fd89f99b6c.js.br": "/packs-test/js/company_chart-206988fcd8fd89f99b6c.js.br",
+  "js/company_chart-206988fcd8fd89f99b6c.js.gz": "/packs-test/js/company_chart-206988fcd8fd89f99b6c.js.gz",
+  "js/company_chart-206988fcd8fd89f99b6c.js.map.br": "/packs-test/js/company_chart-206988fcd8fd89f99b6c.js.map.br",
+  "js/company_chart-206988fcd8fd89f99b6c.js.map.gz": "/packs-test/js/company_chart-206988fcd8fd89f99b6c.js.map.gz",
+  "js/company_chart-f828b0b59fb2d2c18a2b.js.br": "/packs-test/js/company_chart-f828b0b59fb2d2c18a2b.js.br",
+  "js/company_chart-f828b0b59fb2d2c18a2b.js.gz": "/packs-test/js/company_chart-f828b0b59fb2d2c18a2b.js.gz",
+  "js/company_chart-f828b0b59fb2d2c18a2b.js.map.br": "/packs-test/js/company_chart-f828b0b59fb2d2c18a2b.js.map.br",
+  "js/company_chart-f828b0b59fb2d2c18a2b.js.map.gz": "/packs-test/js/company_chart-f828b0b59fb2d2c18a2b.js.map.gz",
+  "js/crypto_import_review-3229ad733bcf843b4ea6.js.br": "/packs-test/js/crypto_import_review-3229ad733bcf843b4ea6.js.br",
+  "js/crypto_import_review-3229ad733bcf843b4ea6.js.gz": "/packs-test/js/crypto_import_review-3229ad733bcf843b4ea6.js.gz",
+  "js/crypto_import_review-3229ad733bcf843b4ea6.js.map.br": "/packs-test/js/crypto_import_review-3229ad733bcf843b4ea6.js.map.br",
+  "js/crypto_import_review-3229ad733bcf843b4ea6.js.map.gz": "/packs-test/js/crypto_import_review-3229ad733bcf843b4ea6.js.map.gz",
+  "js/runtime-17fa9ceab9367fae49bf.js.br": "/packs-test/js/runtime-17fa9ceab9367fae49bf.js.br",
+  "js/runtime-17fa9ceab9367fae49bf.js.gz": "/packs-test/js/runtime-17fa9ceab9367fae49bf.js.gz",
+  "js/runtime-17fa9ceab9367fae49bf.js.map.br": "/packs-test/js/runtime-17fa9ceab9367fae49bf.js.map.br",
+  "js/runtime-17fa9ceab9367fae49bf.js.map.gz": "/packs-test/js/runtime-17fa9ceab9367fae49bf.js.map.gz",
+  "runtime.js": "/packs-test/js/runtime-17fa9ceab9367fae49bf.js",
+  "runtime.js.map": "/packs-test/js/runtime-17fa9ceab9367fae49bf.js.map"
+}
