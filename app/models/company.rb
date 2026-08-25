@@ -7,6 +7,7 @@ class Company < ApplicationRecord
   has_many :cash_dividends, dependent: :restrict_with_error
   has_many :price_updates, dependent: :restrict_with_error
   has_many :dividend_announcements, dependent: :restrict_with_error
+  has_many :price_move_insights, dependent: :destroy
 
   scope :alphabetical, -> { order(:ticker) }
   scope :active, -> { where(inactive: false) }
