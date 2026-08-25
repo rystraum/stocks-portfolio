@@ -47,6 +47,10 @@ gem "tzinfo-data", platforms: %i[windows jruby]
 # gem 'webpacker', git: 'https://github.com/rails/webpacker.git'
 gem "shakapacker", "~> 9.5"
 
+# Hold back rack-proxy 1.0: its SSRF guard refuses the dynamic Host-derived
+# backend that Shakapacker::DevServerProxy relies on (all /packs 502).
+gem "rack-proxy", "~> 0.7"
+
 gem "will_paginate", "~> 4.0"
 
 gem "fast-mcp", "~> 1.2"
