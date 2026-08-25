@@ -2,6 +2,7 @@
 
 # rubocop:disable Metrics/AbcSize
 # rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/ClassLength
 
 class PSE
   attr_accessor :company, :company_id, :pse_company_id, :pse_security_id
@@ -116,6 +117,32 @@ class PSE
 
   def fetch_history
     fetch_history_ohlc
+  end
+
+  def backfill_history!(start_date, end_date = Time.zone.today)
+    raise "Company can't update from PSE" unless can_update?
+
+    history = fetch_history_ohlc(start_date, end_date)
+    existing_dates = company.price_updates
+                            .where(datetime: start_date.beginning_of_day..end_date.end_of_day)
+                            .map { |u| u.datetime.to_date }
+
+    created = 0
+    history.each do |row|
+      date = Date.strptime(row["CHART_DATE"], "%b %d, %Y %H:%M:%S")
+      next if existing_dates.include?(date)
+
+      company.price_updates.create!(
+        datetime: date.to_datetime,
+        price: row["CLOSE"],
+        open: row["OPEN"],
+        high: row["HIGH"],
+        low: row["LOW"],
+        notes: "Backfilled from PSE chart history",
+      )
+      created += 1
+    end
+    created
   end
 
   def dividend_announcements!
@@ -286,3 +313,4 @@ end
 
 # rubocop:enable Metrics/AbcSize
 # rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/ClassLength
