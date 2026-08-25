@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_25_100000) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_25_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -195,6 +195,41 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_25_100000) do
     t.index ["old_company_id"], name: "index_price_updates_on_old_company_id"
   end
 
+  create_table "statement_import_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "statement_import_id", null: false
+    t.uuid "company_id"
+    t.integer "item_type", default: 0, null: false
+    t.boolean "selected", default: true, null: false
+    t.boolean "duplicate", default: false, null: false
+    t.date "date"
+    t.string "ticker"
+    t.integer "shares"
+    t.decimal "price", precision: 15, scale: 4
+    t.decimal "amount", precision: 15, scale: 2
+    t.decimal "charges", precision: 15, scale: 4
+    t.date "ex_date"
+    t.string "ref"
+    t.text "particulars"
+    t.string "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_statement_import_items_on_company_id"
+    t.index ["statement_import_id"], name: "index_statement_import_items_on_statement_import_id"
+  end
+
+  create_table "statement_imports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.string "filename"
+    t.string "content_hash"
+    t.integer "status", default: 0, null: false
+    t.string "statement_period"
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "content_hash"], name: "index_statement_imports_on_user_id_and_content_hash", unique: true
+    t.index ["user_id"], name: "index_statement_imports_on_user_id"
+  end
+
   create_table "stock_dividends", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "old_id"
     t.bigint "old_company_id"
@@ -242,6 +277,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_25_100000) do
   add_foreign_key "dividend_announcements", "companies"
   add_foreign_key "price_move_insights", "companies"
   add_foreign_key "price_updates", "companies"
+  add_foreign_key "statement_import_items", "companies"
+  add_foreign_key "statement_import_items", "statement_imports"
+  add_foreign_key "statement_imports", "users"
   add_foreign_key "stock_dividends", "activities"
   add_foreign_key "stock_dividends", "companies"
   add_foreign_key "stock_dividends", "price_updates", column: "last_price_update_id"
