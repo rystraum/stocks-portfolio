@@ -14,7 +14,7 @@ class CompanyInfoComponent < ViewComponent::Base
 
   def simply_wall_st_url
     return company.simply_wall_st_url if company.simply_wall_st_url.present?
-    return "" unless with_company_name?
+    return "" unless with_company_name? && @company.industry.present?
 
     "https://simplywall.st/stocks/ph/#{@company.industry.parameterize.downcase}/pse-#{@company.ticker.downcase}/#{@company.name.parameterize}-shares"
   end
