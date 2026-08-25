@@ -59,6 +59,11 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :admin do
+    root to: "dashboard#index"
+    resources :ai_calls, only: %i[index show]
+  end
+
   put :update_prices, to: "dashboard#update_prices"
 
   get "/portfolio/stocks", to: "portfolio#stocks"
