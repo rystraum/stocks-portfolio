@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_25_110000) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_25_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -32,6 +32,17 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_25_110000) do
     t.index ["activity_type"], name: "index_activities_on_activity_type"
     t.index ["old_company_id"], name: "index_activities_on_old_company_id"
     t.index ["user_id"], name: "index_activities_on_user_id"
+  end
+
+  create_table "ai_calls", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "purpose"
+    t.string "model"
+    t.text "prompt"
+    t.text "response_body"
+    t.string "status"
+    t.text "error_message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "cash_dividends", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -226,7 +237,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_25_110000) do
     t.text "error_message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id", "content_hash"], name: "index_statement_imports_on_user_id_and_content_hash", unique: true
+    t.index ["user_id", "content_hash"], name: "index_statement_imports_on_user_id_and_content_hash", unique: true, where: "(status <> 3)"
     t.index ["user_id"], name: "index_statement_imports_on_user_id"
   end
 
