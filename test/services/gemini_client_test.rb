@@ -39,7 +39,80 @@ class GeminiClientTest < ActiveSupport::TestCase
     assert_equal GeminiClient::DEFAULT_MODEL, client.instance_variable_get(:@model)
   end
 
+  test "extract_structured sends the pdf inline without tools and parses fenced json" do
+    response = OpenStruct.new(code: "200", body: extract_response_body("```json\n[{\"type\":\"buy\"}]\n```"))
+
+    stub_httparty_capture([response]) do |calls|
+      result = GeminiClient.new(api_key: "test-key").extract_structured("Parse this", StringIO.new("%PDF-fake"))
+
+      assert_equal [{ "type" => "buy" }], result
+
+      body = JSON.parse(calls.first.last[:body])
+      assert_nil body["tools"]
+      assert_equal 2, body["input"].length
+      assert_equal({ "type" => "text", "text" => "Parse this" }, body["input"].first)
+      assert_equal "document", body["input"].last["type"]
+      assert_equal "application/pdf", body["input"].last["mime_type"]
+      assert_equal Base64.strict_encode64("%PDF-fake"), body["input"].last["data"]
+    end
+  end
+
+  test "extract_structured falls back to pdftotext when the api rejects the inline pdf" do
+    rejected = OpenStruct.new(code: "400", body: '{"error":{"message":"unsupported media"}}')
+    ok = OpenStruct.new(code: "200", body: extract_response_body('[{"type":"sell"}]'))
+    client = GeminiClient.new(api_key: "test-key")
+    client.define_singleton_method(:pdftotext_extract) { |_content| "extracted statement text" }
+
+    stub_httparty_capture([rejected, ok]) do |calls|
+      result = client.extract_structured("Parse this", StringIO.new("%PDF-fake"))
+
+      assert_equal [{ "type" => "sell" }], result
+      assert_equal 2, calls.length
+      assert_kind_of Array, JSON.parse(calls.first.last[:body])["input"]
+      fallback_input = JSON.parse(calls.last.last[:body])["input"]
+      assert_kind_of String, fallback_input
+      assert_includes fallback_input, "extracted statement text"
+    end
+  end
+
+  test "extract_structured raises when both the inline pdf and the fallback are rejected" do
+    rejected = OpenStruct.new(code: "400", body: '{"error":{"message":"unsupported media"}}')
+    client = GeminiClient.new(api_key: "test-key")
+    client.define_singleton_method(:pdftotext_extract) { |_content| "extracted statement text" }
+
+    stub_httparty_capture([rejected, rejected]) do |_calls|
+      assert_raises(GeminiClient::Error) { client.extract_structured("Parse this", StringIO.new("%PDF-fake")) }
+    end
+  end
+
+  test "extract_structured raises with the raw text when the response is not json" do
+    response = OpenStruct.new(code: "200", body: extract_response_body("Sorry, I cannot parse this."))
+
+    stub_httparty_capture([response]) do |_calls|
+      error = assert_raises(GeminiClient::ParseError) do
+        GeminiClient.new(api_key: "test-key").extract_structured("Parse this", StringIO.new("%PDF-fake"))
+      end
+      assert_includes error.message, "Sorry, I cannot parse this."
+    end
+  end
+
   private
+
+  def extract_response_body(text)
+    { "steps" => [{ "type" => "model_output", "content" => { "blocks" => [{ "type" => "text", "text" => text }] } }] }.to_json
+  end
+
+  def stub_httparty_capture(responses)
+    calls = []
+    original = HTTParty.method(:post)
+    HTTParty.define_singleton_method(:post) do |_url, *args|
+      calls << args
+      responses[[calls.length - 1, responses.length - 1].min]
+    end
+    yield calls
+  ensure
+    HTTParty.define_singleton_method(:post, original.to_proc)
+  end
 
   def grounded_response_body(duplicate_citations: false)
     citations = [
