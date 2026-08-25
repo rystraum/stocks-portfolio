@@ -43,13 +43,13 @@ class BpiStatementImporter
     content_hash = Digest::SHA256.hexdigest(@file.read)
     @file.rewind
 
-    existing = StatementImport.find_by(user: @user, content_hash: content_hash)
+    existing = StatementImport.where(user: @user, content_hash: content_hash).where.not(status: :failed).first
     raise DuplicateFileError, "This exact file was already imported on #{existing.created_at.strftime('%Y-%m-%d %H:%M')}." if existing
 
     import = StatementImport.create!(user: @user, filename: @file.original_filename, status: :parsing, content_hash: content_hash)
 
-    transactions = GeminiClient.new.extract_structured(PROMPT, @file)
-    create_items(import, Array(transactions))
+    transactions = normalize_transactions(GeminiClient.new.extract_structured(PROMPT, @file))
+    create_items(import, transactions)
     import.reviewing!
     import
   rescue StandardError => e
@@ -85,12 +85,26 @@ class BpiStatementImporter
 
   def create_items(import, transactions)
     transactions.each do |txn|
+      next unless txn.is_a?(Hash)
+
       if IMPORTABLE_TYPES.include?(txn["type"].to_s)
         create_importable_item(import, txn)
       else
         create_skipped_item(import, txn)
       end
     end
+  end
+
+  # Gemini sometimes wraps the array in an object, e.g. {"transactions": [...]}.
+  def normalize_transactions(parsed)
+    return parsed if parsed.is_a?(Array)
+
+    if parsed.is_a?(Hash)
+      array = parsed.values.find { |value| value.is_a?(Array) }
+      return array if array
+    end
+
+    raise "Gemini response did not contain a transactions array: #{parsed.inspect.truncate(500)}"
   end
 
   def create_skipped_item(import, txn)
