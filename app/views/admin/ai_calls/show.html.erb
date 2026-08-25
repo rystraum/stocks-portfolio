@@ -1,0 +1,21 @@
+<%= render "shared/header", text: "AI Call" %>
+
+<div class="p-4">
+  <div class="card">
+    <div class="card-header flex justify-between items-center">
+      <h4 class="card-header-title"><%= @ai_call.purpose %> &mdash; <%= @ai_call.model %></h4>
+      <span class="badge <%= @ai_call.status == "completed" ? 'badge-soft-success' : 'badge-soft-danger' %>"><%= @ai_call.status %></span>
+    </div>
+    <div class="card-body">
+      <p class="text-sm text-gray-500"><%= @ai_call.created_at.strftime("%Y-%m-%d %H:%M:%S") %></p>
+      <% if @ai_call.error_message.present? %>
+        <p class="text-red-600"><%= @ai_call.error_message %></p>
+      <% end %>
+      <h5 class="mt-4 font-bold">Prompt</h5>
+      <pre class="text-sm whitespace-pre-wrap"><%= @ai_call.prompt %></pre>
+      <h5 class="mt-4 font-bold">Response</h5>
+      <pre class="text-sm whitespace-pre-wrap"><%= @ai_call.response_body %></pre>
+      <%= link_to "Back to AI calls", admin_ai_calls_path, class: "btn btn-secondary mt-4" %>
+    </div>
+  </div>
+</div>
