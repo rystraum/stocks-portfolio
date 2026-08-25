@@ -1,0 +1,80 @@
+<%= render "shared/header", text: "Review Statement Import" %>
+
+<div class="p-4">
+  <div class="card">
+    <div class="card-header flex justify-between items-center">
+      <h4 class="card-header-title"><%= @import.filename %></h4>
+      <span class="badge <%= @import.completed? ? 'badge-soft-success' : @import.reviewing? ? 'badge-soft-warning' : 'badge-soft-danger' %>"><%= @import.status.titleize %></span>
+    </div>
+    <div class="card-body">
+      <% if @import.failed? %>
+        <p class="text-red-600">Parsing failed: <%= @import.error_message %></p>
+      <% else %>
+        <%= form_with(url: [:finalize, @import], method: :post, local: true) do %>
+          <div class="table-responsive mb-0">
+            <table class="table table-striped card-table">
+              <thead>
+                <tr>
+                  <th>Import?</th>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Ticker</th>
+                  <th class="text-right">Shares</th>
+                  <th class="text-right">Price</th>
+                  <th class="text-right">Amount</th>
+                  <th class="text-right">Charges</th>
+                  <th>Ex-Date</th>
+                  <th>Ref</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @items.each do |item| %>
+                  <% if item.skipped? %>
+                    <tr class="text-gray-400">
+                      <td>&mdash;</td>
+                      <td><%= item.date %></td>
+                      <td>Skipped</td>
+                      <td><%= item.ticker %></td>
+                      <td class="text-right">-</td>
+                      <td class="text-right">-</td>
+                      <td class="text-right"><%= item.amount ? number_to_currency(item.amount, unit: "") : "-" %></td>
+                      <td class="text-right">-</td>
+                      <td>-</td>
+                      <td><%= item.ref %></td>
+                      <td><%= item.note %> &mdash; <%= truncate(item.particulars) %></td>
+                    </tr>
+                  <% else %>
+                    <tr>
+                      <td><%= check_box_tag "selected_ids[]", item.id, item.selected, id: "selected_ids_#{item.id}" %></td>
+                      <td><%= item.date %></td>
+                      <td>
+                        <span class="badge <%= item.buy? ? 'badge-soft-success' : item.cash_dividend? ? 'badge-soft-primary' : 'badge-soft-danger' %>"><%= item.item_type.titleize %></span>
+                        <% if item.duplicate? %><span class="badge badge-soft-warning">Duplicate</span><% end %>
+                      </td>
+                      <td>
+                        <%= item.ticker %>
+                        <% if item.company.nil? %><span class="text-red-600 font-bold" title="Unknown ticker">!</span><% end %>
+                      </td>
+                      <td class="text-right"><%= item.shares || "-" %></td>
+                      <td class="text-right"><%= item.price ? number_to_currency(item.price, unit: "") : "-" %></td>
+                      <td class="text-right"><%= item.amount ? number_to_currency(item.amount, unit: "") : "-" %></td>
+                      <td class="text-right"><%= item.charges ? number_to_currency(item.charges, unit: "") : "-" %></td>
+                      <td><%= item.ex_date || "-" %></td>
+                      <td><%= item.ref %></td>
+                      <td><%= item.note %></td>
+                    </tr>
+                  <% end %>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          <% unless @import.completed? %>
+            <%= submit_tag "Import selected", class: "btn btn-primary mt-4", data: { confirm: "Create activities and dividends for the selected rows?" } %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <%= link_to "Back to imports", statement_imports_path, class: "btn btn-secondary mt-4" %>
+    </div>
+  </div>
+</div>
