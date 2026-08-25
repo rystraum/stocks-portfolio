@@ -4,7 +4,7 @@ class CompanyDividendAnnouncementsComponent < ViewComponent::Base
   attr_accessor :announcements, :last_price, :company, :cps
 
   def initialize(user:, company:)
-    super
+    super()
     portfolio = UserPortfolioCompany.new(user, company)
     @user = user
     @company = company
