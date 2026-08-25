@@ -9,7 +9,7 @@ namespace :prices do
     companies.each do |company|
       next unless company.can_update_from_pse?
 
-      start_date = ENV["START"].presence&.to_date || (company.price_updates.maximum(:datetime)&.to_date || 30.days.ago.to_date)
+      start_date = ENV["START"].presence&.to_date || 1.year.ago.to_date
       end_date = ENV["END"].presence&.to_date || Time.zone.today
       next if start_date >= end_date
 

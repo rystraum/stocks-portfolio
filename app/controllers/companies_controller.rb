@@ -157,8 +157,7 @@ class CompaniesController < AuthenticatedUserController
   def backfill_prices
     return redirect_back(fallback_location: @company, alert: "No permissions") unless @permissions.can?(:price_update, @company)
 
-    start_date = @company.price_updates.maximum(:datetime)&.to_date || 30.days.ago.to_date
-    created = PSE.new(@company).backfill_history!(start_date)
+    created = PSE.new(@company).backfill_history!(1.year.ago.to_date)
 
     redirect_back(fallback_location: @company, notice: "Backfilled #{created} missing day(s) for #{@company.ticker}.")
   rescue StandardError => e
