@@ -2,6 +2,7 @@
 
 require "test_helper"
 
+# rubocop:disable Metrics/ClassLength
 class PSETest < ActiveSupport::TestCase
   test "price_update! raises when company cannot update" do
     company = Company.create!(ticker: "NOUPD")
@@ -75,6 +76,35 @@ class PSETest < ActiveSupport::TestCase
       assert_equal 1, history.length
       assert_equal 100.0, history.first["OPEN"]
       assert_equal 110.0, history.first["HIGH"]
+    end
+  end
+
+  test "backfill_history! creates rows only for missing dates" do
+    company = Company.create!(ticker: "BFILL", pse_company_id: "57", pse_security_id: "180")
+    existing = company.price_updates.create!(price: 999.0, datetime: DateTime.new(2021, 5, 1, 12, 50, 0, "+08:00"))
+    body = '{"chartData":[' \
+      '{"OPEN":100.0,"HIGH":110.0,"LOW":95.0,"CLOSE":105.0,"CHART_DATE":"May 01, 2021 00:00:00"},' \
+      '{"OPEN":106.0,"HIGH":112.0,"LOW":104.0,"CLOSE":108.0,"CHART_DATE":"May 03, 2021 00:00:00"}' \
+      "]}"
+    response = OpenStruct.new(code: "200", body: body)
+    http = Object.new
+    http.define_singleton_method(:request) { |_req| response }
+
+    stub_net_http_start(http) do
+      created = PSE.new(company).backfill_history!(Date.new(2021, 5, 1), Date.new(2021, 5, 3))
+
+      assert_equal 1, created
+      assert_equal 2, company.price_updates.count
+
+      backfilled = company.price_updates.find_by!(datetime: DateTime.new(2021, 5, 3))
+      assert_equal 108.0, backfilled.price.to_f
+      assert_equal 106.0, backfilled.open.to_f
+      assert_equal 112.0, backfilled.high.to_f
+      assert_equal 104.0, backfilled.low.to_f
+
+      existing.reload
+      assert_equal 999.0, existing.price.to_f
+      assert_nil existing.open
     end
   end
 
@@ -222,3 +252,4 @@ class PSETest < ActiveSupport::TestCase
     Net::HTTP.define_singleton_method(:start, original.to_proc)
   end
 end
+# rubocop:enable Metrics/ClassLength
