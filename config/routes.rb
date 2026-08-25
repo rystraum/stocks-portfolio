@@ -53,6 +53,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :statement_imports, only: %i[index new create show] do
+    member do
+      post :finalize
+    end
+  end
+
   put :update_prices, to: "dashboard#update_prices"
 
   get "/portfolio/stocks", to: "portfolio#stocks"

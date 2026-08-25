@@ -1,0 +1,21 @@
+<%= render "shared/header", text: "Import BPI Trade Statement of Account" %>
+
+<div class="max-w-xl mx-auto p-4">
+  <div class="card">
+    <div class="card-body">
+      <%= form_with(url: statement_imports_path, local: true, multipart: true) do |f| %>
+        <div class="form-group">
+          <%= f.label :file, "BPI Trade Statement of Account (PDF)" %>
+          <%= f.file_field :file, accept: ".pdf", class: "form-control", required: true %>
+          <small class="form-text text-muted">
+            Upload the Statement of Account PDF as-is. It is sent to the Gemini API for parsing, then you review the extracted transactions before anything is created.
+          </small>
+        </div>
+        <div class="form-group mt-4">
+          <%= f.submit "Upload and Parse", class: "btn btn-primary" %>
+          <%= link_to "Back", statement_imports_path, class: "btn btn-secondary ml-2" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
