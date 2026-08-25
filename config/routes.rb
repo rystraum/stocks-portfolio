@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       get :price_updates
       post :price_update_from_pse
       post :recompute_ohlc
+      post :backfill_prices
       delete :refetch_announcements
     end
     collection do
