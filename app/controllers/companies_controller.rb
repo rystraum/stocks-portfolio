@@ -2,7 +2,8 @@
 
 class CompaniesController < AuthenticatedUserController
   before_action :set_company,
-                only: %i[show edit update destroy last_price price_update_from_pse refetch_announcements price_updates recompute_ohlc backfill_prices]
+                only: %i[show edit update destroy last_price price_update_from_pse refetch_announcements price_updates recompute_ohlc backfill_prices
+                         explain_moves]
 
   # GET /companies
   # GET /companies.json
@@ -33,6 +34,8 @@ class CompaniesController < AuthenticatedUserController
 
       dividend.set_meta!(force: true)
     end
+
+    @insights = @company.price_move_insights.latest_first if @company
   end
 
   def price_update_all_from_pse
@@ -162,6 +165,19 @@ class CompaniesController < AuthenticatedUserController
     redirect_back(fallback_location: @company, notice: "Backfilled #{created} missing day(s) for #{@company.ticker}.")
   rescue StandardError => e
     redirect_back(fallback_location: @company, alert: "Backfill failed: #{e.message}")
+  end
+
+  def explain_moves
+    return redirect_back(fallback_location: @company, alert: "No permissions") unless @permissions.can?(:price_update, @company)
+
+    range_days = params[:range_days].to_i
+    range_days = 90 unless [30, 90, 365].include?(range_days)
+    force = params[:force] == "1"
+
+    PriceMoveExplanationJob.perform_later(@company, range_days, force)
+
+    mode = force ? "re-analyzing all key dates" : "cached dates are skipped"
+    redirect_back(fallback_location: @company, notice: "Analysis queued for #{@company.ticker} (#{mode}).")
   end
 
   private
