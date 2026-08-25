@@ -90,6 +90,38 @@ class BpiStatementImporterTest < ActiveSupport::TestCase
     end
   end
 
+  test "import! accepts an object-wrapped transactions response" do
+    stub_gemini_extract({ "transactions" => parsed_transactions }) do
+      import = BpiStatementImporter.new(fake_file, @user).import!
+
+      assert import.reviewing?
+      assert_equal 7, import.statement_import_items.count
+    end
+  end
+
+  test "import! raises a clear error when the response has no transactions array" do
+    stub_gemini_extract({ "message" => "no rows found" }) do
+      error = assert_raises(RuntimeError) { BpiStatementImporter.new(fake_file, @user).import! }
+      assert_match(/did not contain a transactions array/, error.message)
+    end
+
+    assert @user.statement_imports.last.failed?
+  end
+
+  test "a failed import does not block re-uploading the same file" do
+    stub_gemini_extract_error("API down") do
+      assert_raises(RuntimeError) { BpiStatementImporter.new(fake_file, @user).import! }
+    end
+    assert @user.statement_imports.last.failed?
+
+    stub_gemini_extract(parsed_transactions) do
+      import = BpiStatementImporter.new(fake_file, @user).import!
+
+      assert import.reviewing?
+      assert_equal 7, import.statement_import_items.count
+    end
+  end
+
   test "import! marks the import failed and re-raises when parsing fails" do
     stub_gemini_extract_error("API down") do
       assert_raises(RuntimeError) { BpiStatementImporter.new(fake_file, @user).import! }

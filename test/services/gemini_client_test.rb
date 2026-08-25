@@ -4,7 +4,7 @@ require "test_helper"
 
 class GeminiClientTest < ActiveSupport::TestCase
   test "grounded_search parses text, citations and queries from steps" do
-    response = OpenStruct.new(body: grounded_response_body)
+    response = OpenStruct.new(code: "200", body: grounded_response_body)
 
     stub_httparty(:post, response) do
       result = GeminiClient.new(api_key: "test-key").grounded_search("Why did MER move?")
@@ -17,13 +17,81 @@ class GeminiClientTest < ActiveSupport::TestCase
   end
 
   test "grounded_search dedupes citations by url" do
-    response = OpenStruct.new(body: grounded_response_body(duplicate_citations: true))
+    response = OpenStruct.new(code: "200", body: grounded_response_body(duplicate_citations: true))
 
     stub_httparty(:post, response) do
       result = GeminiClient.new(api_key: "test-key").grounded_search("Why did MER move?")
 
       assert_equal 2, result[:citations].length
     end
+  end
+
+  test "grounded_search raises and logs a failed ai call when the api rejects the request" do
+    response = OpenStruct.new(code: "400", body: '{"error":{"message":"bad request"}}')
+
+    stub_httparty(:post, response) do
+      assert_raises(GeminiClient::Error) { GeminiClient.new(api_key: "test-key").grounded_search("Why did MER move?") }
+    end
+
+    ai_call = AiCall.last
+    assert_equal "grounded_search", ai_call.purpose
+    assert_equal "failed", ai_call.status
+    assert_equal '{"error":{"message":"bad request"}}', ai_call.response_body
+  end
+
+  test "grounded_search logs a completed ai call" do
+    response = OpenStruct.new(code: "200", body: grounded_response_body)
+
+    stub_httparty(:post, response) do
+      GeminiClient.new(api_key: "test-key").grounded_search("Why did MER move?")
+    end
+
+    ai_call = AiCall.last
+    assert_equal "grounded_search", ai_call.purpose
+    assert_equal "completed", ai_call.status
+    assert_equal "Why did MER move?", ai_call.prompt
+    assert_equal grounded_response_body, ai_call.response_body
+  end
+
+  test "extract_structured logs the prompt with a pdf size note, never the base64 pdf" do
+    response = OpenStruct.new(code: "200", body: extract_response_body('[{"type":"buy"}]'))
+
+    stub_httparty_capture([response]) do |_calls|
+      GeminiClient.new(api_key: "test-key").extract_structured("Parse this", StringIO.new("%PDF-fake"))
+    end
+
+    ai_call = AiCall.last
+    assert_equal "extract_structured", ai_call.purpose
+    assert_equal "completed", ai_call.status
+    assert_includes ai_call.prompt, "Parse this"
+    assert_includes ai_call.prompt, "[PDF attached: 9 bytes]"
+    assert_not_includes ai_call.prompt, Base64.strict_encode64("%PDF-fake")
+  end
+
+  test "extract_structured logs both the rejected inline attempt and the fallback" do
+    rejected = OpenStruct.new(code: "400", body: '{"error":{"message":"unsupported media"}}')
+    ok = OpenStruct.new(code: "200", body: extract_response_body('[{"type":"sell"}]'))
+    client = GeminiClient.new(api_key: "test-key")
+    client.define_singleton_method(:pdftotext_extract) { |_content| "extracted statement text" }
+
+    stub_httparty_capture([rejected, ok]) do |_calls|
+      client.extract_structured("Parse this", StringIO.new("%PDF-fake"))
+    end
+
+    assert_equal %w[failed completed], AiCall.order(:created_at).last(2).map(&:status)
+  end
+
+  test "logs a failed ai call when the request raises" do
+    original = HTTParty.method(:post)
+    HTTParty.define_singleton_method(:post) { |_url, *_args| raise Errno::ECONNREFUSED }
+
+    assert_raises(Errno::ECONNREFUSED) { GeminiClient.new(api_key: "test-key").grounded_search("Why did MER move?") }
+
+    ai_call = AiCall.last
+    assert_equal "failed", ai_call.status
+    assert_match(/Connection refused/, ai_call.error_message)
+  ensure
+    HTTParty.define_singleton_method(:post, original.to_proc)
   end
 
   test "initialize raises when no api key is configured" do
@@ -99,7 +167,12 @@ class GeminiClientTest < ActiveSupport::TestCase
   private
 
   def extract_response_body(text)
-    { "steps" => [{ "type" => "model_output", "content" => { "blocks" => [{ "type" => "text", "text" => text }] } }] }.to_json
+    {
+      "steps" => [
+        { "signature" => "abc", "type" => "thought" },
+        { "type" => "model_output", "content" => [{ "type" => "text", "text" => text }] },
+      ]
+    }.to_json
   end
 
   def stub_httparty_capture(responses)
@@ -116,24 +189,26 @@ class GeminiClientTest < ActiveSupport::TestCase
 
   def grounded_response_body(duplicate_citations: false)
     citations = [
-      { "title" => "Manila Bulletin", "url" => "https://example.com/a" },
-      { "title" => "PSE Edge", "url" => "https://example.com/b" },
+      { "type" => "url_citation", "title" => "Manila Bulletin", "url" => "https://example.com/a", "start_index" => 0, "end_index" => 10 },
+      { "type" => "url_citation", "title" => "PSE Edge", "url" => "https://example.com/b", "start_index" => 11, "end_index" => 20 },
     ]
-    citations << { "title" => "Duplicate", "url" => "https://example.com/a" } if duplicate_citations
+    if duplicate_citations
+      citations << { "type" => "url_citation", "title" => "Duplicate", "url" => "https://example.com/a", "start_index" => 21, "end_index" => 30 }
+    end
 
     {
       "steps" => [
-        { "type" => "google_search_call", "query" => "MER July 27 2021 price move" },
+        { "type" => "thought", "summary" => [{ "type" => "text", "text" => "thinking" }] },
+        { "type" => "google_search_call", "arguments" => { "queries" => ["MER July 27 2021 price move"] } },
+        { "type" => "google_search_result", "call_id" => "call-1", "result" => [] },
         {
           "type" => "model_output",
-          "content" => {
-            "blocks" => [
-              { "type" => "text", "text" => "The stock rose after earnings.", "annotations" => { "url_citations" => citations } },
-              { "type" => "text", "text" => " Volume spiked." },
-            ]
-          }
+          "content" => [
+            { "type" => "text", "text" => "The stock rose after earnings.", "annotations" => citations },
+            { "type" => "text", "text" => " Volume spiked." },
+          ]
         },
-        { "type" => "google_search_call", "query" => "MER earnings disclosure" },
+        { "type" => "google_search_call", "arguments" => { "queries" => ["MER earnings disclosure"] } },
       ]
     }.to_json
   end
