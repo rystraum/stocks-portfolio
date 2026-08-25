@@ -147,18 +147,6 @@
                     <%= link_to [:recompute_ohlc, @company], method: :post, class: "btn btn-secondary text-sm px-2 py-1" do %>
                         <span>Backfill OHLC</span>
                     <% end %>
-                    <%= form_with(url: [:explain_moves, @company], local: true, class: "flex items-center gap-2") do %>
-                        <select name="range_days" class="text-sm">
-                            <option value="30">30 days</option>
-                            <option value="90" selected>3 months</option>
-                            <option value="365">12 months</option>
-                        </select>
-                        <label class="text-sm flex items-center gap-1">
-                            <input type="checkbox" name="force" value="1" />
-                            <span>re-analyze cached dates</span>
-                        </label>
-                        <button type="submit" class="btn btn-secondary text-sm px-2 py-1">Explain moves</button>
-                    <% end %>
                 <% end %>
             </div>
             <div class="table-responsive mb-0">
@@ -186,8 +174,22 @@
         </div>
 
         <div class="card mt-4">
-            <div class="card-header">
+            <div class="card-header flex justify-between items-center">
                 <h4 class="card-header-title">Price Move Explanations</h4>
+                <% if @permissions.can?(:price_update, @company) %>
+                    <%= form_with(url: [:explain_moves, @company], local: true, class: "flex items-center gap-2") do %>
+                        <select name="range_days" class="text-sm">
+                            <option value="30">30 days</option>
+                            <option value="90" selected>3 months</option>
+                            <option value="365">12 months</option>
+                        </select>
+                        <label class="text-sm flex items-center gap-1">
+                            <input type="checkbox" name="force" value="1" />
+                            <span>re-analyze cached dates</span>
+                        </label>
+                        <button type="submit" class="btn btn-secondary text-sm px-2 py-1">Explain moves</button>
+                    <% end %>
+                <% end %>
             </div>
             <div class="card-body">
                 <% if @insights.present? %>
