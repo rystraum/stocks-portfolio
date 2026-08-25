@@ -2,7 +2,7 @@
 
 class CompanyAnnualDividendsComponent < ViewComponent::Base
   def initialize(user:, company:)
-    super
+    super()
     @user = user
     @dividends = user.cash_dividends_with_price(company)
     @portfolio = UserPortfolioCompany.new(user, company)
