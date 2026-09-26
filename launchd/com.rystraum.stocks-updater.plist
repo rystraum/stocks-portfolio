@@ -9,13 +9,13 @@
   <string>rystraum</string>
 
   <key>WorkingDirectory</key>
-  <string>/Users/rystraum/Code/personal/stocks-portfolio</string>
+  <string>/Users/rystraum/Code/personal/stocks-portfolio/backend</string>
 
   <key>ProgramArguments</key>
   <array>
     <string>/bin/zsh</string>
     <string>-ilc</string>
-    <string>echo ${HOME}; source $HOME/.zshrc; echo ${PATH}; date; cd /Users/rystraum/Code/personal/stocks-portfolio; rbenv rehash; type -a ruby; which ruby; rbenv version; which bundler; which gem; bundle exec rails runner "Coinsph.update_all!"; bundle exec rails runner "PriceUpdateCompanies.new.run_from_console" >> /Users/rystraum/Code/personal/stocks-portfolio/log/launchd.log</string>
+    <string>echo ${HOME}; source $HOME/.zshrc; echo ${PATH}; date; cd /Users/rystraum/Code/personal/stocks-portfolio/backend; rbenv rehash; type -a ruby; which ruby; rbenv version; which bundler; which gem; bundle exec rails runner "Coinsph.update_all!"; bundle exec rails runner "PriceUpdateCompanies.new.run_from_console" >> /Users/rystraum/Code/personal/stocks-portfolio/backend/log/launchd.log</string>
   </array>
 
   <key>RunAtLoad</key>
