@@ -69,13 +69,10 @@ class CryptoCurrenciesController < AuthenticatedUserController
   def pull_activities
     return redirect_back(fallback_location: @crypto_currency, alert: "Pull is only supported for CoinsPH pairs.") unless @crypto_currency.coinsph?
 
-    response = Coinsph.my_trades(symbol: @crypto_currency.datasource_ticker, limit: 50)
-    unless response.code == 200
-      return redirect_back(fallback_location: @crypto_currency,
-                           alert: "CoinsPH request failed (HTTP #{response.code}): #{response.body}")
-    end
+    trades = fetch_trades
+    return if trades.nil? # error already handled
 
-    @trades = response.parsed_response.map { |fill| Coinsph.normalize_trade(fill) }
+    @trades = trades.map { |fill| Coinsph.normalize_trade(fill) }
     @trades.each do |trade|
       trade[:already_recorded] = Coinsph.already_recorded?(trade[:upstream_trade_id])
       trade[:close_candidate] = unless trade[:already_recorded]
@@ -100,7 +97,9 @@ class CryptoCurrenciesController < AuthenticatedUserController
     wanted_ids = params[:trade_ids].to_a.map(&:to_s)
     return redirect_to(@crypto_currency, alert: "No activities selected.") if wanted_ids.empty?
 
-    fills = Coinsph.my_trades(symbol: @crypto_currency.datasource_ticker, limit: 50).parsed_response
+    fills = fetch_trades
+    return if fills.nil? # error already handled
+
     created = 0
     skipped = 0
 
@@ -145,6 +144,22 @@ class CryptoCurrenciesController < AuthenticatedUserController
   end
 
   private
+
+  # Returns an Array of fill hashes, or nil after redirecting with an alert.
+  # CoinsPH returns HTTP 200 with {"code":..., "msg":...} for API errors
+  # (e.g. IP whitelist), so the body shape must be checked, not just status.
+  def fetch_trades
+    response = Coinsph.my_trades(symbol: @crypto_currency.datasource_ticker, limit: 50)
+
+    parsed = response.parsed_response
+    if response.code == 200 && parsed.is_a?(Array)
+      return parsed
+    end
+
+    detail = parsed.is_a?(Hash) ? "#{parsed['msg']} (code #{parsed['code']})" : "HTTP #{response.code}: #{response.body}"
+    redirect_back(fallback_location: @crypto_currency, alert: "CoinsPH request failed: #{detail}")
+    nil
+  end
 
   def set_crypto_currency
     @crypto_currency = CryptoCurrency.find_by(id: params[:id]) || CryptoCurrency.find_by(compound_ticker: params[:id])
