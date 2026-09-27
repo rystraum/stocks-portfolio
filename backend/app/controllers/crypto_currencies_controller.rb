@@ -156,7 +156,12 @@ class CryptoCurrenciesController < AuthenticatedUserController
       return parsed
     end
 
-    detail = parsed.is_a?(Hash) ? "#{parsed['msg']} (code #{parsed['code']})" : "HTTP #{response.code}: #{response.body}"
+    detail = if parsed.is_a?(Hash)
+               link = " <a href=\"https://www.coins.ph/en-ph/usercenter/settings/api-management\" class=\"underline\">Manage your CoinsPH API keys</a>" if parsed["code"] == -2017
+               "#{parsed['msg']} (code #{parsed['code']})#{link}"
+             else
+               "HTTP #{response.code}: #{response.body}"
+             end
     redirect_back(fallback_location: @crypto_currency, alert: "CoinsPH request failed: #{detail}")
     nil
   end
