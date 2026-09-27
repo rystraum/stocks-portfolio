@@ -107,9 +107,12 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_25_130000) do
     t.decimal "fee_fiat", precision: 18, scale: 2, default: "0.0"
     t.text "notes"
     t.uuid "crypto_activity_import_id"
+    t.string "upstream_source"
+    t.string "upstream_trade_id"
     t.index ["activity_type"], name: "index_crypto_activities_on_activity_type"
     t.index ["crypto_activity_import_id"], name: "index_crypto_activities_on_crypto_activity_import_id"
     t.index ["crypto_currency_id"], name: "index_crypto_activities_on_crypto_currency_id"
+    t.index ["upstream_source", "upstream_trade_id"], name: "index_crypto_activities_on_upstream", unique: true, where: "(upstream_trade_id IS NOT NULL)"
     t.index ["user_id"], name: "index_crypto_activities_on_user_id"
   end
 

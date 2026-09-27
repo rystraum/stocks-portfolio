@@ -107,16 +107,35 @@ class Coinsph
     )
   end
 
+  # Normalizes a myTrades fill into CryptoActivity attributes. Side:
+  # isBuyerMaker=false means we were the buyer. commissionAsset PHP goes to
+  # fee_fiat, anything else (e.g. ETH) goes to fee_crypto.
+  def self.normalize_trade(fill)
+    {
+      upstream_source: "coinsph",
+      upstream_trade_id: fill["id"].to_s,
+      activity_type: fill["isBuyerMaker"] ? :sell : :buy,
+      crypto_amount: fill["qty"].to_d,
+      fiat_amount: fill["quoteQty"].to_d,
+      fee_fiat: fill["commissionAsset"] == "PHP" ? fill["commission"].to_d : 0,
+      fee_crypto: fill["commissionAsset"] == "PHP" ? 0 : fill["commission"].to_d,
+      fiat_currency: "PHP",
+      activity_date: Time.zone.at(fill["time"] / 1_000).to_date,
+    }
+  end
+
+  def self.already_recorded?(upstream_trade_id)
+    CryptoActivity.exists?(upstream_trade_id: upstream_trade_id.to_s) ||
+      CryptoActivity.exists?(notes: "coinsph:trade:#{upstream_trade_id}")
+  end
+
   # Draft — not wired up to any scheduler yet.
   #
   # Records CoinsPH fills as CryptoActivity rows (same target as the CSV
   # importer) so the weekly auto-buy shows up in cost basis / holdings.
-  #
-  # Mapping: qty -> crypto_amount, quoteQty -> fiat_amount (PHP),
-  # commission -> fee_fiat when commissionAsset is PHP, fee_crypto otherwise.
-  # Side: isBuyerMaker=false means we were the buyer. Dedupes via a
-  # "coinsph:trade:<id>" marker in notes. Run after the market order fills,
-  # e.g. Thursday 19:05.
+  # Run after the market order fills, e.g. Thursday 19:05. Prefers the
+  # crypto_currencies "Pull Activities" UI for interactive imports; this
+  # exists for the unattended weekly buy.
   def self.record_my_trades!(user:, symbol: "ETHPHP")
     crypto_currency = CryptoCurrency.coinsph.find_by(datasource_ticker: symbol)
     raise "No coinsph CryptoCurrency for #{symbol}" if crypto_currency.nil?
@@ -124,23 +143,10 @@ class Coinsph
     fills = my_trades(symbol: symbol).parsed_response
 
     fills.filter_map do |fill|
-      marker = "coinsph:trade:#{fill['id']}"
-      next if CryptoActivity.exists?(user: user, notes: marker)
+      attrs = normalize_trade(fill)
+      next if already_recorded?(attrs[:upstream_trade_id])
 
-      commission_asset = fill["commissionAsset"]
-
-      CryptoActivity.create!(
-        user: user,
-        crypto_currency: crypto_currency,
-        activity_type: fill["isBuyerMaker"] ? :sell : :buy,
-        crypto_amount: fill["qty"],
-        fiat_amount: fill["quoteQty"],
-        fee_fiat: commission_asset == "PHP" ? fill["commission"] : 0,
-        fee_crypto: commission_asset == "PHP" ? 0 : fill["commission"],
-        fiat_currency: "PHP",
-        activity_date: Time.zone.at(fill["time"] / 1_000).to_date,
-        notes: marker,
-      )
+      CryptoActivity.create!(attrs.merge(user: user, crypto_currency: crypto_currency))
     end
   end
 
