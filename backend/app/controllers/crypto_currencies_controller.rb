@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CryptoCurrenciesController < AuthenticatedUserController
-  before_action :set_crypto_currency, only: %i[show edit update refresh_price]
+  before_action :set_crypto_currency, only: %i[show edit update refresh_price pull_activities import_activities]
 
   # GET /crypto_currencies
   def index
@@ -59,6 +59,67 @@ class CryptoCurrenciesController < AuthenticatedUserController
     end
 
     redirect_back(fallback_location: @crypto_currency, notice: "Price refreshed from #{@crypto_currency.datasource}.")
+  end
+
+  # POST /crypto_currencies/:id/pull_activities
+  #
+  # Fetches recent CoinsPH fills for this pair and renders a preview:
+  # each trade is flagged as already-recorded (upstream reference exists),
+  # a close candidate (looks like an existing manual/CSV activity), or new.
+  def pull_activities
+    return redirect_back(fallback_location: @crypto_currency, alert: "Pull is only supported for CoinsPH pairs.") unless @crypto_currency.coinsph?
+
+    response = Coinsph.my_trades(symbol: @crypto_currency.datasource_ticker, limit: 50)
+    unless response.code == 200
+      return redirect_back(fallback_location: @crypto_currency,
+                           alert: "CoinsPH request failed (HTTP #{response.code}): #{response.body}")
+    end
+
+    @trades = response.parsed_response.map { |fill| Coinsph.normalize_trade(fill) }
+    @trades.each do |trade|
+      trade[:already_recorded] = Coinsph.already_recorded?(trade[:upstream_trade_id])
+      trade[:close_candidate] = unless trade[:already_recorded]
+        CryptoActivity.close_candidate_for(
+          user_id: current_user.id,
+          crypto_currency_id: @crypto_currency.id,
+          **trade.slice(:activity_type, :crypto_amount, :fiat_amount, :activity_date)
+        )
+      end
+    end
+    @trades.sort_by! { |t| t[:activity_date] }.reverse!
+  end
+
+  # POST /crypto_currencies/:id/import_activities
+  #
+  # Creates CryptoActivity rows for the trade ids selected in the pull
+  # preview. Amounts are re-read from the API rather than trusted from the
+  # form; upstream_trade_id keeps later pulls from offering the same trade.
+  def import_activities
+    return redirect_back(fallback_location: @crypto_currency, alert: "Pull is only supported for CoinsPH pairs.") unless @crypto_currency.coinsph?
+
+    wanted_ids = params[:trade_ids].to_a.map(&:to_s)
+    return redirect_to(@crypto_currency, alert: "No activities selected.") if wanted_ids.empty?
+
+    fills = Coinsph.my_trades(symbol: @crypto_currency.datasource_ticker, limit: 50).parsed_response
+    created = 0
+    skipped = 0
+
+    fills.each do |fill|
+      next unless wanted_ids.include?(fill["id"].to_s)
+
+      attrs = Coinsph.normalize_trade(fill)
+      if Coinsph.already_recorded?(attrs[:upstream_trade_id])
+        skipped += 1
+        next
+      end
+
+      CryptoActivity.create!(attrs.merge(user: current_user, crypto_currency: @crypto_currency))
+      created += 1
+    end
+
+    message = "Imported #{created} #{'activity'.pluralize(created)}."
+    message += " Skipped #{skipped} already recorded." if skipped.positive?
+    redirect_to @crypto_currency, notice: message
   end
 
   # GET /crypto_currencies/:id/edit

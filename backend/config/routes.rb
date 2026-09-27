@@ -43,6 +43,8 @@ Rails.application.routes.draw do
   resources :crypto_currencies, only: %i[index new create show edit update] do
     member do
       post :refresh_price
+      post :pull_activities
+      post :import_activities
     end
   end
   resources :crypto_activities

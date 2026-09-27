@@ -5,6 +5,9 @@
   <% if @permissions.can?(:update, @crypto_currency) %>
     <%= link_to "Edit #{@crypto_currency.ticker}/#{@crypto_currency.quote_token}", edit_crypto_currency_path(@crypto_currency), class: "btn btn-info ml-auto" %>
     <%= button_to "Refresh Price", refresh_price_crypto_currency_path(@crypto_currency), method: :post, class: "btn btn-warning ml-2" %>
+    <% if @crypto_currency.coinsph? %>
+      <%= button_to "Pull Activities", pull_activities_crypto_currency_path(@crypto_currency), method: :post, class: "btn btn-info ml-2" %>
+    <% end %>
   <% end %>
   <%= link_to "Add Activity", new_crypto_activity_path(ticker: @crypto_currency.ticker), class: "btn btn-success ml-2" %>
 </div>
