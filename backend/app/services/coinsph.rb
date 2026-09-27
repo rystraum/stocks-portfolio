@@ -90,6 +90,60 @@ class Coinsph
     HTTParty.post(url, options)
   end
 
+  # Draft — not wired up to any scheduler yet.
+  #
+  # Fills (executed trades) for a pair, e.g. Coinsph.my_trades(symbol: "ETHPHP").
+  # Verified against the official Postman collection: GET openapi/v1/myTrades.
+  # Response is Binance-compatible: id, orderId, price, qty, quoteQty,
+  # commission, commissionAsset, time (ms epoch), isBuyerMaker.
+  def self.my_trades(symbol:, limit: 100)
+    get_with_signature(
+      "https://api.pro.coins.ph/openapi/v1/myTrades",
+      {
+        symbol: symbol,
+        limit: limit,
+        timestamp: Time.now.to_i * 1_000,
+      }
+    )
+  end
+
+  # Draft — not wired up to any scheduler yet.
+  #
+  # Records CoinsPH fills as CryptoActivity rows (same target as the CSV
+  # importer) so the weekly auto-buy shows up in cost basis / holdings.
+  #
+  # Mapping: qty -> crypto_amount, quoteQty -> fiat_amount (PHP),
+  # commission -> fee_fiat when commissionAsset is PHP, fee_crypto otherwise.
+  # Side: isBuyerMaker=false means we were the buyer. Dedupes via a
+  # "coinsph:trade:<id>" marker in notes. Run after the market order fills,
+  # e.g. Thursday 19:05.
+  def self.record_my_trades!(user:, symbol: "ETHPHP")
+    crypto_currency = CryptoCurrency.coinsph.find_by(datasource_ticker: symbol)
+    raise "No coinsph CryptoCurrency for #{symbol}" if crypto_currency.nil?
+
+    fills = my_trades(symbol: symbol).parsed_response
+
+    fills.filter_map do |fill|
+      marker = "coinsph:trade:#{fill['id']}"
+      next if CryptoActivity.exists?(user: user, notes: marker)
+
+      commission_asset = fill["commissionAsset"]
+
+      CryptoActivity.create!(
+        user: user,
+        crypto_currency: crypto_currency,
+        activity_type: fill["isBuyerMaker"] ? :sell : :buy,
+        crypto_amount: fill["qty"],
+        fiat_amount: fill["quoteQty"],
+        fee_fiat: commission_asset == "PHP" ? fill["commission"] : 0,
+        fee_crypto: commission_asset == "PHP" ? 0 : fill["commission"],
+        fiat_currency: "PHP",
+        activity_date: Time.zone.at(fill["time"] / 1_000).to_date,
+        notes: marker,
+      )
+    end
+  end
+
   def self.get_with_signature(url, params)
     query_string = URI.encode_www_form(params)
     signature = OpenSSL::HMAC.hexdigest("SHA256", secret_key, query_string)
