@@ -10,7 +10,7 @@
     </h4>
   </div>
   <div class="overflow-x-auto">
-    <%= form_with url: import_activities_crypto_currency_path(@crypto_currency), method: :post do %>
+    <%= form_with url: import_activities_crypto_currency_path(@crypto_currency), method: :post, local: true do %>
       <table class="table table-striped card-table table-hover w-full">
         <thead>
           <tr>
