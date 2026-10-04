@@ -7,10 +7,8 @@
 
   <key>ProgramArguments</key>
   <array>
-    <string>/opt/homebrew/bin/caddy</string>
-    <string>run</string>
-    <string>--config</string>
-    <string>/Volumes/Code/personal/stocks-portfolio/Caddyfile</string>
+    <string>/bin/zsh</string>
+    <string>/Volumes/Code/personal/stocks-portfolio/launchd/caddy-wrapper.sh</string>
   </array>
 
   <key>WorkingDirectory</key>
@@ -22,13 +20,10 @@
   <key>KeepAlive</key>
   <true/>
 
-  <key>Nice</key>
-  <integer>1</integer>
-
   <key>StandardOutPath</key>
-  <string>/Users/rystraum/Library/Logs/stocks-portfolio/proxy.out.log</string>
+  <string>/Users/rystraum/Library/Logs/stocks-portfolio/proxy-user.out.log</string>
 
   <key>StandardErrorPath</key>
-  <string>/Users/rystraum/Library/Logs/stocks-portfolio/proxy.error.log</string>
+  <string>/Users/rystraum/Library/Logs/stocks-portfolio/proxy-user.error.log</string>
 </dict>
 </plist>
