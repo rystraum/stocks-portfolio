@@ -42,3 +42,5 @@ coverage/
 
 # Editor swap files
 *.swp
+
+backend/log/launchd.log
