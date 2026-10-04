@@ -43,4 +43,6 @@ coverage/
 # Editor swap files
 *.swp
 
+**/.env
+**/.pi
 backend/log/launchd.log
