@@ -1,0 +1,10 @@
+:8081 {
+	handle_path /v2/* {
+		root * /Volumes/Code/personal/stocks-portfolio/frontend/dist
+		try_files {path} /index.html
+		file_server
+	}
+	handle {
+		reverse_proxy 127.0.0.1:8181
+	}
+}
