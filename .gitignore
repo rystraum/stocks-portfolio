@@ -46,3 +46,4 @@ coverage/
 **/.env
 **/.pi
 backend/log/launchd.log
+caddy/
