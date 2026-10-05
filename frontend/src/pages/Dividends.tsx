@@ -215,7 +215,9 @@ export default function Dividends() {
   )
   const maxMonthAvg = Math.max(...monthCoverage.map((c) => c.avg), 1)
 
-  const bestYear = yearly.reduce((a, b) => (b.total > a.total ? b : a))
+  const bestYear = yearly.length
+    ? yearly.reduce((a, b) => (b.total > a.total ? b : a))
+    : null
   const ttm = yearly[yearly.length - 2]
 
   const hoveredMonthBucket: Bucket | null = hoverMonth
@@ -240,7 +242,7 @@ export default function Dividends() {
 
   const err = tErr ?? divsErr
   if (err) return <ErrorNote message={err} />
-  if (!t || !dividendsByYear) return <Loading />
+  if (!t || !dividendsByYear || !bestYear || !ttm) return <Loading />
 
   return (
     <div className="space-y-8">
