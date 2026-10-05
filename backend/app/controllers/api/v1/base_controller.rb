@@ -10,7 +10,7 @@ class Api::V1::BaseController < AuthenticatedUserController
   def round2(value)
     return nil if value.nil?
 
-    value.round(2)
+    value.round(2).to_f
   end
 
   def holding_payload(company)
@@ -25,7 +25,7 @@ class Api::V1::BaseController < AuthenticatedUserController
       industry: company.industry,
       shares: shares,
       total_cost: round2(upc.total_costs),
-      last_price: company.last_price,
+      last_price: company.last_price&.to_f,
       last_price_at: company.last_price_timestamp,
       target_buy: round2(company.target_buy_price),
       dividends: round2(upc.cash_dividends_total),
