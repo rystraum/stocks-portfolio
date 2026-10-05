@@ -5,6 +5,10 @@
 		file_server
 	}
 	handle {
+		header {
+			Cache-Control "no-cache, no-store, must-revalidate"
+			Pragma "no-cache"
+		}
 		reverse_proxy 127.0.0.1:8181
 	}
 }
