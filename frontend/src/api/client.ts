@@ -17,7 +17,13 @@ async function get<T>(path: string): Promise<T> {
   // when there's no session, so the caller gets a clean error instead of a
   // redirect into an HTML page.
   const res = await fetch(`${BASE}${path}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-  if (res.status === 401) throw new Error('Not signed in')
+  if (res.status === 401) {
+    // Not signed in: the /v2/ SPA has no login of its own, so hand off to the
+    // Devise sign-in page. Both initial fetches will 401; the redirect is
+    // idempotent, so firing it from more than one of them is safe.
+    window.location.assign('/users/sign_in')
+    throw new Error('Not signed in')
+  }
   if (!res.ok) {
     const body = (await res.json().catch(() => null)) as { error?: { message?: string } } | null
     throw new Error(body?.error?.message ?? `Request failed (${res.status})`)

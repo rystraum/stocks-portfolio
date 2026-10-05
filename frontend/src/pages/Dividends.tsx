@@ -14,7 +14,7 @@ import GoalCard from '@/components/GoalCard'
 import { Stat } from '@/components/Stat'
 import { MONTHS, dividendYearsOf, yearDividendTotal, type DividendMonth } from '@/api/types'
 import { fetchDividendsAll, fetchSummary } from '@/api/client'
-import { Loading, useApi } from '@/api/useApi'
+import { ErrorNote, Loading, useApi } from '@/api/useApi'
 import { cn } from '@/lib/utils'
 import { compact, pct, pctOf, peso } from '@/lib/format'
 
@@ -122,8 +122,8 @@ function Legend({ currentYear, unit }: { currentYear: number; unit: string }) {
 export default function Dividends() {
   const [hoverMonth, setHoverMonth] = useState<HoverCell | null>(null)
   const [hoverQuarter, setHoverQuarter] = useState<HoverCell | null>(null)
-  const { data: t } = useApi(fetchSummary)
-  const { data: dividendsByYear } = useApi(fetchDividendsAll)
+  const { data: t, error: tErr } = useApi(fetchSummary)
+  const { data: dividendsByYear, error: divsErr } = useApi(fetchDividendsAll)
   const dividendYears = dividendYearsOf(dividendsByYear)
   const currentYear = dividendYears[dividendYears.length - 1]
 
@@ -238,6 +238,8 @@ export default function Dividends() {
       </div>
     ) : null
 
+  const err = tErr ?? divsErr
+  if (err) return <ErrorNote message={err} />
   if (!t || !dividendsByYear) return <Loading />
 
   return (

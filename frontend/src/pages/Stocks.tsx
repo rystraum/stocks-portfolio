@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { SignedPill, Stat } from '@/components/Stat'
 import { fetchHoldings, fetchSummary } from '@/api/client'
 import type { Holding } from '@/api/types'
-import { Loading, useApi } from '@/api/useApi'
+import { ErrorNote, Loading, useApi } from '@/api/useApi'
 import { cn } from '@/lib/utils'
 import { num, pct, pctOf, peso, signedClass } from '@/lib/format'
 
@@ -24,8 +24,8 @@ function totalReturnPct(h: Holding) {
 }
 
 export default function Stocks() {
-  const { data: t } = useApi(fetchSummary)
-  const { data: holdings } = useApi(fetchHoldings)
+  const { data: t, error: tErr } = useApi(fetchSummary)
+  const { data: holdings, error: holdingsErr } = useApi(fetchHoldings)
   const [sortKey, setSortKey] = useState<SortKey>('value')
   const [sortDir, setSortDir] = useState<-1 | 1>(-1)
   const [query, setQuery] = useState('')
@@ -86,6 +86,8 @@ export default function Stocks() {
     )
   }
 
+  const err = tErr ?? holdingsErr
+  if (err) return <ErrorNote message={err} />
   if (!t || !holdings) return <Loading />
 
   return (

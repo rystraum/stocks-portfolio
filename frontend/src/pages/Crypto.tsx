@@ -2,14 +2,14 @@ import { useMemo } from 'react'
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import { Stat } from '@/components/Stat'
 import { fetchCryptoHoldings } from '@/api/client'
-import { Loading, useApi } from '@/api/useApi'
+import { ErrorNote, Loading, useApi } from '@/api/useApi'
 import { cn } from '@/lib/utils'
 import { num, pct, pctOf, peso, signedClass } from '@/lib/format'
 
 const COLORS = ['#16150f', '#6b6650', '#b3ad95', 'hsl(32 88% 46%)']
 
 export default function Crypto() {
-  const { data: cryptoHoldings } = useApi(fetchCryptoHoldings)
+  const { data: cryptoHoldings, error: cryptoErr } = useApi(fetchCryptoHoldings)
   const rows = useMemo(
     () =>
       (cryptoHoldings ?? []).map((c) => {
@@ -23,6 +23,7 @@ export default function Crypto() {
   const totalCost = rows.reduce((s, r) => s + r.cost, 0)
   const pl = totalValue - totalCost
 
+  if (cryptoErr) return <ErrorNote message={cryptoErr} />
   if (!cryptoHoldings) return <Loading />
 
   return (

@@ -3,7 +3,7 @@ import { Link, Navigate, useParams } from 'react-router'
 import { CandlestickSeries, createChart, type IChartApi } from 'lightweight-charts'
 import { SignedPill } from '@/components/Stat'
 import { fetchHolding, fetchPriceHistory, fetchSummary } from '@/api/client'
-import { Loading, useApi } from '@/api/useApi'
+import { ErrorNote, Loading, useApi } from '@/api/useApi'
 import { cn } from '@/lib/utils'
 import { niceDate, num, pct, pctOf, peso, signedClass } from '@/lib/format'
 
@@ -15,7 +15,7 @@ const RANGES = [
 
 export default function StockDetail() {
   const { ticker = '' } = useParams()
-  const { data: holding, loading: loadingHolding } = useApi(() => fetchHolding(ticker), [ticker])
+  const { data: holding, loading: loadingHolding, error: holdingErr } = useApi(() => fetchHolding(ticker), [ticker])
   const { data: summary } = useApi(fetchSummary)
   const [range, setRange] = useState(RANGES[1])
   const { data: seriesData } = useApi(() => fetchPriceHistory(ticker, range.days), [ticker, range.days])
@@ -95,7 +95,7 @@ export default function StockDetail() {
     return () => chart.removeSeries(series)
   }, [holding, range, cps, seriesData])
 
-  if (!holding) return loadingHolding ? <Loading /> : <Navigate to="/stocks" replace />
+  if (!holding) return holdingErr ? <ErrorNote message={holdingErr} /> : loadingHolding ? <Loading /> : <Navigate to="/stocks" replace />
 
   const rows: [string, React.ReactNode][] = [
     ['Shares held', holding.shares > 0 ? num(holding.shares, 0) : '0 — fully recycled'],

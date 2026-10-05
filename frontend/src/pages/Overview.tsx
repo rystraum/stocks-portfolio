@@ -18,7 +18,7 @@ import GoalCard from '@/components/GoalCard'
 import { SignedPill, Stat } from '@/components/Stat'
 import { MONTHS, dividendYearsOf, yearDividendTotal } from '@/api/types'
 import { fetchDividendsAll, fetchHoldings, fetchSummary } from '@/api/client'
-import { Loading, useApi } from '@/api/useApi'
+import { ErrorNote, Loading, useApi } from '@/api/useApi'
 import { compact, pct, pctOf, peso } from '@/lib/format'
 
 const INK = '#16150f'
@@ -39,9 +39,9 @@ function ChartTip({ active, payload, label }: any) {
 }
 
 export default function Overview() {
-  const { data: t } = useApi(fetchSummary)
-  const { data: holdings } = useApi(fetchHoldings)
-  const { data: dividendsByYear } = useApi(fetchDividendsAll)
+  const { data: t, error: tErr } = useApi(fetchSummary)
+  const { data: holdings, error: holdingsErr } = useApi(fetchHoldings)
+  const { data: dividendsByYear, error: divsErr } = useApi(fetchDividendsAll)
   const dividendYears = dividendYearsOf(dividendsByYear)
 
   const growthData = useMemo(() => {
@@ -89,6 +89,8 @@ export default function Overview() {
 
   const DONUT_COLORS = ['#16150f', '#3d3a2e', '#6b6650', '#8f8a72', '#b3ad95', '#cfc9b3', DIV, '#a8a294']
 
+  const err = tErr ?? holdingsErr ?? divsErr
+  if (err) return <ErrorNote message={err} />
   if (!t || !holdings || !dividendsByYear) return <Loading />
 
   return (
