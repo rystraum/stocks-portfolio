@@ -12,14 +12,9 @@ import {
 } from 'recharts'
 import GoalCard from '@/components/GoalCard'
 import { Stat } from '@/components/Stat'
-import {
-  MONTHS,
-  capitalByYear,
-  dividendYears,
-  dividendsByYear,
-  portfolioTotals,
-  yearDividendTotal,
-} from '@/data/portfolio'
+import { MONTHS, dividendYearsOf, yearDividendTotal, type DividendMonth } from '@/api/types'
+import { fetchDividendsAll, fetchSummary } from '@/api/client'
+import { Loading, useApi } from '@/api/useApi'
 import { cn } from '@/lib/utils'
 import { compact, pct, pctOf, peso } from '@/lib/format'
 
@@ -127,15 +122,17 @@ function Legend({ currentYear, unit }: { currentYear: number; unit: string }) {
 export default function Dividends() {
   const [hoverMonth, setHoverMonth] = useState<HoverCell | null>(null)
   const [hoverQuarter, setHoverQuarter] = useState<HoverCell | null>(null)
-
+  const { data: t } = useApi(fetchSummary)
+  const { data: dividendsByYear } = useApi(fetchDividendsAll)
+  const dividendYears = dividendYearsOf(dividendsByYear)
   const currentYear = dividendYears[dividendYears.length - 1]
 
   const yearly = useMemo(
     () =>
       dividendYears.map((y) => {
-        const total = yearDividendTotal(y)
-        const cost = capitalByYear.find((c) => c.year === y)?.cumulativeCost ?? 1
-        const prev = y > dividendYears[0] ? yearDividendTotal(y - 1) : 0
+        const total = yearDividendTotal(dividendsByYear, y)
+        const cost = (t?.capitalByYear ?? []).find((c) => c.year === y)?.cumulativeCost ?? 1
+        const prev = y > dividendYears[0] ? yearDividendTotal(dividendsByYear, y - 1) : 0
         return {
           year: y,
           total: Math.round(total * 100) / 100,
@@ -143,7 +140,7 @@ export default function Dividends() {
           yoy: prev > 0 ? pctOf(total - prev, prev) : null,
         }
       }),
-    []
+    [dividendsByYear, t]
   )
 
   // Quarterly aggregation: sum each year's months into Q1–Q4 buckets
@@ -151,7 +148,7 @@ export default function Dividends() {
     const out: Record<number, Bucket[]> = {}
     for (const y of dividendYears) {
       out[y] = QUARTERS.map((_, q) => {
-        const months = dividendsByYear[y].slice(q * 3, q * 3 + 3)
+        const months = (dividendsByYear?.[y] ?? []).slice(q * 3, q * 3 + 3)
         const byTicker = new Map<string, number>()
         let payoutCount = 0
         for (const m of months) {
@@ -168,7 +165,7 @@ export default function Dividends() {
       })
     }
     return out
-  }, [])
+  }, [dividendsByYear, t])
 
   const maxQuarter = useMemo(() => {
     let max = 1
@@ -178,9 +175,9 @@ export default function Dividends() {
 
   const maxMonth = useMemo(() => {
     let max = 1
-    for (const y of dividendYears) for (const m of dividendsByYear[y]) max = Math.max(max, m.total)
+    for (const y of dividendYears) for (const m of dividendsByYear?.[y] ?? []) max = Math.max(max, m.total)
     return max
-  }, [])
+  }, [dividendsByYear])
 
   const quarterCoverage = useMemo(
     () =>
@@ -202,7 +199,9 @@ export default function Dividends() {
   const monthCoverage = useMemo(
     () =>
       MONTHS.map((label, i) => {
-        const vals = dividendYears.map((y) => dividendsByYear[y][i])
+        const vals = dividendYears
+          .map((y) => dividendsByYear?.[y]?.[i])
+          .filter((m): m is DividendMonth => Boolean(m))
         const payers = new Set(vals.flatMap((v) => v.items?.map((it) => it.ticker) ?? []))
         const nonzero = vals.filter((v) => v.total > 0)
         return {
@@ -212,7 +211,7 @@ export default function Dividends() {
           years: nonzero.length,
         }
       }),
-    []
+    [dividendsByYear]
   )
   const maxMonthAvg = Math.max(...monthCoverage.map((c) => c.avg), 1)
 
@@ -221,7 +220,8 @@ export default function Dividends() {
 
   const hoveredMonthBucket: Bucket | null = hoverMonth
     ? (() => {
-        const m = dividendsByYear[hoverMonth.year][hoverMonth.idx]
+        const m = dividendsByYear?.[hoverMonth.year]?.[hoverMonth.idx]
+        if (!m) return null
         return { total: m.total, items: m.items ?? [], payoutCount: m.items?.length ?? 0 }
       })()
     : null
@@ -238,30 +238,32 @@ export default function Dividends() {
       </div>
     ) : null
 
+  if (!t || !dividendsByYear) return <Loading />
+
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-2 gap-x-6 gap-y-5 lg:grid-cols-4">
         <Stat
           label="Dividends banked · all-time"
-          value={peso(portfolioTotals.dividends)}
+          value={peso(t.dividends)}
           tone="div"
           sub="100% reinvested into more shares"
         />
         <Stat
           label="Best year"
           value={peso(bestYear.total)}
-          sub={<span className="num">{bestYear.year} · {pct(pctOf(bestYear.total - yearDividendTotal(bestYear.year - 1), yearDividendTotal(bestYear.year - 1)), 0, true)} YoY</span>}
+          sub={<span className="num">{bestYear.year} · {pct(pctOf(bestYear.total - yearDividendTotal(dividendsByYear, bestYear.year - 1), yearDividendTotal(dividendsByYear, bestYear.year - 1)), 0, true)} YoY</span>}
         />
         <Stat
           label={`Yield on cost · ${ttm.year}`}
           value={pct(ttm.yieldOnCost)}
           tone="div"
-          sub={<span className="num">{peso(ttm.total)} on a {peso(capitalByYear.find((c) => c.year === ttm.year)?.cumulativeCost ?? 0, { decimals: 0 })} base</span>}
+          sub={<span className="num">{peso(ttm.total)} on a {peso((t?.capitalByYear ?? []).find((c) => c.year === ttm.year)?.cumulativeCost ?? 0, { decimals: 0 })} base</span>}
         />
         <Stat
           label="Monthly average"
           value={peso(ttm.total / 12)}
-          sub={<span className="num">{ttm.year} full-year · 2018 was {peso(yearDividendTotal(2018) / 12)}</span>}
+          sub={<span className="num">{ttm.year} full-year · 2018 was {peso(yearDividendTotal(dividendsByYear, 2018) / 12)}</span>}
         />
       </div>
 
@@ -339,7 +341,7 @@ export default function Dividends() {
                         onEnter={() => setHoverQuarter({ year: y, idx: q })}
                       />
                     ))}
-                    <td className="num px-2 py-1 text-right text-[12px] font-semibold text-div">{peso(yearDividendTotal(y), { decimals: 0 })}</td>
+                    <td className="num px-2 py-1 text-right text-[12px] font-semibold text-div">{peso(yearDividendTotal(dividendsByYear, y), { decimals: 0 })}</td>
                   </tr>
                 ))}
               </tbody>
@@ -414,7 +416,7 @@ export default function Dividends() {
                         onEnter={() => setHoverMonth({ year: y, idx: i })}
                       />
                     ))}
-                    <td className="num px-2 py-1 text-right text-[12px] font-semibold text-div">{peso(yearDividendTotal(y), { decimals: 0 })}</td>
+                    <td className="num px-2 py-1 text-right text-[12px] font-semibold text-div">{peso(yearDividendTotal(dividendsByYear, y), { decimals: 0 })}</td>
                   </tr>
                 ))}
               </tbody>

@@ -66,6 +66,17 @@ Rails.application.routes.draw do
     resources :ai_calls, only: %i[index show]
   end
 
+  namespace :api do
+    namespace :v1 do
+      get "portfolio/summary", to: "summary#index"
+      get "holdings", to: "holdings#index"
+      get "holdings/:ticker", to: "holdings#show"
+      get "holdings/:ticker/price-history", to: "holdings#price_history"
+      get "dividends", to: "dividends#index"
+      get "crypto/holdings", to: "crypto_holdings#index"
+    end
+  end
+
   put :update_prices, to: "dashboard#update_prices"
 
   get "/portfolio/stocks", to: "portfolio#stocks"

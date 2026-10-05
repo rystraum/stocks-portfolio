@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { MONTHS, dividendYears, dividendsByYear, yearDividendTotal } from '@/data/portfolio'
+import { MONTHS, dividendYearsOf, yearDividendTotal } from '@/api/types'
+import { fetchDividendsAll } from '@/api/client'
+import { useApi } from '@/api/useApi'
 import { num, peso } from '@/lib/format'
 
 const GOAL_KEY = 'div-goal-monthly'
@@ -20,16 +22,19 @@ export default function GoalCard() {
     window.localStorage.setItem(GOAL_KEY, String(goal))
   }, [goal])
 
+  const { data: dividendsByYear } = useApi(fetchDividendsAll)
+  const dividendYears = dividendYearsOf(dividendsByYear)
   const stats = useMemo(() => {
-    const lastFullYear = dividendYears[dividendYears.length - 2] // 2025
-    const ttmAvg = yearDividendTotal(lastFullYear) / 12
+    if (!dividendsByYear) return { ttmAvg: 0, monthsPaid: 0, elapsed: 12, weakest: [] as string[] }
+    const lastFullYear = dividendYears[dividendYears.length - 2]
+    const ttmAvg = lastFullYear ? yearDividendTotal(dividendsByYear, lastFullYear) / 12 : 0
     const currentYear = dividendYears[dividendYears.length - 1]
-    const elapsed = 7 // Jan–Jul 2026
-    const monthsPaid = dividendsByYear[currentYear].slice(0, elapsed).filter((m) => m.total > 0).length
+    const elapsed = currentYear === new Date().getFullYear() ? new Date().getMonth() + 1 : 12
+    const monthsPaid = currentYear ? (dividendsByYear?.[currentYear] ?? []).slice(0, elapsed).filter((m) => m.total > 0).length : 0
     // Weakest calendar months across full history → where new payers should be added
     const monthAvg = MONTHS.map((_, i) => {
       const vals = dividendYears.map((y) => dividendsByYear[y][i].total)
-      return vals.reduce((s, v) => s + v, 0) / vals.length
+      return vals.length ? vals.reduce((s, v) => s + v, 0) / vals.length : 0
     })
     const weakest = monthAvg
       .map((avg, i) => ({ month: MONTHS[i], avg }))
@@ -37,10 +42,12 @@ export default function GoalCard() {
       .slice(0, 3)
       .map((m) => m.month)
     return { ttmAvg, monthsPaid, elapsed, weakest }
-  }, [])
+  }, [dividendsByYear])
 
   const progress = Math.min(100, (stats.ttmAvg / goal) * 100)
   const remaining = Math.max(0, goal - stats.ttmAvg)
+
+  if (!dividendsByYear) return null
 
   return (
     <div className="border border-line bg-card p-5">
@@ -97,7 +104,7 @@ export default function GoalCard() {
 
       <div className="mt-4 space-y-2 border-t border-line pt-3 text-[12px]">
         <div className="flex justify-between">
-          <span className="text-muted-foreground">Months with a payout in 2026</span>
+          <span className="text-muted-foreground">Months with a payout in {dividendYears[dividendYears.length - 1] ?? ''}</span>
           <span className="num font-medium">
             {stats.monthsPaid} of {stats.elapsed}
           </span>

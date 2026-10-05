@@ -2,13 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router'
 import { CandlestickSeries, createChart, type IChartApi } from 'lightweight-charts'
 import { SignedPill } from '@/components/Stat'
-import {
-  dividendsForTicker,
-  generateActivities,
-  generatePriceSeries,
-  holdings,
-  portfolioTotals,
-} from '@/data/portfolio'
+import { fetchHolding, fetchPriceHistory, fetchSummary } from '@/api/client'
+import { Loading, useApi } from '@/api/useApi'
 import { cn } from '@/lib/utils'
 import { niceDate, num, pct, pctOf, peso, signedClass } from '@/lib/format'
 
@@ -20,8 +15,10 @@ const RANGES = [
 
 export default function StockDetail() {
   const { ticker = '' } = useParams()
-  const holding = holdings.find((h) => h.ticker === ticker.toUpperCase())
+  const { data: holding, loading: loadingHolding } = useApi(() => fetchHolding(ticker), [ticker])
+  const { data: summary } = useApi(fetchSummary)
   const [range, setRange] = useState(RANGES[1])
+  const { data: seriesData } = useApi(() => fetchPriceHistory(ticker, range.days), [ticker, range.days])
   const chartRef = useRef<HTMLDivElement>(null)
   const chartApi = useRef<IChartApi | null>(null)
 
@@ -30,11 +27,8 @@ export default function StockDetail() {
   const total = holding ? pl + holding.dividends : 0
   const cps = holding && holding.shares > 0 ? holding.totalCost / holding.shares : 0
 
-  const activities = useMemo(
-    () => (holding ? generateActivities(holding.ticker, holding.shares, holding.totalCost) : []),
-    [holding]
-  )
-  const dividends = useMemo(() => (holding ? dividendsForTicker(holding.ticker) : []), [holding])
+  const activities = holding?.activities ?? []
+  const dividends = holding?.dividendEvents ?? []
   const divsByYear = useMemo(() => {
     const m = new Map<number, number>()
     for (const d of dividends) m.set(d.year, (m.get(d.year) ?? 0) + d.amount)
@@ -69,7 +63,7 @@ export default function StockDetail() {
   useEffect(() => {
     const chart = chartApi.current
     if (!chart || !holding) return
-    const data = generatePriceSeries(holding.ticker, holding.lastPrice, range.days)
+    const data = seriesData ?? []
     const series = chart.addSeries(CandlestickSeries, {
       upColor: 'hsl(152, 66%, 30%)',
       downColor: 'hsl(8, 66%, 45%)',
@@ -99,16 +93,16 @@ export default function StockDetail() {
     }
     chart.timeScale().fitContent()
     return () => chart.removeSeries(series)
-  }, [holding, range, cps])
+  }, [holding, range, cps, seriesData])
 
-  if (!holding) return <Navigate to="/stocks" replace />
+  if (!holding) return loadingHolding ? <Loading /> : <Navigate to="/stocks" replace />
 
   const rows: [string, React.ReactNode][] = [
     ['Shares held', holding.shares > 0 ? num(holding.shares, 0) : '0 — fully recycled'],
     ['Average cost', holding.shares > 0 ? peso(cps) : '—'],
     ['Cost basis', holding.totalCost > 0 ? peso(holding.totalCost) : '—'],
     ['Market value', value > 0 ? peso(value) : '—'],
-    ['Portfolio weight', value > 0 ? pct(pctOf(value, portfolioTotals.currentValue)) : '—'],
+    ['Portfolio weight', value > 0 ? pct(pctOf(value, summary?.currentValue ?? 0)) : '—'],
     [
       holding.shares > 0 ? 'Unrealized P/L' : 'Realized P/L',
       <span key="pl" className={cn('num', signedClass(pl))}>
@@ -179,8 +173,7 @@ export default function StockDetail() {
           </div>
           <div ref={chartRef} className="mt-3 h-[320px]" />
           <p className="mt-2 text-[11px] text-muted-foreground">
-            Amber dashed line marks your average cost{cps > 0 ? ` (${peso(cps)})` : ''}. Demo price series — wire to the
-            live PSE feed in the backend.
+            Amber dashed line marks your average cost{cps > 0 ? ` (${peso(cps)})` : ''}. Price history is your live PSE feed.
           </p>
         </div>
 

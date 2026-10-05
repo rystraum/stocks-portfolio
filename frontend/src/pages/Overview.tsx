@@ -16,15 +16,9 @@ import {
 } from 'recharts'
 import GoalCard from '@/components/GoalCard'
 import { SignedPill, Stat } from '@/components/Stat'
-import {
-  MONTHS,
-  capitalByYear,
-  dividendYears,
-  dividendsByYear,
-  holdings,
-  portfolioTotals,
-  yearDividendTotal,
-} from '@/data/portfolio'
+import { MONTHS, dividendYearsOf, yearDividendTotal } from '@/api/types'
+import { fetchDividendsAll, fetchHoldings, fetchSummary } from '@/api/client'
+import { Loading, useApi } from '@/api/useApi'
 import { compact, pct, pctOf, peso } from '@/lib/format'
 
 const INK = '#16150f'
@@ -45,52 +39,57 @@ function ChartTip({ active, payload, label }: any) {
 }
 
 export default function Overview() {
-  const t = portfolioTotals
+  const { data: t } = useApi(fetchSummary)
+  const { data: holdings } = useApi(fetchHoldings)
+  const { data: dividendsByYear } = useApi(fetchDividendsAll)
+  const dividendYears = dividendYearsOf(dividendsByYear)
 
   const growthData = useMemo(() => {
     let cumDivs = 0
-    return capitalByYear.map((c) => {
-      cumDivs += yearDividendTotal(c.year)
+    return (t?.capitalByYear ?? []).map((c) => {
+      cumDivs += yearDividendTotal(dividendsByYear, c.year)
       return {
         year: c.year,
         'Capital in': c.cumulativeCost,
         'Dividends banked': Math.round(cumDivs * 100) / 100,
       }
     })
-  }, [])
+  }, [t, dividendsByYear])
 
-  const [incomeYear, setIncomeYear] = useState(dividendYears[dividendYears.length - 1])
+  const [incomeYear, setIncomeYear] = useState<number>(0)
   const incomeData = useMemo(
     () =>
-      dividendsByYear[incomeYear].map((m, i) => ({
+      (dividendsByYear?.[incomeYear] ?? []).map((m, i) => ({
         month: MONTHS[i],
         amount: Math.round(m.total * 100) / 100,
       })),
-    [incomeYear]
+    [incomeYear, dividendsByYear]
   )
-  const incomeAvg = yearDividendTotal(incomeYear) / (incomeYear === 2026 ? 7 : 12)
+  const incomeAvg = yearDividendTotal(dividendsByYear, incomeYear) / (incomeYear === new Date().getFullYear() ? new Date().getMonth() + 1 : 12)
 
   const allocation = useMemo(() => {
-    const rows = holdings
+    const rows = (holdings ?? [])
       .filter((h) => h.shares > 0)
       .map((h) => ({ ticker: h.ticker, value: h.shares * h.lastPrice }))
       .sort((a, b) => b.value - a.value)
     const top = rows.slice(0, 7)
     const rest = rows.slice(7).reduce((s, r) => s + r.value, 0)
     return [...top, { ticker: 'Other', value: rest }]
-  }, [])
+  }, [holdings])
 
   const topEarners = useMemo(
     () =>
-      [...holdings]
+      [...(holdings ?? [])]
         .filter((h) => h.dividends > 0)
         .sort((a, b) => b.dividends - a.dividends)
         .slice(0, 6),
-    []
+    [holdings]
   )
   const maxEarner = topEarners[0]?.dividends ?? 1
 
   const DONUT_COLORS = ['#16150f', '#3d3a2e', '#6b6650', '#8f8a72', '#b3ad95', '#cfc9b3', DIV, '#a8a294']
+
+  if (!t || !holdings || !dividendsByYear) return <Loading />
 
   return (
     <div className="space-y-8">
@@ -199,7 +198,7 @@ export default function Overview() {
             </ResponsiveContainer>
           </div>
           <p className="num mt-2 text-[11px] text-muted-foreground">
-            {incomeYear} total {peso(yearDividendTotal(incomeYear))} · avg {peso(incomeAvg)}/mo (dashed)
+            {incomeYear} total {peso(yearDividendTotal(dividendsByYear, incomeYear))} · avg {peso(incomeAvg)}/mo (dashed)
           </p>
         </div>
 

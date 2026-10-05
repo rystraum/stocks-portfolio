@@ -1,25 +1,29 @@
 import { useMemo } from 'react'
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import { Stat } from '@/components/Stat'
-import { cryptoHoldings } from '@/data/portfolio'
+import { fetchCryptoHoldings } from '@/api/client'
+import { Loading, useApi } from '@/api/useApi'
 import { cn } from '@/lib/utils'
 import { num, pct, pctOf, peso, signedClass } from '@/lib/format'
 
 const COLORS = ['#16150f', '#6b6650', '#b3ad95', 'hsl(32 88% 46%)']
 
 export default function Crypto() {
+  const { data: cryptoHoldings } = useApi(fetchCryptoHoldings)
   const rows = useMemo(
     () =>
-      cryptoHoldings.map((c) => {
+      (cryptoHoldings ?? []).map((c) => {
         const cost = c.amount * c.avgCost
         const value = c.amount * c.lastPrice
         return { ...c, cost, value, pl: value - cost }
       }),
-    []
+    [cryptoHoldings]
   )
   const totalValue = rows.reduce((s, r) => s + r.value, 0)
   const totalCost = rows.reduce((s, r) => s + r.cost, 0)
   const pl = totalValue - totalCost
+
+  if (!cryptoHoldings) return <Loading />
 
   return (
     <div className="space-y-6">
@@ -121,8 +125,8 @@ export default function Crypto() {
       </div>
 
       <p className="text-[12px] text-muted-foreground">
-        The crypto sleeve sits outside the deposit-only dividend strategy — figures shown are sample data until the
-        backend wires this page to the live tracker.
+        The crypto sleeve sits outside the deposit-only dividend strategy — P/L here is tracking-only, not part of
+        the dividend thesis.
       </p>
     </div>
   )

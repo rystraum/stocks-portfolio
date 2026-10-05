@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { SignedPill, Stat } from '@/components/Stat'
-import { holdings, portfolioTotals, type Holding } from '@/data/portfolio'
+import { fetchHoldings, fetchSummary } from '@/api/client'
+import type { Holding } from '@/api/types'
+import { Loading, useApi } from '@/api/useApi'
 import { cn } from '@/lib/utils'
 import { num, pct, pctOf, peso, signedClass } from '@/lib/format'
 
@@ -22,7 +24,8 @@ function totalReturnPct(h: Holding) {
 }
 
 export default function Stocks() {
-  const t = portfolioTotals
+  const { data: t } = useApi(fetchSummary)
+  const { data: holdings } = useApi(fetchHoldings)
   const [sortKey, setSortKey] = useState<SortKey>('value')
   const [sortDir, setSortDir] = useState<-1 | 1>(-1)
   const [query, setQuery] = useState('')
@@ -31,7 +34,7 @@ export default function Stocks() {
 
   const rows = useMemo(() => {
     const q = query.trim().toUpperCase()
-    const list = holdings.filter((h) => {
+    const list = (holdings ?? []).filter((h) => {
       if (!h.active && !showInactive) return false
       if (h.active && h.shares === 0 && !showRecycled) return false
       if (q && !h.ticker.includes(q) && !h.name.toUpperCase().includes(q)) return false
@@ -40,7 +43,7 @@ export default function Stocks() {
     const get: Record<SortKey, (h: Holding) => number | string> = {
       ticker: (h) => h.ticker,
       value: (h) => marketValue(h),
-      weight: (h) => pctOf(marketValue(h), t.currentValue),
+      weight: (h) => (t ? pctOf(marketValue(h), t.currentValue) : 0),
       pl: (h) => unrealized(h),
       plPct: (h) => (h.totalCost > 0 ? pctOf(unrealized(h), h.totalCost) : 0),
       divs: (h) => h.dividends,
@@ -52,9 +55,9 @@ export default function Stocks() {
       const cmp = typeof va === 'string' ? va.localeCompare(vb as string) : va - (vb as number)
       return cmp * sortDir
     })
-  }, [query, showRecycled, showInactive, sortKey, sortDir, t.currentValue])
+  }, [query, showRecycled, showInactive, sortKey, sortDir, t])
 
-  const activeCount = holdings.filter((h) => h.shares > 0).length
+  const activeCount = (holdings ?? []).filter((h) => h.shares > 0).length
 
   function th(key: SortKey | null, label: string, align: 'left' | 'right' = 'right') {
     const active = key && sortKey === key
@@ -82,6 +85,8 @@ export default function Stocks() {
       </th>
     )
   }
+
+  if (!t || !holdings) return <Loading />
 
   return (
     <div className="space-y-6">
