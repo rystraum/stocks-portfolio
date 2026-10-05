@@ -13,6 +13,10 @@ module StocksPortfolio
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
+    # Served behind an HTTPS-terminating proxy (Cloudflare Tunnel -> Caddy -> Puma).
+    # Tell Rails requests are really HTTPS so request.base_url matches the browser's
+    # Origin header (fixes the Devise sign-in InvalidAuthenticityToken origin check).
+    config.middleware.use ActionDispatch::AssumeSSL
     config.time_zone = "Singapore"
 
     config.active_record.yaml_column_permitted_classes = [ActiveSupport::HashWithIndifferentAccess, BigDecimal]
