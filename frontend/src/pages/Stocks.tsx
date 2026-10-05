@@ -55,7 +55,7 @@ export default function Stocks() {
       const cmp = typeof va === 'string' ? va.localeCompare(vb as string) : va - (vb as number)
       return cmp * sortDir
     })
-  }, [query, showRecycled, showInactive, sortKey, sortDir, t])
+  }, [query, showRecycled, showInactive, sortKey, sortDir, t, holdings])
 
   const activeCount = (holdings ?? []).filter((h) => h.shares > 0).length
 
