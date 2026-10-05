@@ -13,7 +13,10 @@ import { MONTHS } from './types'
 const BASE = '/api/v1'
 
 async function get<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE}${path}`)
+  // X-Requested-With makes Devise return 401 (not a 302 to the sign-in HTML)
+  // when there's no session, so the caller gets a clean error instead of a
+  // redirect into an HTML page.
+  const res = await fetch(`${BASE}${path}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
   if (res.status === 401) throw new Error('Not signed in')
   if (!res.ok) {
     const body = (await res.json().catch(() => null)) as { error?: { message?: string } } | null
