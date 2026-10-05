@@ -57,15 +57,19 @@ export default function Overview() {
   }, [t, dividendsByYear])
 
   const [incomeYear, setIncomeYear] = useState<number>(0)
+  // Default to the most recent year with dividend data so the chart isn't blank
+  // until the user picks a year.
+  const latestIncomeYear = dividendYears.length > 0 ? dividendYears[dividendYears.length - 1] : 0
+  const effectiveIncomeYear = incomeYear !== 0 ? incomeYear : latestIncomeYear
   const incomeData = useMemo(
     () =>
-      (dividendsByYear?.[incomeYear] ?? []).map((m, i) => ({
+      (dividendsByYear?.[effectiveIncomeYear] ?? []).map((m, i) => ({
         month: MONTHS[i],
         amount: Math.round(m.total * 100) / 100,
       })),
-    [incomeYear, dividendsByYear]
+    [effectiveIncomeYear, dividendsByYear]
   )
-  const incomeAvg = yearDividendTotal(dividendsByYear, incomeYear) / (incomeYear === new Date().getFullYear() ? new Date().getMonth() + 1 : 12)
+  const incomeAvg = yearDividendTotal(dividendsByYear, effectiveIncomeYear) / (effectiveIncomeYear === new Date().getFullYear() ? new Date().getMonth() + 1 : 12)
 
   const allocation = useMemo(() => {
     const rows = (holdings ?? [])
@@ -180,7 +184,7 @@ export default function Overview() {
                   key={y}
                   onClick={() => setIncomeYear(y)}
                   className={`num px-1.5 py-0.5 text-[11px] ${
-                    incomeYear === y ? 'bg-foreground text-background' : 'text-muted-foreground hover:text-foreground'
+                    effectiveIncomeYear === y ? 'bg-foreground text-background' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {y}
