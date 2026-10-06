@@ -9,6 +9,7 @@ export interface Holding {
   lastPrice: number
   lastPriceAt: string
   targetBuy: number | null
+  targetPriceNote: string | null
   dividends: number
   realizedPL: number | null
   active: boolean

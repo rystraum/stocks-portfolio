@@ -42,6 +42,7 @@ interface RawHolding {
   last_price: number
   last_price_at: string
   target_buy: number | null
+  target_price_note: string | null
   dividends: number
   realized_pl: number | null
   active: boolean
@@ -106,6 +107,7 @@ function holdingFrom(r: RawHoldingBase, dividends: number): Holding {
     lastPrice: r.last_price,
     lastPriceAt: new Date(r.last_price_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
     targetBuy: r.target_buy,
+    targetPriceNote: r.target_price_note,
     dividends,
     realizedPL: r.realized_pl,
     active: r.active,

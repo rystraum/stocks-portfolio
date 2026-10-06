@@ -54,10 +54,8 @@ export default function StockDetail() {
       crosshair: { mode: 0 },
     })
     chartApi.current = chart
-    return () => {
-      chart.remove()
-      chartApi.current = null
-    }
+    return () => chart.removeSeries(series)
+
   }, [holding])
 
   useEffect(() => {
@@ -70,15 +68,6 @@ export default function StockDetail() {
       wickUpColor: 'hsl(152, 66%, 30%)',
       wickDownColor: 'hsl(8, 66%, 45%)',
       borderVisible: false,
-      // keep the avg-cost price line inside the visible range
-      autoscaleInfoProvider: (original: () => any) => {
-        const res = original()
-        if (res?.priceRange && cps > 0) {
-          res.priceRange.minValue = Math.min(res.priceRange.minValue, cps * 0.98)
-          res.priceRange.maxValue = Math.max(res.priceRange.maxValue, cps * 1.02)
-        }
-        return res
-      },
     })
     series.setData(data)
     if (cps > 0) {
@@ -91,8 +80,23 @@ export default function StockDetail() {
         title: 'avg cost',
       })
     }
+    if (holding.targetBuy != null) {
+      series.createPriceLine({
+        price: holding.targetBuy,
+        color: 'hsl(220, 60%, 50%)',
+        lineWidth: 1,
+        lineStyle: 1,
+        axisLabelVisible: true,
+        title: 'target',
+      })
+    }
     chart.timeScale().fitContent()
-    return () => chart.removeSeries(series)
+    return () => {
+      // Skip when the chart was already removed (effect 1's cleanup runs first,
+      // e.g. when `holding` changes) — removeSeries on a removed chart throws
+      // and unmounts the whole app.
+      if (chartApi.current === chart) chart.removeSeries(series)
+    }
   }, [holding, range, cps, seriesData])
 
   if (!holding) return holdingErr ? <ErrorNote message={holdingErr} /> : loadingHolding ? <Loading /> : <Navigate to="/stocks" replace />
@@ -140,11 +144,20 @@ export default function StockDetail() {
             {holding.targetBuy != null && (
               <span
                 className={cn(
-                  'num px-1.5 py-0.5 text-[11px] font-medium',
+                  'num group relative px-1.5 py-0.5 text-[11px] font-medium',
+                  holding.targetPriceNote && 'cursor-help',
                   holding.lastPrice <= holding.targetBuy ? 'bg-[hsl(152_66%_30%/0.12)] text-gain' : 'bg-secondary text-muted-foreground'
                 )}
               >
                 target {num(holding.targetBuy)}
+                {holding.targetPriceNote && (
+                  <span
+                    role="tooltip"
+                    className="pointer-events-none absolute right-0 top-full z-50 mt-1.5 hidden w-64 whitespace-pre-wrap border border-line bg-card px-3 py-2 text-left text-[12px] font-normal leading-snug text-foreground shadow-lg group-hover:block"
+                  >
+                    {holding.targetPriceNote}
+                  </span>
+                )}
               </span>
             )}
           </div>
@@ -173,8 +186,14 @@ export default function StockDetail() {
           </div>
           <div ref={chartRef} className="mt-3 h-[320px]" />
           <p className="mt-2 text-[11px] text-muted-foreground">
-            Amber dashed line marks your average cost{cps > 0 ? ` (${peso(cps)})` : ''}. Price history is your live PSE feed.
+            Amber dashed line marks your average cost{cps > 0 ? ` (${peso(cps)})` : ''}
+            {holding.targetBuy != null ? `, solid blue line your buy target (${num(holding.targetBuy)})` : ''}. Price history is your live PSE feed.
           </p>
+          {holding.targetPriceNote && (
+            <p className="mt-1.5 whitespace-pre-wrap text-[11px] leading-snug text-muted-foreground">
+              <span className="font-semibold text-foreground/70">Target note:</span> {holding.targetPriceNote}
+            </p>
+          )}
         </div>
 
         {/* Position summary */}

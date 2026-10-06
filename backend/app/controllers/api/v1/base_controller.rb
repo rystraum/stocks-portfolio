@@ -28,6 +28,7 @@ class Api::V1::BaseController < AuthenticatedUserController
       last_price: company.last_price&.to_f,
       last_price_at: company.last_price_timestamp,
       target_buy: round2(company.target_buy_price),
+      target_price_note: company.target_price_note,
       dividends: round2(upc.cash_dividends_total),
       realized_pl: round2(realized),
       active: !company.inactive && shares.positive?
