@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { usePrivacy } from '@/lib/usePrivacy'
 import { Link } from 'react-router'
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip, type TooltipProps } from 'recharts'
 import { Stat } from '@/components/Stat'
@@ -10,6 +11,7 @@ import { money, num, pct, pctOf, peso, quotePrice, signedClass } from '@/lib/for
 const COLORS = ['#16150f', '#6b6650', '#b3ad95', 'hsl(32 88% 46%)']
 
 export default function Crypto() {
+  usePrivacy()
   const { data, error: cryptoErr } = useApi(fetchCryptoHoldings)
   const usdtPhp = data?.usdtPhp ?? null
   // Aggregates are in PHP (the site's display currency); USDT/USDC-quoted rows are

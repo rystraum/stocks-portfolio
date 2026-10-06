@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { usePrivacy } from '@/lib/usePrivacy'
 import { Link } from 'react-router'
 import {
   Area,
@@ -39,6 +40,7 @@ function ChartTip({ active, payload, label }: any) {
 }
 
 export default function Overview() {
+  usePrivacy()
   const { data: t, error: tErr } = useApi(fetchSummary)
   const { data: holdings, error: holdingsErr } = useApi(fetchHoldings)
   const { data: dividendsByYear, error: divsErr } = useApi(fetchDividendsAll)

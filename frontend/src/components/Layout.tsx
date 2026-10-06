@@ -1,5 +1,7 @@
 import { Link, NavLink, useLocation } from 'react-router'
+import { Eye, EyeOff } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { usePrivacy } from '@/lib/usePrivacy'
 import { useOwner } from '@/api/useOwner'
 
 const NAV = [
@@ -14,6 +16,7 @@ const OWNER_NAV = [{ to: '/utilities', label: 'Utilities', end: false }]
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation()
   const { isOwner } = useOwner()
+  const { redact, setRedacted } = usePrivacy()
   const navItems = isOwner ? [...NAV, ...OWNER_NAV] : NAV
   const section = navItems.find((n) => (n.end ? pathname === n.to : pathname.startsWith(n.to)))?.label ?? 'Overview'
   return (
@@ -44,7 +47,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               ))}
             </nav>
           </div>
-            snapshot · Aug 25, 2026
+          <div className="flex items-center">
+            <button
+              type="button"
+              onClick={() => setRedacted(!redact)}
+              title={redact ? 'Show actual values' : 'Hide actual values (keeps percentages)'}
+              aria-label={redact ? 'Show actual values' : 'Hide actual values'}
+              aria-pressed={redact}
+              className={cn(
+                'rounded p-1.5 transition-colors duration-150',
+                redact
+                  ? 'bg-[#f4f1ea]/15 text-[#f4f1ea]'
+                  : 'text-[#f4f1ea]/50 hover:bg-[#f4f1ea]/10 hover:text-[#f4f1ea]'
+              )}
+            >
+              {redact ? <EyeOff size={16} strokeWidth={1.75} /> : <Eye size={16} strokeWidth={1.75} />}
+            </button>
           </div>
         </div>
       </header>

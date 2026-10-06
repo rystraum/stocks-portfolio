@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { usePrivacy } from '@/lib/usePrivacy'
 import { Link } from 'react-router'
 import { SignedPill, Stat } from '@/components/Stat'
 import { fetchHoldings, fetchSummary } from '@/api/client'
@@ -24,6 +25,7 @@ function totalReturnPct(h: Holding) {
 }
 
 export default function Stocks() {
+  usePrivacy()
   const { data: t, error: tErr } = useApi(fetchSummary)
   const { data: holdings, error: holdingsErr } = useApi(fetchHoldings)
   const [sortKey, setSortKey] = useState<SortKey>('value')

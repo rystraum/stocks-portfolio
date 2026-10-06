@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router'
-import { CandlestickSeries, createChart, type IChartApi } from 'lightweight-charts'
+import { CandlestickSeries, createChart, type IChartApi, type PriceFormatCustom } from 'lightweight-charts'
 import { SignedPill } from '@/components/Stat'
 import UtilitiesPanel from '@/components/UtilitiesPanel'
 import { fetchHolding, fetchPriceHistory, fetchSummary } from '@/api/client'
 import { ErrorNote, Loading, useApi } from '@/api/useApi'
+import { usePrivacy } from '@/lib/usePrivacy'
 import { cn } from '@/lib/utils'
 import { niceDate, num, pct, pctOf, peso, signedClass } from '@/lib/format'
 
@@ -22,6 +23,8 @@ export default function StockDetail() {
   const { data: seriesData } = useApi(() => fetchPriceHistory(ticker, range.days), [ticker, range.days])
   const chartRef = useRef<HTMLDivElement>(null)
   const chartApi = useRef<IChartApi | null>(null)
+  const { redact } = usePrivacy()
+  const redactFormat: PriceFormatCustom = { type: 'custom', formatter: () => '•••••', minMove: 0.01 }
 
   const value = holding ? holding.shares * holding.lastPrice : 0
   const pl = holding ? (holding.shares > 0 ? value - holding.totalCost : (holding.realizedPL ?? 0)) : 0
@@ -53,13 +56,14 @@ export default function StockDetail() {
       rightPriceScale: { borderColor: 'rgba(22,21,15,0.15)' },
       timeScale: { borderColor: 'rgba(22,21,15,0.15)', timeVisible: false },
       crosshair: { mode: 0 },
+      ...(redact ? { priceFormat: redactFormat } : {}),
     })
     chartApi.current = chart
     return () => {
       chart.remove()
       chartApi.current = null
     }
-  }, [holding])
+  }, [holding, redact])
 
   useEffect(() => {
     const chart = chartApi.current
@@ -71,6 +75,7 @@ export default function StockDetail() {
       wickUpColor: 'hsl(152, 66%, 30%)',
       wickDownColor: 'hsl(8, 66%, 45%)',
       borderVisible: false,
+      ...(redact ? { priceFormat: redactFormat } : {}),
     })
     series.setData(data)
     if (cps > 0) {
@@ -100,7 +105,7 @@ export default function StockDetail() {
       // and unmounts the whole app.
       if (chartApi.current === chart) chart.removeSeries(series)
     }
-  }, [holding, range, cps, seriesData])
+  }, [holding, range, cps, seriesData, redact])
 
   if (!holding) return holdingErr ? <ErrorNote message={holdingErr} /> : loadingHolding ? <Loading /> : <Navigate to="/stocks" replace />
 

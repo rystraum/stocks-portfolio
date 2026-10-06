@@ -1,4 +1,9 @@
+import { isRedacted } from './privacy'
+
+const REDACTED = '•••••'
+
 export function peso(n: number, opts: { decimals?: number; sign?: boolean } = {}): string {
+  if (isRedacted()) return REDACTED
   const { decimals = 2, sign = false } = opts
   const abs = Math.abs(n).toLocaleString('en-PH', {
     minimumFractionDigits: decimals,
@@ -9,6 +14,7 @@ export function peso(n: number, opts: { decimals?: number; sign?: boolean } = {}
 }
 
 export function num(n: number, decimals = 2): string {
+  if (isRedacted()) return REDACTED
   return n.toLocaleString('en-PH', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
 }
 
@@ -20,6 +26,7 @@ export function priceDecimals(n: number): number {
 }
 
 export function price(n: number): string {
+  if (isRedacted()) return REDACTED
   const decimals = priceDecimals(n)
   const abs = Math.abs(n).toLocaleString('en-PH', { maximumFractionDigits: decimals })
   const prefix = n < 0 ? '-₱' : '₱'
@@ -28,6 +35,7 @@ export function price(n: number): string {
 
 // Amount in a quote currency: PHP uses the peso symbol, USDT/USDC (dollar-pegged) use $.
 export function money(n: number, currency: string, opts: { decimals?: number; sign?: boolean } = {}): string {
+  if (isRedacted()) return REDACTED
   if (currency === 'PHP') return peso(n, opts)
   const { decimals = 2, sign = false } = opts
   const abs = Math.abs(n).toLocaleString('en-PH', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
@@ -36,6 +44,7 @@ export function money(n: number, currency: string, opts: { decimals?: number; si
 }
 
 export function quotePrice(n: number, currency: string): string {
+  if (isRedacted()) return REDACTED
   if (currency === 'PHP') return price(n)
   const decimals = priceDecimals(n)
   const abs = Math.abs(n).toLocaleString('en-PH', { maximumFractionDigits: decimals })
@@ -44,6 +53,7 @@ export function quotePrice(n: number, currency: string): string {
 }
 
 export function compact(n: number): string {
+  if (isRedacted()) return REDACTED
   if (Math.abs(n) >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`
   if (Math.abs(n) >= 10_000) return `${(n / 1_000).toFixed(1)}K`
   if (Math.abs(n) >= 1_000) return `${(n / 1_000).toFixed(2)}K`

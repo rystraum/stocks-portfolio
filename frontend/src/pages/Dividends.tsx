@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { usePrivacy } from '@/lib/usePrivacy'
 import { Link } from 'react-router'
 import {
   Bar,
@@ -129,6 +130,7 @@ function Legend({ currentYear, unit }: { currentYear: number; unit: string }) {
 }
 
 export default function Dividends() {
+  usePrivacy()
   const [hoverMonth, setHoverMonth] = useState<HoverCell | null>(null)
   const [hoverQuarter, setHoverQuarter] = useState<HoverCell | null>(null)
   const [pinnedMonth, setPinnedMonth] = useState<HoverCell | null>(null)
