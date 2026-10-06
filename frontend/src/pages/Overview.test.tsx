@@ -38,5 +38,8 @@ describe('Overview', () => {
       const btn = screen.getByRole('button', { name: '2026' })
       expect(btn).toHaveClass('bg-foreground')
     })
+    // caption must follow the effective year — first load used to say "0 total ₱0.00"
+    expect(screen.getByText(/2026 total/)).toBeTruthy()
+    expect(screen.queryByText(/^0 total/)).toBeNull()
   })
 })

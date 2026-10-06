@@ -204,7 +204,7 @@ export default function Overview() {
             </ResponsiveContainer>
           </div>
           <p className="num mt-2 text-[11px] text-muted-foreground">
-            {incomeYear} total {peso(yearDividendTotal(dividendsByYear, incomeYear))} · avg {peso(incomeAvg)}/mo (dashed)
+            {effectiveIncomeYear} total {peso(yearDividendTotal(dividendsByYear, effectiveIncomeYear))} · avg {peso(incomeAvg)}/mo (dashed)
           </p>
         </div>
 
