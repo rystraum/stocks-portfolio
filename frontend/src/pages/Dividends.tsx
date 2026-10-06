@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router'
 import {
   Bar,
   Cell,
@@ -56,7 +57,9 @@ function LadderPanel({
               .sort((a, b) => b.amount - a.amount)
               .map((it) => (
                 <li key={it.ticker} className="flex items-baseline justify-between border-b border-line/60 pb-1">
-                  <span className="num text-[12px] font-semibold">{it.ticker}</span>
+                  <Link to={`/stocks/${it.ticker}`} className="num text-[12px] font-semibold hover:underline">
+                    {it.ticker}
+                  </Link>
                   <span className="num text-[12px]">{peso(it.amount)}</span>
                 </li>
               ))}
@@ -76,25 +79,31 @@ function HeatCell({
   value,
   max,
   future,
+  active,
   onEnter,
+  onClick,
 }: {
   value: number
   max: number
   future: boolean
+  active?: boolean
   onEnter: () => void
+  onClick?: () => void
 }) {
   const intensity = value / max
   return (
     <td className="p-0.5">
       <div
         onMouseEnter={onEnter}
+        onClick={onClick}
         className={cn(
           'num flex h-9 items-center justify-center text-[10px] transition-transform',
           future
             ? 'border border-dashed border-line text-muted-foreground/50'
             : value > 0
-              ? 'cursor-default text-[#131311] hover:scale-105'
-              : 'text-muted-foreground/40'
+              ? 'cursor-pointer text-[#131311] hover:scale-105'
+              : 'text-muted-foreground/40',
+          active && 'ring-2 ring-inset ring-[#f4f1ea]/90'
         )}
         style={!future && value > 0 ? { backgroundColor: `hsl(32 88% 46% / ${0.12 + intensity * 0.75})` } : undefined}
       >
@@ -113,7 +122,7 @@ function Legend({ currentYear, unit }: { currentYear: number; unit: string }) {
       ))}
       <span className="num">more</span>
       <span className="ml-3">
-        dashed = {unit} still ahead in {currentYear}
+        dashed = {unit} with no payouts yet in {currentYear}
       </span>
     </div>
   )
@@ -122,10 +131,16 @@ function Legend({ currentYear, unit }: { currentYear: number; unit: string }) {
 export default function Dividends() {
   const [hoverMonth, setHoverMonth] = useState<HoverCell | null>(null)
   const [hoverQuarter, setHoverQuarter] = useState<HoverCell | null>(null)
+  const [pinnedMonth, setPinnedMonth] = useState<HoverCell | null>(null)
+  const [pinnedQuarter, setPinnedQuarter] = useState<HoverCell | null>(null)
   const { data: t, error: tErr } = useApi(fetchSummary)
   const { data: dividendsByYear, error: divsErr } = useApi(fetchDividendsAll)
-  const dividendYears = dividendYearsOf(dividendsByYear)
-  const currentYear = dividendYears[dividendYears.length - 1]
+  const currentYear = new Date().getFullYear()
+  // The in-progress year always gets a row (all-zero months until the first
+  // payout), so the dashed "future" cells and the legend track the real year.
+  const baseYears = dividendYearsOf(dividendsByYear)
+  const dividendYears = baseYears.includes(currentYear) ? baseYears : [...baseYears, currentYear]
+  const monthsFor = (y: number): DividendMonth[] => dividendsByYear?.[y] ?? MONTHS.map(() => ({ total: 0 }))
 
   const yearly = useMemo(
     () =>
@@ -136,6 +151,7 @@ export default function Dividends() {
         return {
           year: y,
           total: Math.round(total * 100) / 100,
+          cost,
           yieldOnCost: pctOf(total, cost),
           yoy: prev > 0 ? pctOf(total - prev, prev) : null,
         }
@@ -220,14 +236,18 @@ export default function Dividends() {
     : null
   const ttm = yearly[yearly.length - 2]
 
-  const hoveredMonthBucket: Bucket | null = hoverMonth
+  // Clicking a cell pins it so hover no longer changes the in-focus period;
+  // clicking the pinned cell again unpins it.
+  const focusMonth = pinnedMonth ?? hoverMonth
+  const focusQuarter = pinnedQuarter ?? hoverQuarter
+  const hoveredMonthBucket: Bucket | null = focusMonth
     ? (() => {
-        const m = dividendsByYear?.[hoverMonth.year]?.[hoverMonth.idx]
+        const m = monthsFor(focusMonth.year)[focusMonth.idx]
         if (!m) return null
         return { total: m.total, items: m.items ?? [], payoutCount: m.items?.length ?? 0 }
       })()
     : null
-  const hoveredQuarterBucket: Bucket | null = hoverQuarter ? quarterlyByYear[hoverQuarter.year][hoverQuarter.idx] : null
+  const hoveredQuarterBucket: Bucket | null = focusQuarter ? quarterlyByYear[focusQuarter.year][focusQuarter.idx] : null
 
   const coverageTip = () => ({ active, payload, label }: any) =>
     active && payload?.length ? (
@@ -290,7 +310,7 @@ export default function Dividends() {
                       <p className="num text-[11px] font-semibold text-muted-foreground">{label}</p>
                       <p className="num text-[12px] text-div">{peso(payload[0].payload.total)}</p>
                       <p className="num text-[11px] text-muted-foreground">
-                        yield on cost {payload[0].payload.yieldOnCost.toFixed(1)}%
+                        cost basis {peso(payload[0].payload.cost, { decimals: 0 })} · yield on cost {payload[0].payload.yieldOnCost.toFixed(1)}%
                         {payload[0].payload.yoy != null && ` · YoY ${payload[0].payload.yoy >= 0 ? '+' : ''}${payload[0].payload.yoy.toFixed(0)}%`}
                       </p>
                     </div>
@@ -307,7 +327,7 @@ export default function Dividends() {
           </ResponsiveContainer>
         </div>
         <p className="mt-3 text-[12px] text-muted-foreground">
-          {currentYear} is partial (through June). Yield on cost has climbed every single year — from 1.6% in 2018 to{' '}
+          {currentYear} is partial (year-to-date). Yield on cost has climbed every single year — from 1.6% in 2018 to{' '}
           {pct(ttm.yieldOnCost)} in {ttm.year} — because the cost base only grows while dividends compound on top of it.
         </p>
       </div>
@@ -341,8 +361,10 @@ export default function Dividends() {
                         key={q}
                         value={b.total}
                         max={maxQuarter}
-                        future={y === currentYear && q >= 2}
+                        future={y === currentYear && b.total === 0}
+                        active={pinnedQuarter?.year === y && pinnedQuarter?.idx === q}
                         onEnter={() => setHoverQuarter({ year: y, idx: q })}
+                        onClick={() => setPinnedQuarter(pinnedQuarter?.year === y && pinnedQuarter?.idx === q ? null : { year: y, idx: q })}
                       />
                     ))}
                     <td className="num px-2 py-1 text-right text-[12px] font-semibold text-div">{peso(yearDividendTotal(dividendsByYear, y), { decimals: 0 })}</td>
@@ -355,9 +377,9 @@ export default function Dividends() {
         </div>
 
         <LadderPanel
-          heading={hoverQuarter ? `${QUARTERS[hoverQuarter.idx]} ${hoverQuarter.year}` : 'Quarter breakdown'}
+          heading={focusQuarter ? `${QUARTERS[focusQuarter.idx]} ${focusQuarter.year}` : 'Quarter breakdown'}
           bucket={hoveredQuarterBucket}
-          hint="Hover any quarter in the ladder to see exactly which tickers paid and how much."
+          hint="Hover any quarter in the ladder to see exactly which tickers paid and how much. Click to pin."
         />
       </div>
 
@@ -411,13 +433,15 @@ export default function Dividends() {
                 {[...dividendYears].reverse().map((y) => (
                   <tr key={y} className="border-t border-line">
                     <td className="num px-2 py-1 text-[12px] font-semibold">{y}</td>
-                    {dividendsByYear[y].map((m, i) => (
+                    {monthsFor(y).map((m, i) => (
                       <HeatCell
                         key={i}
                         value={m.total}
                         max={maxMonth}
-                        future={y === currentYear && i >= 7}
+                        future={y === currentYear && m.total === 0}
+                        active={pinnedMonth?.year === y && pinnedMonth?.idx === i}
                         onEnter={() => setHoverMonth({ year: y, idx: i })}
+                        onClick={() => setPinnedMonth(pinnedMonth?.year === y && pinnedMonth?.idx === i ? null : { year: y, idx: i })}
                       />
                     ))}
                     <td className="num px-2 py-1 text-right text-[12px] font-semibold text-div">{peso(yearDividendTotal(dividendsByYear, y), { decimals: 0 })}</td>
@@ -430,9 +454,9 @@ export default function Dividends() {
         </div>
 
         <LadderPanel
-          heading={hoverMonth ? `${MONTHS[hoverMonth.idx]} ${hoverMonth.year}` : 'Month breakdown'}
+          heading={focusMonth ? `${MONTHS[focusMonth.idx]} ${focusMonth.year}` : 'Month breakdown'}
           bucket={hoveredMonthBucket}
-          hint="Hover any month in the ladder to see exactly which tickers paid and how much."
+          hint="Hover any month in the ladder to see exactly which tickers paid and how much. Click to pin."
         />
       </div>
 
