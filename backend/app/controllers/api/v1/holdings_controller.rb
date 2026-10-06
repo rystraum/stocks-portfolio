@@ -40,15 +40,28 @@ class Api::V1::HoldingsController < Api::V1::BaseController
     end
 
     days = (params[:days] || 365).to_i.clamp(1, 3650)
+    # Aggregate to daily bars: one candle per date (open = first update of the
+    # day, close = last, high/low = extremes). Multiple updates on the same date
+    # would otherwise produce duplicate dates, which the frontend candlestick
+    # chart cannot render.
     points = company.price_updates
-                   .where.not(price: nil)
-                   .where(open: ..nil).or(company.price_updates.where(open: nil))
-                   .order(datetime: :desc)
-                   .limit(days)
-                   .reverse
-                   .map do |p|
-                     { time: p.datetime.to_date, open: p.open, high: p.high, low: p.low, close: p.price }
-                   end
+                 .where.not(price: nil)
+                 .where.not(open: nil)
+                 .where.not(high: nil)
+                 .where.not(low: nil)
+                 .order(datetime: :asc)
+                 .group_by { |u| u.datetime.to_date }
+                 .to_a
+                 .last(days)
+                 .map do |date, rows|
+                   {
+                     time: date,
+                     open: rows.first.open.to_f,
+                     high: rows.map { |r| r.high.to_f }.max,
+                     low: rows.map { |r| r.low.to_f }.min,
+                     close: rows.last.price.to_f
+                   }
+                 end
 
     render json: { ticker: company.ticker, days:, points: }
   end

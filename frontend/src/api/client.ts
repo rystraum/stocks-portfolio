@@ -179,7 +179,15 @@ export async function fetchHolding(ticker: string): Promise<HoldingDetail> {
 
 export async function fetchPriceHistory(ticker: string, days: number): Promise<OhlcPoint[]> {
   const r = await get<{ points: RawOhlc[] }>(`/holdings/${encodeURIComponent(ticker)}/price-history?days=${days}`)
-  return r.points
+  // Daily bars: drop any point missing OHLC, keep the last point per date, and
+  // sort ascending — the candlestick chart requires strictly ascending unique
+  // dates and throws otherwise.
+  const byDate = new Map<string, OhlcPoint>()
+  for (const p of r.points) {
+    if (p.open == null || p.high == null || p.low == null || p.close == null) continue
+    byDate.set(p.time, p)
+  }
+  return [...byDate.values()].sort((a, b) => (a.time < b.time ? -1 : a.time > b.time ? 1 : 0))
 }
 
 export async function fetchDividendsAll(): Promise<DividendYearIndex> {
