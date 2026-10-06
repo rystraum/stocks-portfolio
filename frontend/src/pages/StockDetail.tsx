@@ -54,8 +54,10 @@ export default function StockDetail() {
       crosshair: { mode: 0 },
     })
     chartApi.current = chart
-    return () => chart.removeSeries(series)
-
+    return () => {
+      chart.remove()
+      chartApi.current = null
+    }
   }, [holding])
 
   useEffect(() => {
