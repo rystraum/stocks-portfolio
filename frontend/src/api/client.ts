@@ -2,6 +2,7 @@ import type {
   Activity,
   CapitalYear,
   CryptoHolding,
+  CryptoPortfolio,
   DividendEvent,
   DividendYearIndex,
   Holding,
@@ -82,6 +83,7 @@ interface RawSummary {
 interface RawCryptoHolding {
   symbol: string
   name: string
+  currency: string
   amount: number
   avg_cost: number
   last_price: number
@@ -197,14 +199,18 @@ export async function fetchDividendsAll(): Promise<DividendYearIndex> {
   return byYear
 }
 
-export async function fetchCryptoHoldings(): Promise<CryptoHolding[]> {
-  const r = await get<{ currency: string; holdings: RawCryptoHolding[] }>('/crypto/holdings')
-  return r.holdings.map((c): CryptoHolding => ({
-    symbol: c.symbol,
-    name: c.name,
-    amount: c.amount,
-    avgCost: c.avg_cost,
-    lastPrice: c.last_price,
-    lastPriceAt: c.last_price_at ?? undefined,
-  }))
+export async function fetchCryptoHoldings(): Promise<CryptoPortfolio> {
+  const r = await get<{ usdt_php: number | null; holdings: RawCryptoHolding[] }>('/crypto/holdings')
+  return {
+    usdtPhp: r.usdt_php ?? null,
+    holdings: r.holdings.map((c): CryptoHolding => ({
+      symbol: c.symbol,
+      name: c.name,
+      amount: c.amount,
+      avgCost: c.avg_cost,
+      lastPrice: c.last_price,
+      lastPriceAt: c.last_price_at ?? undefined,
+      currency: c.currency,
+    })),
+  }
 }

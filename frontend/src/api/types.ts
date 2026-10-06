@@ -65,6 +65,12 @@ export interface CryptoHolding {
   avgCost: number
   lastPrice: number
   lastPriceAt?: string
+  currency: string
+}
+
+export interface CryptoPortfolio {
+  usdtPhp: number | null
+  holdings: CryptoHolding[]
 }
 
 export interface OhlcPoint {

@@ -7,6 +7,8 @@ class Api::V1::CryptoHoldingsController < Api::V1::BaseController
     currency_ids = activities.select(:crypto_currency_id).distinct
     currencies = CryptoCurrency.where(id: currency_ids).order(:ticker)
 
+    usdt_php = CryptoCurrency.find_by(ticker: "USDT", quote_token: "PHP")&.last_price&.to_f
+
     holdings = currencies.map do |crypto|
       amount = CryptoActivity.net_crypto_amount(user_id, crypto.id).to_f
       next if amount <= 0
@@ -15,14 +17,14 @@ class Api::V1::CryptoHoldingsController < Api::V1::BaseController
       {
         symbol: crypto.ticker,
         name: crypto.name,
+        currency: crypto.fiat,
         amount:,
-        avg_cost: round2(rate),
-        last_price: crypto.last_price,
+        avg_cost: rate,
+        last_price: crypto.last_price&.to_f,
         last_price_at: crypto.last_price_at
       }
     end.compact
 
-    currency_name = activities.first&.fiat_currency || "PHP"
-    render json: { currency: currency_name, holdings: }
+    render json: { usdt_php: usdt_php, holdings: }
   end
 end

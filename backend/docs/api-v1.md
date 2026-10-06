@@ -108,14 +108,17 @@ current). Replaces dividendsByYear / yearDividendTotal.
 ### GET /api/v1/crypto/holdings
 
     {
-      "currency": "PHP",
+      "usdt_php": 62.62,
       "holdings": [
-        { "symbol": "BTC", "name": "Bitcoin", "amount": 0.0214, "avg_cost": 3120000, "last_price": 6480000, "last_price_at": "2026-10-04T14:50:00Z" }
+        { "symbol": "BTC", "name": "Bitcoin", "currency": "PHP", "amount": 0.0214, "avg_cost": 3120000, "last_price": 6480000, "last_price_at": "2026-10-04T14:50:00Z" }
       ]
     }
 
 From crypto_currencies (name/ticker/last_price/last_price_at) + crypto_activities
-(BUY/SELL → remaining amount, average cost per asset). Replaces the mock
+(BUY/SELL → remaining amount, average cost per asset). Holdings are per pair:
+`currency` is the pair's quote token (PHP/USDT/USDC). `usdt_php` is the live
+USDT/PHP pair's last price (null if absent) — the rate the frontend uses to
+convert USDT/USDC-quoted rows into PHP aggregates. Replaces the mock
 cryptoHoldings.
 
 ### GET /api/v1/crypto/holdings/:symbol/activities  (v1.1, optional)
