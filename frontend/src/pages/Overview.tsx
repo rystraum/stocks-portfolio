@@ -104,7 +104,6 @@ export default function Overview() {
         <Stat
           label="Capital in · cost basis"
           value={peso(t.totalCost)}
-          sub="Deposits only — nothing ever withdrawn"
         />
         <Stat
           label="Market value today"
@@ -123,7 +122,7 @@ export default function Overview() {
           tone="div"
           sub={
             <span className="num">
-              {pct(pctOf(t.dividends, t.totalCost))} of capital back — every peso reinvested
+              {pct(pctOf(t.dividends, t.totalCost))} of capital
             </span>
           }
         />
@@ -164,10 +163,6 @@ export default function Overview() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-          <p className="mt-3 text-[12px] leading-snug text-muted-foreground">
-            The amber curve is cash the portfolio has paid you back — {peso(t.dividends)} so far, all of it recycled
-            into more shares. Market value dipped below cost in 2026, but the income curve has never gone down.
-          </p>
         </div>
 
         <GoalCard />
@@ -273,9 +268,6 @@ export default function Overview() {
               )
             })}
           </ul>
-          <p className="mt-4 border-t border-line pt-3 text-[11px] leading-snug text-muted-foreground">
-            DMC alone has returned {pct(pctOf(37422, 131049.98))} of its cost basis in cash.
-          </p>
         </div>
       </div>
     </div>

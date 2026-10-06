@@ -113,10 +113,6 @@ export default function GoalCard() {
           <span className="text-muted-foreground">Historically thin months</span>
           <span className="num font-medium">{stats.weakest.join(' · ')}</span>
         </div>
-        <p className="pt-1 text-[11px] leading-snug text-muted-foreground">
-          Every payout is reinvested, so each year&apos;s income buys next year&apos;s raise.
-          Add payers in the thin months to even out the monthly stream.
-        </p>
       </div>
     </div>
   )

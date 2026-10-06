@@ -18,7 +18,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-6">
             <Link to="/" className="flex items-baseline gap-2">
               <span className="text-[15px] font-bold tracking-tight">Portfolio</span>
-              <span className="num text-[10px] uppercase tracking-[0.18em] text-[#f4f1ea]/50">PSE · PHP</span>
             </Link>
             <nav className="flex items-center gap-1">
               {NAV.map((item) => (
@@ -54,12 +53,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
-      <footer className="mx-auto max-w-[1440px] px-4 pb-10 md:px-8">
-        <p className="border-t border-line pt-4 text-[12px] text-muted-foreground">
-          Frontend redesign concept — figures are a snapshot of the live tracker. Money only goes in:
-          sale proceeds are recycled, dividends are reinvested, nothing is withdrawn.
-        </p>
-      </footer>
     </div>
   )
 }
