@@ -5,6 +5,7 @@ import Stocks from '@/pages/Stocks'
 import Dividends from '@/pages/Dividends'
 import StockDetail from '@/pages/StockDetail'
 import Crypto from '@/pages/Crypto'
+import CryptoDetail from '@/pages/CryptoDetail'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/stocks/:ticker" element={<StockDetail />} />
         <Route path="/dividends" element={<Dividends />} />
         <Route path="/crypto" element={<Crypto />} />
+        <Route path="/crypto/:id" element={<CryptoDetail />} />
         <Route path="*" element={<Overview />} />
       </Routes>
     </Layout>

@@ -74,6 +74,7 @@ Rails.application.routes.draw do
       get "holdings/:ticker/price-history", to: "holdings#price_history"
       get "dividends", to: "dividends#index"
       get "crypto/holdings", to: "crypto_holdings#index"
+      get "crypto/holdings/:id", to: "crypto_holdings#show"
     end
   end
 

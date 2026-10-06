@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { Link } from 'react-router'
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip, type TooltipProps } from 'recharts'
 import { Stat } from '@/components/Stat'
 import { fetchCryptoHoldings } from '@/api/client'
@@ -103,8 +104,13 @@ export default function Crypto() {
                   className="border-t border-line text-[13px] transition-colors hover:bg-[hsl(32_88%_46%/0.07)]"
                 >
                   <td className="px-3 py-2">
-                    <div className="num font-semibold">{r.symbol}</div>
-                    <div className="text-[11px] text-muted-foreground">{r.name}</div>
+                    <Link to={`/crypto/${r.symbol}${r.currency}`} className="block">
+                      <div className="num font-semibold hover:underline">
+                        {r.symbol}
+                        <span className="ml-0.5 text-[10px] font-normal text-muted-foreground">{r.currency}</span>
+                      </div>
+                      <div className="text-[11px] text-muted-foreground">{r.name}</div>
+                    </Link>
                   </td>
                   <td className="num px-3 py-2 text-right">{num(r.amount, 4)}</td>
                   <td className="num px-3 py-2 text-right">{quotePrice(r.avgCost, r.currency)}</td>

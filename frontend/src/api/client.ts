@@ -2,6 +2,7 @@ import type {
   Activity,
   CapitalYear,
   CryptoHolding,
+  CryptoHoldingDetail,
   CryptoPortfolio,
   DividendEvent,
   DividendYearIndex,
@@ -211,6 +212,61 @@ export async function fetchCryptoHoldings(): Promise<CryptoPortfolio> {
       lastPrice: c.last_price,
       lastPriceAt: c.last_price_at ?? undefined,
       currency: c.currency,
+    })),
+  }
+}
+
+interface RawCryptoActivity {
+  date: string
+  type: string
+  crypto_amount: number
+  fiat_amount: number
+  fee_crypto: number | null
+  fee_fiat: number | null
+  forex: number
+  notes: string | null
+}
+
+interface RawCryptoHoldingDetail {
+  symbol: string
+  name: string
+  currency: string
+  compound: string
+  last_price: number | null
+  last_price_at: string | null
+  amount: number
+  avg_cost: number
+  total_fiat: number
+  total_proceeds: number
+  current_value: number
+  pnl: number
+  activities: RawCryptoActivity[]
+}
+
+export async function fetchCryptoHolding(id: string): Promise<CryptoHoldingDetail> {
+  const r = await get<RawCryptoHoldingDetail>(`/crypto/holdings/${encodeURIComponent(id)}`)
+  return {
+    symbol: r.symbol,
+    name: r.name,
+    currency: r.currency,
+    compound: r.compound,
+    lastPrice: r.last_price,
+    lastPriceAt: r.last_price_at,
+    amount: r.amount,
+    avgCost: r.avg_cost,
+    totalFiat: r.total_fiat,
+    totalProceeds: r.total_proceeds,
+    currentValue: r.current_value,
+    pnl: r.pnl,
+    activities: r.activities.map((a) => ({
+      date: a.date,
+      type: a.type as 'buy' | 'sell',
+      cryptoAmount: a.crypto_amount,
+      fiatAmount: a.fiat_amount,
+      feeCrypto: a.fee_crypto,
+      feeFiat: a.fee_fiat,
+      forex: a.forex,
+      notes: a.notes,
     })),
   }
 }

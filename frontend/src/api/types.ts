@@ -73,6 +73,33 @@ export interface CryptoPortfolio {
   holdings: CryptoHolding[]
 }
 
+export interface CryptoActivity {
+  date: string
+  type: 'buy' | 'sell'
+  cryptoAmount: number
+  fiatAmount: number
+  feeCrypto: number | null
+  feeFiat: number | null
+  forex: number
+  notes: string | null
+}
+
+export interface CryptoHoldingDetail {
+  symbol: string
+  name: string
+  currency: string
+  compound: string
+  lastPrice: number | null
+  lastPriceAt: string | null
+  amount: number
+  avgCost: number
+  totalFiat: number
+  totalProceeds: number
+  currentValue: number
+  pnl: number
+  activities: CryptoActivity[]
+}
+
 export interface OhlcPoint {
   time: string // yyyy-mm-dd
   open: number
