@@ -1,5 +1,6 @@
 import { Link, NavLink, useLocation } from 'react-router'
 import { cn } from '@/lib/utils'
+import { useOwner } from '@/api/useOwner'
 
 const NAV = [
   { to: '/', label: 'Overview', end: true },
@@ -8,9 +9,13 @@ const NAV = [
   { to: '/crypto', label: 'Crypto', end: false },
 ]
 
+const OWNER_NAV = [{ to: '/utilities', label: 'Utilities', end: false }]
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation()
-  const section = NAV.find((n) => (n.end ? pathname === n.to : pathname.startsWith(n.to)))?.label ?? 'Overview'
+  const { isOwner } = useOwner()
+  const navItems = isOwner ? [...NAV, ...OWNER_NAV] : NAV
+  const section = navItems.find((n) => (n.end ? pathname === n.to : pathname.startsWith(n.to)))?.label ?? 'Overview'
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-40 bg-[#131311] text-[#f4f1ea]">
@@ -20,7 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <span className="text-[15px] font-bold tracking-tight">Portfolio</span>
             </Link>
             <nav className="flex items-center gap-1">
-              {NAV.map((item) => (
+              {navItems.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
@@ -39,8 +44,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               ))}
             </nav>
           </div>
-          <div className="num hidden items-center gap-2 text-[11px] text-[#f4f1ea]/50 md:flex">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#0f0]" />
             snapshot · Aug 25, 2026
           </div>
         </div>

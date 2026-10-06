@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router'
 import { CandlestickSeries, createChart, type IChartApi } from 'lightweight-charts'
 import { SignedPill } from '@/components/Stat'
+import UtilitiesPanel from '@/components/UtilitiesPanel'
 import { fetchHolding, fetchPriceHistory, fetchSummary } from '@/api/client'
 import { ErrorNote, Loading, useApi } from '@/api/useApi'
 import { cn } from '@/lib/utils'
@@ -198,17 +199,20 @@ export default function StockDetail() {
           )}
         </div>
 
-        {/* Position summary */}
-        <div className="border border-line bg-card">
-          <h3 className="border-b border-line px-5 py-3 text-[13px] font-bold uppercase tracking-[0.14em]">Position</h3>
-          <dl>
-            {rows.map(([k, v]) => (
-              <div key={k} className="flex items-baseline justify-between border-b border-line/60 px-5 py-2.5 last:border-0">
-                <dt className="text-[12px] text-muted-foreground">{k}</dt>
-                <dd className="num text-[13px]">{v}</dd>
-              </div>
-            ))}
-          </dl>
+        {/* Position summary + owner utilities */}
+        <div className="space-y-6">
+          <div className="border border-line bg-card">
+            <h3 className="border-b border-line px-5 py-3 text-[13px] font-bold uppercase tracking-[0.14em]">Position</h3>
+            <dl>
+              {rows.map(([k, v]) => (
+                <div key={k} className="flex items-baseline justify-between border-b border-line/60 px-5 py-2.5 last:border-0">
+                  <dt className="text-[12px] text-muted-foreground">{k}</dt>
+                  <dd className="num text-[13px]">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <UtilitiesPanel ticker={holding.ticker} />
         </div>
       </div>
 

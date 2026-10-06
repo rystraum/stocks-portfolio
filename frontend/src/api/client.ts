@@ -270,3 +270,41 @@ export async function fetchCryptoHolding(id: string): Promise<CryptoHoldingDetai
     })),
   }
 }
+
+// --- current user ------------------------------------------------------------------
+
+export interface Me {
+  email: string
+}
+
+export async function fetchMe(): Promise<Me> {
+  return get<Me>('/me')
+}
+
+// --- utility actions (owner-only) ---------------------------------------------------
+
+async function write<T>(method: 'POST' | 'PUT', path: string): Promise<T> {
+  const res = await fetch(`${BASE}${path}`, {
+    method,
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+  })
+  if (res.status === 401) {
+    window.location.assign('/users/sign_in')
+    throw new Error('Not signed in')
+  }
+  const body = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null
+  if (!res.ok) throw new Error(body?.error ?? `Request failed (${res.status})`)
+  return body as T
+}
+
+export function updatePrices(): Promise<{ ok: boolean; queued: boolean }> {
+  return write<{ ok: boolean; queued: boolean }>('PUT', '/utilities/update-prices')
+}
+
+export function updateFromPSE(ticker: string): Promise<{ ok: boolean; last_price: number | null }> {
+  return write<{ ok: boolean; last_price: number | null }>('POST', `/utilities/${encodeURIComponent(ticker)}/update-from-pse`)
+}
+
+export function backfillPrices(ticker: string): Promise<{ ok: boolean; created: number }> {
+  return write<{ ok: boolean; created: number }>('POST', `/utilities/${encodeURIComponent(ticker)}/backfill`)
+}

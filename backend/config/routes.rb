@@ -75,6 +75,10 @@ Rails.application.routes.draw do
       get "dividends", to: "dividends#index"
       get "crypto/holdings", to: "crypto_holdings#index"
       get "crypto/holdings/:id", to: "crypto_holdings#show"
+      get "me", to: "me#index"
+      put "utilities/update-prices", to: "utilities#update_prices"
+      post "utilities/:ticker/update-from-pse", to: "utilities#update_from_pse"
+      post "utilities/:ticker/backfill", to: "utilities#backfill"
     end
   end
 
